@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from core.database import AsyncDBDependency
+from api.core.database import AsyncDBDependency
 
 router = APIRouter()
 

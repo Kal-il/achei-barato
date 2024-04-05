@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from usuario.routers import router as usuario_router
+from api.usuario.routers import router as usuario_router
 from .config import settings
 
 api_router = APIRouter(prefix=settings.api_str)
