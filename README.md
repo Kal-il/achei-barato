@@ -1,6 +1,6 @@
-# achei-barato
+# Achei Barato
 
-### RF01 - Realizar Login no Aplicativo "Ache Barato"
+### RF01 - Realizar Login no Aplicativo "Achei Barato"
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
 - **Revisor:** @romeuborges19 - Romeu Miranda Borges
@@ -59,7 +59,7 @@ O usuário terá acesso às funcionalidades do aplicativo após o login bem-suce
 **User Story:** Como usuário comum, desejo realizar login no aplicativo "Achei Barato" para acessar suas funcionalidades.  
 **Critério de aceitação:** Para fazer login no aplicativo, o usuário deve ter suas credenciais cadastradas no banco de dados do "Achei Barato" e inserir corretamente seu e-mail e senha. Após o login bem-sucedido, o usuário terá acesso às funcionalidades do aplicativo.
 
-### RF02 - Restaurar Senha no Aplicativo "Ache Barato"
+### RF02 - Restaurar Senha no Aplicativo "Achei Barato"
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
 - **Revisor:** @romeuborges19 - Romeu Miranda Borges
@@ -166,7 +166,7 @@ Não há fluxos alternativos para este requisito.
 ### RF03 - Registrar Consumidor no Sistema
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
-- **Revisor:** @@romeuborges19 - Romeu Miranda Borges
+- **Revisor:** @romeuborges19 - Romeu Miranda Borges
 
 #### Descrição:
 Este requisito tem como objetivo permitir que os consumidores se registrem no sistema do aplicativo "Achei Barato". Os consumidores precisarão preencher os campos obrigatórios, que incluem email, nome, sobrenome e senha.
