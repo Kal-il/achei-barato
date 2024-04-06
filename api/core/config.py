@@ -1,4 +1,3 @@
-from typing import List
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 
@@ -22,13 +21,6 @@ class Settings(BaseSettings):
     async_db_name: str
     async_db_user: str
     async_db_password: str
-
-    # Redis
-    # redis_host: str
-    # redis_port: int
-    # redis_db: int
-    # redis_username: str
-    # redis_password: str
 
     model_config = ConfigDict(env_file=".env")
 
