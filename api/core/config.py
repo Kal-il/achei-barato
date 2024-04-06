@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     async_db_user: str
     async_db_password: str
 
+    # Configurações do processo de autenticação
+    access_token_expire_hours: int = 24
+    refresh_token_expire_hours: int = 24
+    jwt_access_secret_key: str = "teste"
+    jwt_refresh_secret_key: str = "teste"
+    algorithm: str = "HS256"
+
     model_config = ConfigDict(env_file=".env")
 
 settings = Settings()
