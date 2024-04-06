@@ -1,4 +1,18 @@
 # Achei Barato
+## Projetos de Sistemas - 2024.1 | Universidade Federal do Tocantins - Palmas
+
+**Curso:** Bacharelado em Ciência da Computação \
+**Professor:** Edeilson Milhomem da Silva\
+**Time**: Ana Flavia Moreira Pires, Cássio Coutinho Lima, Kalil Garcia Canuto, Maria Clara Nazareno Aires, Matheus Henrique Dreher dos Santos, Romeu Miranda Borges
+
+#### Escopo:
+- **Épico 1 - Ações e Gerenciamento do Consumidor:** RF01, RF02, RF03, RF04, RF05, RF06;
+- **Épico 2 - Ações e Gerenciamento do Mercado:**
+- **Épico 3 - Gerenciamento do Produto:**
+- **Épico 4 - Gerenciamento da Promoção:**
+
+---
+## Definindo os requisitos funcionais do projeto
 
 ### RF01 - Realizar Login no Aplicativo "Achei Barato"
 
@@ -59,6 +73,8 @@ O usuário terá acesso às funcionalidades do aplicativo após o login bem-suce
 **User Story:** Como usuário comum, desejo realizar login no aplicativo "Achei Barato" para acessar suas funcionalidades.  
 **Critério de aceitação:** Para fazer login no aplicativo, o usuário deve ter suas credenciais cadastradas no banco de dados do "Achei Barato" e inserir corretamente seu e-mail e senha. Após o login bem-sucedido, o usuário terá acesso às funcionalidades do aplicativo.
 
+---
+
 ### RF02 - Restaurar Senha no Aplicativo "Achei Barato"
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
@@ -112,56 +128,8 @@ O usuário terá a senha redefinida e poderá fazer login com a nova senha.
 **Epic:** Restaurar senha no aplicativo "Achei Barato".  
 **User Story:** Como usuário comum, desejo poder restaurar minha senha no aplicativo "Achei Barato" caso a tenha esquecido.  
 **Critério de aceitação:** O usuário deve poder solicitar a redefinição de senha fornecendo seu e-mail registrado. Após solicitar a redefinição, o usuário deve receber um e-mail com um link seguro para redefinir a senha. O usuário deve ser capaz de redefinir a senha com sucesso seguindo as instruções fornecidas.
-### RF03 - Registrar Consumidor no Sistema
 
-- **Autor:** @ana-flav - Ana Flavia Moreira Pires
-- **Revisor:** @romeuborges19 - Romeu Miranda Borges
-
-#### Descrição:
-Este requisito tem como objetivo permitir que os consumidores se registrem no sistema do aplicativo "Achei Barato". Os consumidores precisarão preencher os campos obrigatórios, que incluem email, nome, sobrenome e senha.
-
-#### Ator principal:
-Consumidor.
-
-#### Pré-condição:
-O consumidor deve acessar a página de registro do aplicativo "Achei Barato".
-
-#### Pós-condição:
-O consumidor terá sua conta registrada no sistema e poderá fazer login no aplicativo.
-
-#### Fluxo principal:
-1. O consumidor acessa a página de registro do aplicativo.
-2. O consumidor preenche os campos obrigatórios: email, nome, sobrenome e senha.
-3. O consumidor clica no botão "Registrar".
-4. O sistema verifica se o email fornecido já está em uso.
-   - 4.1. Se sim, exibe a mensagem "O email fornecido já está em uso. Por favor, use outro email".
-   - 4.2. Se não, registra o consumidor no sistema e exibe a mensagem "Registro bem-sucedido. Agora você pode fazer login".
-
-#### Campos do Formulário:
-| Campo      | Obrigatório? | Editável? | Formato       |
-|------------|--------------|-----------|---------------|
-| Email      | Sim          | Não       | Texto         |
-| Nome       | Sim          | Sim       | Texto         |
-| Sobrenome  | Sim          | Sim       | Texto         |
-| Senha      | Sim          | Sim       | Alfanumérico  |
-
-#### Opções dos Usuários:
-- **Registrar:** Inicia o processo de registro do consumidor no sistema.
-
-#### Relatório de usuário:
-| Campo                                                               | Descrição                                                               | Formato |
-|---------------------------------------------------------------------|-------------------------------------------------------------------------|---------|
-| "O email fornecido já está em uso. Por favor, use outro email"     | Aviso de email já registrado                                           | Texto   |
-| "Registro bem-sucedido. Agora você pode fazer login"                | Confirmação de registro bem-sucedido                                   | Texto   |
-
-#### Fluxos Alternativos:
-Não há fluxos alternativos para este requisito.
-
-#### User Story:
-**Persona 01 - Consumidor**  
-**Epic:** Registrar Consumidor no Sistema.  
-**User Story:** Como consumidor, desejo poder me registrar no sistema do aplicativo "Achei Barato" para acessar suas funcionalidades.  
-**Critério de aceitação:** O consumidor deve ser capaz de preencher os campos obrigatórios (email, nome, sobrenome e senha) e clicar no botão "Registrar". O sistema deve verificar se o email fornecido já está em uso e, se não estiver, registrar o consumidor no sistema com sucesso, permitindo que ele faça login posteriormente.
+---
 
 ### RF03 - Registrar Consumidor no Sistema
 
@@ -213,3 +181,93 @@ Não há fluxos alternativos para este requisito.
 **Epic:** Registrar Consumidor no Sistema.  
 **User Story:** Como consumidor, desejo poder me registrar no sistema do aplicativo "Achei Barato" para acessar suas funcionalidades.  
 **Critério de aceitação:** O consumidor deve ser capaz de preencher os campos obrigatórios (email, nome, sobrenome e senha) e clicar no botão "Registrar". O sistema deve verificar se o email fornecido já está em uso e, se não estiver, registrar o consumidor no sistema com sucesso, permitindo que ele faça login posteriormente.
+
+---
+
+### RF04 - Acessar Tela Principal
+
+- **Autor:** @romeuborges19 - Romeu Miranda Borges
+- **Revisor:** @ana-flav - Ana Flavia Moreira Pires
+
+#### Descrição:
+Este requisito dá ao usuário acesso às principais funcionalidades do aplicativo. Na tela principal, ele poderá visualizar as promoções anunciadas pelos mercados cadastrados e pesquisar promoções e produtos de interesse, através de uma barra de pesquisa.
+
+#### Ator Principal:
+Usuário consumidor.
+
+#### Pré-condição:
+O usuário deve estar registrado e autenticado no sistema.
+
+#### Opções do Usuário:
+| Opção | Descrição |
+|----|-----|
+| **Acessar Promoção** | Abre tela com informações adicionais sobre a promoção selecionada |
+| **Acessar os itens curtidos** | Abre tela com informações específicas sobre os itens curtidos pelo usuário consumidor. |
+| **Acessar configurações** | Abre tela que dá ao usuário acesso às configrações do aplicativo. |
+| **Pesquisar** | Permite que o usuário obtenha informações sobre protudos e promoções de interesse, de acordo com o filtro aplicado. |
+
+#### User Story
+| Épico | User Story | Critério de Aceitação |
+|- | - | - |
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, gostaria de visualizar e acessar as promoções cadastradas pelos mercados, além de pesquisar pelos itens que são do meu interesse. | O usuário consumidor deve estar registrado e autenticado no sistema para ter acesso à tela principal. |
+
+---
+
+### RF05 - Acessar Tela de Detalhes da Promoção
+
+- **Autor:** @romeuborges19 - Romeu Miranda Borges
+- **Revisor:** @ana-flav - Ana Flavia Moreira Pires
+
+#### Descrição
+Este requisito tem como objetivo exibir informações adicionais sobre uma promoção em específico. O usuário poderá acessar o nome do produto, o preço, se aquela promoção é a mais barata ou mais próxima, a descrição da promoção e em qual mercado ele pode encontrar a promoção. Além disso, neste requisito, ele poderá curtir e compartilhar a promoção e seguir o mercado que a cadastrou.
+
+| Item | Descrição |
+|-|-|
+| **Ator Principal** | Usuário consumidor |
+| **Ator Secundário** | Mercado |
+| **Pré-condição** | O usuário deve estar registrado e autenticado no sistema. |
+
+#### Opções do Usuário
+
+| Opção | Descrição |
+|-|-|
+| **Curtir Promoção** | O usuário poderá adicionar a promoção à sua lista de promoções curtidas. |
+| **Compartilhar Promoção** | O usuário poderá compartilhar a promoção em suas redes sociais. |
+| **Seguir Mercado** | O usuário poderá seguir o perfil do mercado. |
+
+#### Fluxo Principal
+1. O usuário, autenticado no sistema, acessará a página principal
+2. O usuário clicará na promoção que é do seu interesse. Deste modo, ele será levado para tela da promoção selecionada.
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero visualizar detalhes sobre uma promoção em específico e sobre o mercado que a publicou no sistema. Além disso, quero ser capaz de adicionar essa promoção à minha lista de itens curtidos. | O usuário deve estar registrado e autenticado no sistema. |
+
+### RF06 - Curtir Promoção
+
+- **Autor:** @romeuborges19 - Romeu Miranda Borges
+- **Revisor:** @ana-flav - Ana Flavia Moreira Pires
+
+#### Descrição
+Este requisito possibilida ao usuário adicionar uma promoção à sua lista de itens curtidos.
+| Item | Descrição |
+|-|-|
+| **Ator Principal** | Usuário consumidor |
+| **Pré-condição** | O usuário deve estar registrado e autenticado no sistema. |
+| **Pós-condição** | O usuário terá adicionado uma nova promoção à sua lista de itens curtidos. |
+
+#### Fluxo Principal
+1. O usuário, autenticado no sistema, acessará a página principal
+2. O usuário clicará na promoção que é do seu interesse.
+3. Na tela de detalhes da promoção, o usuário poderá curtir a promoção.
+
+#### Relatório de Usuário
+| Relatório | Descrição | Formato |
+|-|-|-|
+| O ícone de promoção será alterado | Demonstra que a promoção foi devidamente adicionada à lista de itens curtidos. | Ícone |
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero adicionar uma promoção à minha lista de itens curtidos, para poder acessar suas informações com maior facilidade posteriormente. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
