@@ -11,10 +11,7 @@ model_router = APIRouter(
 )
 
 @model_router.get("/", summary=f"Testar")
-async def get_usuarios(
-    db: AsyncDBDependency,
-) -> str:
+async def get_usuarios(db: AsyncDBDependency) -> str:
     return "Listar usuarios"
-
 
 router.include_router(model_router)
