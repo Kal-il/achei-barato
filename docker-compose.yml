@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db_achei_barato
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+ 
+  api:
+    build: .
+    command: uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+    environment:
+      DB_ENGINE: postgresql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: db_achei_barato
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      ASYNC_DB_ENGINE: postgresql
+      ASYNC_DB_HOST: db
+      ASYNC_DB_PORT: 5432
+      ASYNC_DB_NAME: db_achei_barato
+      ASYNC_DB_USER: postgres
+      ASYNC_DB_PASSWORD: postgres
+    volumes:
+      - ./api:/achei_barato/api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+ 
