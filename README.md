@@ -77,7 +77,7 @@ O usuário terá acesso às funcionalidades do aplicativo após o login bem-suce
 **Critério de aceitação:** Para fazer login no aplicativo, o usuário deve ter suas credenciais cadastradas no banco de dados do "Achei Barato" e inserir corretamente seu e-mail e senha. Após o login bem-sucedido, o usuário terá acesso às funcionalidades do aplicativo.
 
 ## Protótipo
-![RF01_-_login](https://uploaddeimagens.com.br/imagens/mG6TXp8)
+![RF01_-_login](https://uploaddeimagens.com.br/images/004/767/100/full/RF01_-_login.png?1712597866)
 
 ---
 
@@ -218,7 +218,7 @@ O usuário deve estar registrado e autenticado no sistema.
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, gostaria de visualizar e acessar as promoções cadastradas pelos mercados, além de pesquisar pelos itens que são do meu interesse. | O usuário consumidor deve estar registrado e autenticado no sistema para ter acesso à tela principal. |
 
 ## Protótipo
-![Home](https://uploaddeimagens.com.br/imagens/m8nro6o)
+![Home](https://uploaddeimagens.com.br/images/004/767/102/full/Home.png?1712597920)
 ---
 
 ### RF05 - Acessar Tela de Detalhes da Promoção
@@ -253,7 +253,7 @@ Este requisito tem como objetivo exibir informações adicionais sobre uma promo
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero visualizar detalhes sobre uma promoção em específico e sobre o mercado que a publicou no sistema. Além disso, quero ser capaz de adicionar essa promoção à minha lista de itens curtidos. | O usuário deve estar registrado e autenticado no sistema. |
 
 ## Protótipo
-![Produto](https://uploaddeimagens.com.br/imagens/L-3QaSE)
+![Produto](https://uploaddeimagens.com.br/images/004/767/103/full/Produto.jpg?1712597956)
 
 ### RF06 - Curtir Promoção
 
