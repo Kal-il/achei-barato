@@ -1,3 +1,4 @@
+# achei-barato
 # Achei Barato
 ## Projetos de Sistemas - 2024.1 | Universidade Federal do Tocantins - Palmas
 
@@ -74,6 +75,9 @@ O usuário terá acesso às funcionalidades do aplicativo após o login bem-suce
 **Epic:** Realizar autenticação no aplicativo "Ache Barato".  
 **User Story:** Como usuário comum, desejo realizar login no aplicativo "Achei Barato" para acessar suas funcionalidades.  
 **Critério de aceitação:** Para fazer login no aplicativo, o usuário deve ter suas credenciais cadastradas no banco de dados do "Achei Barato" e inserir corretamente seu e-mail e senha. Após o login bem-sucedido, o usuário terá acesso às funcionalidades do aplicativo.
+
+## Protótipo
+![RF01_-_login](https://uploaddeimagens.com.br/imagens/mG6TXp8)
 
 ---
 
@@ -213,6 +217,8 @@ O usuário deve estar registrado e autenticado no sistema.
 |- | - | - |
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, gostaria de visualizar e acessar as promoções cadastradas pelos mercados, além de pesquisar pelos itens que são do meu interesse. | O usuário consumidor deve estar registrado e autenticado no sistema para ter acesso à tela principal. |
 
+## Protótipo
+![Home](https://uploaddeimagens.com.br/imagens/m8nro6o)
 ---
 
 ### RF05 - Acessar Tela de Detalhes da Promoção
@@ -245,6 +251,9 @@ Este requisito tem como objetivo exibir informações adicionais sobre uma promo
 | Épico | User Story | Critério de Aceitação |
 |-|-|-|
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero visualizar detalhes sobre uma promoção em específico e sobre o mercado que a publicou no sistema. Além disso, quero ser capaz de adicionar essa promoção à minha lista de itens curtidos. | O usuário deve estar registrado e autenticado no sistema. |
+
+## Protótipo
+![Produto](https://uploaddeimagens.com.br/imagens/L-3QaSE)
 
 ### RF06 - Curtir Promoção
 
