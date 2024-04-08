@@ -22,14 +22,18 @@ export default function App() {
     >
 
       <View style={styles.innerContainer}>
-      <Image source={require('./assets/logo.png')} />
-        <Text style={styles.logo}>Faça seu Login</Text>
+        <Image source={require('./assets/logo.png')} />
+        <Text style={styles.logo}>
+          <Text style={{ color: "#FF5C00" }}>Achei</Text>
+          {' '}
+          <Text style={{ color: '#7F48CA' }}>Barato</Text>
+        </Text>
         <View style={styles.inputView}>
-        
+
           <TextInput
             style={styles.inputText}
-            placeholder="Usuário"
-            placeholderTextColor="#fff"
+            placeholder="Nome de Usuário"
+            placeholderTextColor="#7E48CC"
             value={username}
             onChangeText={(text) => setUsername(text)}
           />
@@ -38,16 +42,25 @@ export default function App() {
           <TextInput
             style={styles.inputText}
             placeholder="Senha"
-            placeholderTextColor="#fff"
+            placeholderTextColor="#7E48CC"
             secureTextEntry={true}
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
         </View>
-        
-        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-          <Text style={styles.loginText}>Login</Text>
+        <TouchableOpacity> 
+          <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
+          <Text style={styles.loginText}>Fazer Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity> 
+          <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
+        </TouchableOpacity>
+        
+
       </View>
     </LinearGradient>
   );
@@ -71,26 +84,27 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: '80%',
-    backgroundColor: '#465881',
-    borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    height: '8%',
+    marginBottom: '5%',
     justifyContent: 'center',
     padding: 20,
   },
   inputText: {
     height: 50,
-    color: 'white',
+    color: '#7E48CC',
   },
+
   loginBtn: {
-    width: '60%',
-    backgroundColor: '#fb5b5a',
+    width: '50%',
+    backgroundColor: '#3672F6',
     borderRadius: 25,
-    height: 50,
+    height: '7%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40,
-    marginBottom: 10,
+    marginTop: '10%',
+    marginBottom: '10%',
   },
   loginText: {
     color: 'white',
