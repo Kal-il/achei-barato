@@ -1,5 +1,6 @@
+from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database import Base
+from api.core.database import Base
 from sqlalchemy import UUID, Boolean, DateTime, String, select
 from sqlalchemy.orm import mapped_column, Mapped
 import uuid
@@ -39,7 +40,7 @@ class UsuarioManager:
 
         return _usuario
 
-    async def get_usuario_by_email(self, email: str) -> Usuario | None:
+    async def get_usuario_by_email(self, email: str) -> Optional[Usuario]:
         try:
             _query = select(Usuario).where(Usuario.email==email)
             _usuario = await self.db.execute(_query)

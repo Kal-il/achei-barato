@@ -3,6 +3,6 @@ __pycache__/
 .env
 api/.env
 
-app/ExpoGo/.expo
 app/ExpoGo/node_modules
+app/ExpoGo/.expo
 app/ExpoGo/%ProgramData%
