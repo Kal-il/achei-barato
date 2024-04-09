@@ -27,7 +27,7 @@ async def login(
 
 
 @model_router.post("/register", summary=f"Registrar")
-async def create_user(db: AsyncDBDependency, data: schemas.UsuarioAuth) -> str:
+async def create_user(db: AsyncDBDependency, data: schemas.UsuarioAuth):
     return await UsuarioUseCase.create_usuario(db, data)
 
 
