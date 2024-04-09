@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.core.database import Base
 from sqlalchemy import UUID, Boolean, DateTime, String, select
 from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy.exc import IntegrityError
 import uuid
 import datetime
 from api.core.security import get_hashed_password
@@ -43,14 +42,8 @@ class UsuarioManager:
             hashed_password=get_hashed_password(data.password),
         )
 
-        try:
-            self.db.add(_usuario)
-            await self.db.commit()
-        except IntegrityError:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Este e-mail já está sendo usado",
-            )
+        self.db.add(_usuario)
+        await self.db.commit()
 
         return _usuario
 
