@@ -107,7 +107,7 @@ Este requisito tem como objetivo exibir informações adicionais sobre uma promo
 
 #### Descrição
 Este requisito possibilida ao usuário adicionar uma promoção à sua lista de itens curtidos.
-| Item | Descrição |
+| Item | Descrição |'"""
 |-|-|
 | **Ator Principal** | Usuário consumidor |
 | **Pré-condição** | O usuário deve estar registrado e autenticado no sistema. |
