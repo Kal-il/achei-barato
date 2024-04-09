@@ -21,7 +21,7 @@ async def get_usuarios(db: AsyncDBDependency) -> str:
 
 @model_router.post("/login", summary=f"Logar usuário")
 async def login(
-    db: AsyncDBDependency, data: OAuth2PasswordRequestForm = Depends()
+    db: AsyncDBDependency, data: schemas.UsuarioLogin
 ) -> schemas.TokenSchema:
     return await UsuarioUseCase.authenticate(db, data.username, data.password)
 

@@ -8,3 +8,7 @@ class UsuarioAuth(BaseModel):
 class TokenSchema(BaseModel):
     access_token: str
     token_type: str
+
+class UsuarioLogin(BaseModel):
+    username: str
+    password: str

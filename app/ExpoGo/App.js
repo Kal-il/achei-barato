@@ -23,7 +23,7 @@ export default function App() {
 
     axios
       .post("http://192.168.1.113:8000/api/v1/usuario/usuario/login", {
-        email: username,
+        username: username,
         password: password,
       })
       .then(function (response) {
