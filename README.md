@@ -1,4 +1,4 @@
-
+=======
 # Achei Barato
 ## Projetos de Sistemas - 2024.1 | Universidade Federal do Tocantins - Palmas
 
@@ -17,7 +17,6 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 
 ---
 ## Definindo os requisitos funcionais do projeto
-
 
 ### RF01 - Realizar Login no Aplicativo "Ache Barato"
 
@@ -108,7 +107,7 @@ Este requisito tem como objetivo exibir informações adicionais sobre uma promo
 
 #### Descrição
 Este requisito possibilida ao usuário adicionar uma promoção à sua lista de itens curtidos.
-| Item | Descrição |
+| Item | Descrição |'"""
 |-|-|
 | **Ator Principal** | Usuário consumidor |
 | **Pré-condição** | O usuário deve estar registrado e autenticado no sistema. |
@@ -117,4 +116,93 @@ Este requisito possibilida ao usuário adicionar uma promoção à sua lista de 
 #### User Story - Usuário Consumidor
 | Épico | User Story | Critério de Aceitação |
 |-|-|-|
-| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero adicionar uma promoção à minha lista de itens curtidos, para poder acessar suas informações com maior facilidade posteriormente. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero adicionar uma promoção à minha lista de itens curtidos, para poder acessar suas informações com maior facilidade 
+posteriormente. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
+
+### RF17: Visualizar Promoções Curtidas
+
+- **Autor** @Kal-il - Kalil Garcia Canuto
+- **Revisor** @MatheusDreher  - Matheus Henrique Dreher dos Santos 
+
+#### Descrição
+Este requisito possibilita que o usuário visualize as promoções que ele favoritou.
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+|Ações e Gerenciamento do Consumidor| Como usuário consumidor, quero poder visualizar as promoções que favoritei em meu feed, no menu de notificcações ou no perfil de algum mercado. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de favoritos pela barra de navegação |
+
+## Protótipo
+![Produto](https://uploaddeimagens.com.br/images/004/767/863/full/Curtidas.png?1712711295)
+
+---
+
+### RF18: Visualizar Histórico de Comentários em Promoções
+
+- **Autor** @Kal-il - Kalil Garcia Canuto
+- **Revisor** @MatheusDreher  - Matheus Henrique Dreher dos Santos 
+
+#### Descrição
+Este requisito possibilita que o usuário visualize o histórico de comentários feitos em promoções.
+
+#### User Story - Usuário Consumidor
+| Èpico | User Story | Critério de Aceitação |
+|-|-|-|
+|Ações e Gerenciamento do Consumidor|Como usuário consumidor, quero poder ver o histórico de comentários em promoções para acompanhar as interações dos outros usuários, bem como ver se pessoas que compraram gostaram da promoção ou do produto.|O usuário deve estar autenticado no sistema e acessar a seção de comentários em uma promoção.|
+
+## Protótipo
+![Produto](https://uploaddeimagens.com.br/images/004/767/865/full/Produto.jpg?1712711460)
+
+---
+
+
+### RF19: Receber Notificações de Novas Promoções de Mercados Seguidos
+
+- **Autor** @Kal-il - Kalil Garcia Canuto
+- **Revisor** @MatheusDreher  - Matheus Henrique Dreher dos Santos 
+
+#### Descrição
+Este requisito possibilita que o usuário receba notificações sobre novas promoções de mercados que ele segue.
+
+#### User Story - Usuário Consumidor
+| Èpico | User Story | Critério de Aceitação |
+|-|-|-|
+|Ações e Gerenciamento do Consumidor|Como usuário interessado em estar sempre atualizado sobre promoções de produtos que tenho interesse e de mercados que sigo, quero receber notificações sobre novas promoções desses mercados, para poder aproveitar as ofertas disponíveis.|O usuário deve estar autenticado no sistema e com a opção de receber notificações ativada nas configurações do aplicativo, bem como precisa estar seguindo algum mercado ou ter mostrado interesse em algum produto da plataforma.|
+
+## Protótipo
+![Produto](https://uploaddeimagens.com.br/images/004/767/868/full/Notifica%C3%A7%C3%B5es.jpg?1712711558)
+
+---
+
+### RF20: Definir Preferências de Notificação
+
+- **Autor** @Kal-il - Kalil Garcia Canuto
+- **Revisor** @MatheusDreher  - Matheus Henrique Dreher dos Santos 
+
+#### Descrição
+Este requisito permite que o usuário defina suas preferências de notificação, como de quais mercados ou produtos especificos deseja receber notificações, bem como se sedeja ou não receber alguma notificação.
+
+
+#### User Story - Usuário Consumidor
+| Èpico | User Story | Critério de Aceitação |
+|-|-|-|
+|Ações e Gerenciamento do Consumidor|Como usuário interessado em personalizar minha experiência na plataforma, quero poder definir minhas preferências de notificação, para receber apenas notificações relevantes de acordo com meus interesses e necessidades.|O usuário, após autenticado no sistema, deve ser capaz de acessar suas configurações de notificação diretamente através do seu perfil, onde encontrará uma seção específica para gerenciar suas preferências de notificação. Essa seção deve ser facilmente acessível e intuitiva, permitindo ao usuário realizar alterações nas configurações de notificação de forma clara e eficiente, de acordo com suas preferências individuais.|
+
+## Protótipo
+![Produto](https://uploaddeimagens.com.br/images/004/767/869/full/Tela_de_Perfil.png?1712711632)
+
+---
+
+### RF21: Denunciar Promoções Inadequadas ou Falsas
+
+- **Autor** @Kal-il - Kalil Garcia Canuto
+- **Revisor** @MatheusDreher  - Matheus Henrique Dreher dos Santos 
+
+#### Descrição
+Este requisito possibilita que o usuário denuncie promoções consideradas inadequadas ou falsas, contribuindo para a qualidade das promoções disponibilizadas na plataforma.
+
+#### User Story - Usuário Consumidor
+| Èpico | User Story | Critério de Aceitação |
+|-|-|-|
+|Ações e Gerenciamento do Consumidor|Como usuário preocupado com a integridade das promoções disponibilizadas na plataforma, quero poder denunciar promoções que considero inadequadas ou falsas, para ajudar a manter a qualidade das ofertas oferecidas.|O usuário precisa estar cadastrado e autenticado na plataforma, ao ver uma primoção que considera inadequada para o aplicativo, pode encontar facilmente uma opção de denuncia na página da promoção|
+
