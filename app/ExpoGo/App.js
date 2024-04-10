@@ -21,11 +21,12 @@ export default function App() {
       return;
     }
 
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+  
     axios
-      .post("http://192.168.1.113:8000/api/v1/usuario/usuario/login", {
-        username: username,
-        password: password,
-      })
+      .post("http://10.91.2.240:8000/api/v1/usuario/usuario/login", formData)
       .then(function (response) {
         console.log(response.data.access_token, "response.data.access_token");
         if (response.data.access_token) {

@@ -16,13 +16,14 @@ model_router = APIRouter(
     tags=[f"{MODEL_NAME}"],
 )
 
+@model_router.get("/usuario/eu/", response_model=schemas.UsuarioBaseSchema)
+async def read_users_me(
+    current_user: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return current_user
 
-@model_router.get("/", summary=f"Testar", )
-async def get_usuarios(db: AsyncDBDependency, current_user: Annotated[Usuario, Depends(get_current_active_user)]) -> str:
-    return "Listar usuarios"
 
-
-@model_router.post("/login", summary=f"Logar usuário")
+@model_router.post("/login", summary=f"Login usuário")
 async def login(
     db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> schemas.TokenSchema:

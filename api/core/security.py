@@ -10,7 +10,7 @@ from api.usuario.usuario.schemas import TokenData
 from api.usuario.usuario.models import UsuarioManager, Usuario
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated=["auto"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="usuario/usuario/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/usuario/usuario/login")
 
 def get_hashed_password(password: str) -> str:
     return password_context.hash(password)
@@ -61,8 +61,6 @@ def create_refresh_token(
 
     return jwt_encoded
 
-
-
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -70,6 +68,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        breakpoint()
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         email: str = payload.get("sub")
         if email is None:
@@ -86,6 +85,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 async def get_current_active_user(
     current_user: Annotated[Usuario, Depends(get_current_user)],
 ):
-    if current_user.disabled:
+    if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
