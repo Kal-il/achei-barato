@@ -6,7 +6,7 @@ from sqlalchemy import UUID, Boolean, DateTime, String, select
 from sqlalchemy.orm import mapped_column, Mapped
 import uuid
 import datetime
-from api.core.security import get_hashed_password
+
 
 from api.usuario.usuario.schemas import UsuarioAuth
 
@@ -36,6 +36,7 @@ class UsuarioManager:
         self.db = db
 
     async def create_usuario(self, data: UsuarioAuth) -> Usuario:
+        from api.core.security import get_hashed_password
         _usuario = Usuario(
             nome=data.nome,
             email=data.email,
@@ -44,7 +45,6 @@ class UsuarioManager:
 
         self.db.add(_usuario)
         await self.db.commit()
-
         return _usuario
 
     async def get_usuario_by_email(self, email: str) -> Optional[Usuario]:
@@ -55,5 +55,4 @@ class UsuarioManager:
 
             return _usuario
         except Exception as e:
-            print(f"Erro: {e}")
             return None
