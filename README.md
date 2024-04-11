@@ -1,15 +1,26 @@
-=======
-# Achei Barato
+<p align="center">
+<img loading="lazy" src="https://uploaddeimagens.com.br/images/004/768/426/full/logo.png?1712800464"/>
+</p>
+<p align="center">
+<img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
+</p>
+
+## Índice 
+* [Cabeçalho](#projetos-de-sistemas---20241--universidade-federal-do-tocantins---palmas)
+* [Descrição do projeto](#sobre-achei-barato)
+* [Escopo](#escopo)
+* [Requisitos funcionais](#definindo-os-requisitos-funcionais-do-projeto)
+
 ## Projetos de Sistemas - 2024.1 | Universidade Federal do Tocantins - Palmas
 
 **Curso:** Bacharelado em Ciência da Computação \
 **Professor:** Edeilson Milhomem da Silva\
 **Time**: Ana Flavia Moreira Pires, Cássio Coutinho Lima, Kalil Garcia Canuto, Maria Clara Nazareno Aires, Matheus Henrique Dreher dos Santos, Romeu Miranda Borges
 
-#### Sobre Achei Barato:
+## Sobre Achei Barato:
 O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas locais na ponta dos seus dedos. Com informações atualizadas sobre os menores preços, tornamos a economia acessível e parte da sua rotina. Nosso foco é conectar você com ofertas relevantes, economizando tempo e dinheiro. Achei Barato, o aplicativo que entrega oferta na palma da sua mão.
 
-#### Escopo:
+## Escopo:
 - **Épico 1 - Ações e Gerenciamento do Consumidor:** RF01, RF02, RF03, RF04, RF05, RF06;
 - **Épico 2 - Ações e Gerenciamento do Mercado:**
 - **Épico 3 - Gerenciamento do Produto:**
