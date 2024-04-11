@@ -6,3 +6,4 @@ api/.env
 app/ExpoGo/node_modules
 app/ExpoGo/.expo
 app/ExpoGo/%ProgramData%
+.idea

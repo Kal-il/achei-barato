@@ -7,10 +7,12 @@ from api.core.config import settings
 from api.core.security import create_access_token, verify_password
 
 from api.usuario.usuario.models import Usuario, UsuarioManager
-from api.usuario.usuario.schemas import UsuarioAuth
+from api.usuario.usuario.schemas import UsuarioAuth, TokenSchema
 
 
 class UsuarioUseCase:
+    
+    
     @staticmethod
     async def authenticate(
         db: AsyncSession, email: str, password: str
@@ -24,15 +26,15 @@ class UsuarioUseCase:
         # Verifica se a senha confere
         if not verify_password(password, _usuario.hashed_password):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect username or password",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        access_token_expires = timedelta(minutes=settings.access_token_expire_hours)
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        access_token_expires = timedelta(hours=settings.access_token_expire_hours)
         access_token = create_access_token(
             subject=_usuario.email, expires_delta=access_token_expires
         )
-        return {"access_token": access_token, "token_type": "bearer"}
+        return TokenSchema(access_token=access_token, token_type="bearer")
 
     @staticmethod
     async def create_usuario(db: AsyncSession, data: UsuarioAuth) -> Optional[Usuario]:
