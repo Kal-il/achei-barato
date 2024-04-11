@@ -29,7 +29,7 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 ---
 ## Definindo os requisitos funcionais do projeto
 
-### RF01 - Realizar Login no Aplicativo "Ache Barato"
+### RF01 - Realizar Login no Aplicativo "Achei Barato"
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
 - **Revisor:** @romeuborges19 - Romeu Miranda Borges
@@ -39,7 +39,7 @@ Este requisito visa permitir que os usuários realizem login no aplicativo "Ache
 
 #### User Story:
 **Persona 01 - Usuário comum**  
-**Epic:** Realizar autenticação no aplicativo "Ache Barato".  
+**Epic:** Realizar autenticação no aplicativo "Achei Barato".  
 **User Story:** Como usuário comum, desejo realizar login no aplicativo "Achei Barato" para acessar suas funcionalidades.  
 **Critério de aceitação:** Para fazer login no aplicativo, o usuário deve ter suas credenciais cadastradas no banco de dados do "Achei Barato" e inserir corretamente seu e-mail e senha. Após o login bem-sucedido, o usuário terá acesso às funcionalidades do aplicativo.
 
@@ -118,11 +118,7 @@ Este requisito tem como objetivo exibir informações adicionais sobre uma promo
 
 #### Descrição
 Este requisito possibilida ao usuário adicionar uma promoção à sua lista de itens curtidos.
-| Item | Descrição |'"""
-|-|-|
-| **Ator Principal** | Usuário consumidor |
-| **Pré-condição** | O usuário deve estar registrado e autenticado no sistema. |
-| **Pós-condição** | O usuário terá adicionado uma nova promoção à sua lista de itens curtidos. |
+
 
 #### User Story - Usuário Consumidor
 | Épico | User Story | Critério de Aceitação |
@@ -184,12 +180,12 @@ Este requisito funcional permite que o usuário atualize suas informações pess
 - **Revisor:** @Coutinhopmw - Cássio Coutinho Lima
 
 ### Descrição
-Este requisito possibilita que o usuário exclua permanentemente sua conta do sistema do aplicativo "Ache Barato".
+Este requisito possibilita que o usuário exclua permanentemente sua conta do sistema do aplicativo "Achei Barato".
 ### User Story - Usuário Consumidor
 
 | Épico                             | User Story                                                                                                                          | Critério de Aceitação                                                                                               |
 |-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| Ações e Gerenciamento do Consumidor | Como usuário consumidor, desejo poder excluir permanentemente minha conta do sistema do aplicativo "Ache Barato". | O usuário autenticado acessa as configurações da conta, onde encontra a opção de excluir permanentemente sua conta. Após confirmação, todos os dados associados serão removidos do sistema. |
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, desejo poder excluir permanentemente minha conta do sistema do aplicativo "Achei Barato". | O usuário autenticado acessa as configurações da conta, onde encontra a opção de excluir permanentemente sua conta. Após confirmação, todos os dados associados serão removidos do sistema. |
 
 ## Protótipo
 ![Produto](https://images2.imgbox.com/80/1a/8Rqr8PgZ_o.png)
@@ -203,12 +199,12 @@ Este requisito possibilita que o usuário exclua permanentemente sua conta do si
 
 
 ### Descrição
-Este requisito possibilita que o usuário exclua permanentemente sua conta do sistema do aplicativo "Ache Barato".
+Este requisito possibilita que o usuário exclua permanentemente sua conta do sistema do aplicativo "Achei Barato".
 ### User Story - Usuário Consumidor
 
 | Épico                             | User Story                                                                                                                          | Critério de Aceitação                                                                                               |
 |-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| Ações e Gerenciamento do Consumidor | Como usuário consumidor, desejo poder excluir permanentemente minha conta do sistema do aplicativo "Ache Barato". | O usuário autenticado acessa as configurações da conta, onde encontra a opção de excluir permanentemente sua conta. Após confirmação, todos os dados associados serão removidos do sistema. |
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, desejo poder excluir permanentemente minha conta do sistema do aplicativo "Achei Barato". | O usuário autenticado acessa as configurações da conta, onde encontra a opção de excluir permanentemente sua conta. Após confirmação, todos os dados associados serão removidos do sistema. |
 
 ## Protótipo
 ![Produto](https://uploaddeimagens.com.br/images/004/767/865/full/Produto.jpg?1712711460)
