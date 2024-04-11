@@ -1,6 +1,5 @@
-
 <p align="center">
-<img loading="lazy" src="https://uploaddeimagens.com.br/images/004/768/425/original/logo?1712799794"/>
+<img loading="lazy" src="https://uploaddeimagens.com.br/images/004/768/426/full/logo.png?1712800464"/>
 </p>
 <p align="center">
 <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
