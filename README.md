@@ -129,6 +129,91 @@ Este requisito possibilida ao usuário adicionar uma promoção à sua lista de 
 |-|-|-|
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero adicionar uma promoção à minha lista de itens curtidos, para poder acessar suas informações com maior facilidade 
 posteriormente. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
+### RF12: Realizar Filtragem de Pesquisa
+
+- **Autor:** @ana-flav - Ana Flavia Moreira Pires
+- **Revisor:** @Coutinhopmw - Cássio Coutinho Lim
+
+#### Descrição
+Este requisito funcinal possibilita que o usuário filtre sua pesquisa, podendo esolher se quer ver promoçoes de alimentos, produtos de limpza, produtos pra pets ou produtos de higiene corporal.
+
+#### User Story
+
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações de Gerenciamento do Consumidor | Como usuário consumidor, quero poder filtrar minha pesquisa de promoções podendo escolher se quero ver promoções de produtos alimenticios, de limpeza corporal, de limpeza geral ou para meus animais de estimação.| O usuário precisa estar cadastrado e autenticado no sistema, e acessar a área de pesquisa pela barra de navegação |
+
+## Protótipo
+![Produto](https://i.ibb.co/5vd5DMT/tela-de-busca.png)
+### RF13: Acessar Perfil
+
+- **Autor:** @ana-flav - Ana Flavia Moreira Pires
+- **Revisor:** @Coutinhopmw - Cássio Coutinho Lim
+
+#### Descrição 
+Este requisito funcional permite que o usuário acesse seu perfil para visualizar suas informações pessoais cadastradas no sistema.
+
+#### User Story
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações de Gerenciamento do Consumidor | Como usuário, quero acessar meu perfil para visualizar minhas informações pessoais. | O usuário precisa estar cadastrado e autenticado no sistema para acessar a área do perfil pela barra de navegação. |
+
+## Protótipo
+![Produto](https://i.ibb.co/Bf4tP2b/Tela-de-dele-o.png)
+
+### RF14: Atualizar Perfil
+
+- **Autor:** @ana-flav - Ana Flavia Moreira Pires
+- **Revisor:** @Coutinhopmw - Cássio Coutinho Lima
+
+#### Descrição 
+Este requisito funcional permite que o usuário atualize suas informações pessoais no perfil, como nome, endereço de email, senha, entre outros.
+#### User Story
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações de Gerenciamento do Consumidor |Como usuário, quero atualizar as informações do meu perfil, para manter meus dados pessoais atualizados. | O usuário precisa estar cadastrado, autenticado no sistema e ter acessado a tela de perfil pela barra de navegação, e logo após a tela de editar perfil, para confirmar as mudanças precisa clicar no botão de salvar |
+
+#### Protótipo
+![Produto](https://i.ibb.co/9WNq0fr/Tela-de-editar-Perfil.png)
+
+---
+
+### RF15: Deletar Conta
+
+- **Autor:** @ana-flav - Ana Flavia Moreira Pires
+- **Revisor:** @Coutinhopmw - Cássio Coutinho Lima
+
+### Descrição
+Este requisito possibilita que o usuário exclua permanentemente sua conta do sistema do aplicativo "Ache Barato".
+### User Story - Usuário Consumidor
+
+| Épico                             | User Story                                                                                                                          | Critério de Aceitação                                                                                               |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, desejo poder excluir permanentemente minha conta do sistema do aplicativo "Ache Barato". | O usuário autenticado acessa as configurações da conta, onde encontra a opção de excluir permanentemente sua conta. Após confirmação, todos os dados associados serão removidos do sistema. |
+
+## Protótipo
+![Produto](https://images2.imgbox.com/80/1a/8Rqr8PgZ_o.png)
+
+---
+
+### RF16: Acessar localização do mercado
+
+- **Autor:** @ana-flav - Ana Flavia Moreira Pires
+- **Revisor:** @Coutinhopmw - Cássio Coutinho Lima
+
+
+### Descrição
+Este requisito possibilita que o usuário exclua permanentemente sua conta do sistema do aplicativo "Ache Barato".
+### User Story - Usuário Consumidor
+
+| Épico                             | User Story                                                                                                                          | Critério de Aceitação                                                                                               |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, desejo poder excluir permanentemente minha conta do sistema do aplicativo "Ache Barato". | O usuário autenticado acessa as configurações da conta, onde encontra a opção de excluir permanentemente sua conta. Após confirmação, todos os dados associados serão removidos do sistema. |
+
+## Protótipo
+![Produto](https://uploaddeimagens.com.br/images/004/767/865/full/Produto.jpg?1712711460)
+
+---
 
 ### RF17: Visualizar Promoções Curtidas
 
