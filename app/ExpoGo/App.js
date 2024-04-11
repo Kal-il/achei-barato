@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,35 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Button,
+  FlatList, Center, NativeBaseProvider,
+  Box,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
-import { fetchToken, setToken } from "./Auth";
+import { fetchToken, setToken, deleteToken } from "./Auth";
+import {NavigationContainer} from '@react-navigation/native'
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
 
 export default function App() {
+  const Stack = createNativeStackNavigator()
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+        <Stack.Screen name="TesteScreen" component={TesteScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const HomeScreen = ({navigation}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+
+  deleteToken();
 
   const handleLogin = () => {
     // lógica para autenticar o usuário aqui
@@ -21,12 +42,13 @@ export default function App() {
       return;
     }
 
+
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
   
     axios
-      .post("http://10.91.2.240:8000/api/v1/usuario/usuario/login", formData)
+      .post("http://192.168.105.20:8000/api/v1/usuario/usuario/login", formData)
       .then(function (response) {
         console.log(response.data.access_token, "response.data.access_token");
         if (response.data.access_token) {
@@ -38,7 +60,6 @@ export default function App() {
         console.log(error, "error");
       });
   };
-
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
@@ -68,6 +89,7 @@ export default function App() {
             onChangeText={(text) => setPassword(text)}
           />
         </View>
+        
         <TouchableOpacity> 
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
@@ -76,13 +98,49 @@ export default function App() {
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
 
+        <Button title="teste" onPress={() => navigation.navigate('TesteScreen')}/>
+
         <TouchableOpacity> 
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
         </TouchableOpacity>
-        
-
       </View>
     </LinearGradient>
+  );
+}
+
+const TesteScreen = ({navigation}) => {
+  const jwtToken = fetchToken("jwt_token");
+  const [username, setUsername] = useState("");
+
+  const getUsername = async () => {
+    console.log("chama api");
+    await axios
+    .get("http://192.168.105.20:8000/api/v1/usuario/usuario/eu", {
+      headers: {'Authorization': 'Bearer ' + jwtToken, }
+    })
+    .then(function (response) {
+      setUsername(response.data['nome']);
+    }).catch(function (error) {
+      console.log(error);
+      console.log("não autenticado");
+      setUsername("Você não está autenticado");
+      // Trata erro (redireciona, exibe mensagem de erro, etc)
+    });
+  };
+
+  getUsername();
+
+  return(
+    <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
+      {/* { username && (
+        <FlatList
+          data={username}
+          renderItem={renderUsername}
+        />
+      )} */}
+      <Text> {username} </Text>
+      <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
+  </LinearGradient>
   );
 }
 

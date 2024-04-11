@@ -16,10 +16,11 @@ model_router = APIRouter(
     tags=[f"{MODEL_NAME}"],
 )
 
-@model_router.get("/usuario/eu/", response_model=schemas.UsuarioBaseSchema)
+@model_router.get("/eu", response_model=schemas.UsuarioBaseSchema)
 async def read_users_me(
     current_user: Annotated[Usuario, Depends(get_current_active_user)],
 ):
+    print(current_user.nome)
     return current_user
 
 

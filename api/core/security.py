@@ -5,7 +5,9 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, status
+from api import usuario
 from api.core.config import settings
+from api.core.database import AsyncDBDependency
 from api.usuario.usuario.schemas import TokenData
 from api.usuario.usuario.models import UsuarioManager, Usuario
 
@@ -61,14 +63,13 @@ def create_refresh_token(
 
     return jwt_encoded
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(db: AsyncDBDependency, token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        breakpoint()
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         email: str = payload.get("sub")
         if email is None:
@@ -76,7 +77,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception
-    user = UsuarioManager.get_usuario_by_email(token_data.email)
+    usuario_manager = UsuarioManager(db=db)
+    user = await usuario_manager.get_usuario_by_email(email=token_data.email)
     if user is None:
         raise credentials_exception
     return user
