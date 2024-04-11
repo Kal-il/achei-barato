@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from api.core.database import AsyncDBDependency
@@ -16,6 +16,7 @@ model_router = APIRouter(
     tags=[f"{MODEL_NAME}"],
 )
 
+
 @model_router.get("/eu", response_model=schemas.UsuarioBaseSchema)
 async def read_users_me(
     current_user: Annotated[Usuario, Depends(get_current_active_user)],
@@ -26,12 +27,20 @@ async def read_users_me(
 
 @model_router.post("/login", summary=f"Login usuário")
 async def login(
-    db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: AsyncDBDependency,
+    data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> schemas.TokenSchema:
     return await UsuarioUseCase.authenticate(db, data.username, data.password)
 
 
-@model_router.post("/register", summary=f"Registrar", response_model=schemas.UsuarioBaseSchema)
+@model_router.post("/refresh", summary="Atualiza token de acesso")
+async def refresh_token(data: Any) -> schemas.TokenSchema:
+    return await UsuarioUseCase.refresh_access_token(data.refresh_token)
+
+
+@model_router.post(
+    "/register", summary=f"Registrar", response_model=schemas.UsuarioBaseSchema
+)
 async def create_user(db: AsyncDBDependency, data: schemas.UsuarioAuth):
     return await UsuarioUseCase.create_usuario(db, data)
 

@@ -8,11 +8,12 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from api import usuario
 from api.core.config import settings
 from api.core.database import AsyncDBDependency
-from api.usuario.usuario.schemas import TokenData
+from api.usuario.usuario.schemas import TokenBase, TokenData
 from api.usuario.usuario.models import UsuarioManager, Usuario
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated=["auto"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/usuario/usuario/login")
+
 
 def get_hashed_password(password: str) -> str:
     return password_context.hash(password)
@@ -36,11 +37,10 @@ def create_access_token(
         "sub": str(subject),
     }
 
-    jwt_encoded = jwt.encode(
-        jwt_data, settings.secret_key, settings.algorithm
-    )
+    jwt_encoded = jwt.encode(jwt_data, settings.secret_key, settings.algorithm)
+    jwt_token = TokenBase(token=jwt_encoded, token_type="bearer")
 
-    return jwt_encoded
+    return jwt_token
 
 
 def create_refresh_token(
@@ -57,20 +57,24 @@ def create_refresh_token(
         "sub": str(subject),
     }
 
-    jwt_encoded = jwt.encode(
-        jwt_data, settings.secret_key, settings.algorithm
-    )
+    jwt_encoded = jwt.encode(jwt_data, settings.secret_key, settings.algorithm)
+    jwt_token = TokenBase(token=jwt_encoded, token_type="bearer")
 
-    return jwt_encoded
+    return jwt_token
 
-async def get_current_user(db: AsyncDBDependency, token: Annotated[str, Depends(oauth2_scheme)]):
+
+async def get_current_user(
+    db: AsyncDBDependency, token: Annotated[str, Depends(oauth2_scheme)]
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, settings.secret_key, algorithms=[settings.algorithm]
+        )
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
