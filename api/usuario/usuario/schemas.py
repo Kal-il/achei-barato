@@ -2,8 +2,6 @@ from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 import uuid
 
-from api.usuario.usuario.routers import refresh_token
-
 
 class UsuarioBaseSchema(BaseModel):
 
@@ -30,9 +28,14 @@ class UsuarioLogin(BaseModel):
     password: str
 
 
+class Token(BaseModel):
+    token: str
+    token_type: str
+
+
 class TokenSchema(BaseModel):
-    access_token: str
-    refresh_token: str
+    access_token: Token
+    refresh_token: Token
 
 
 class TokenPayload(BaseModel):
@@ -40,10 +43,8 @@ class TokenPayload(BaseModel):
     exp: int = None
 
 
-class TokenBase(BaseModel):
-    token: str
-    token_type: str
-
-
 class TokenData(BaseModel):
     email: str = None
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str

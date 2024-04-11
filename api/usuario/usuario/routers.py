@@ -34,8 +34,8 @@ async def login(
 
 
 @model_router.post("/refresh", summary="Atualiza token de acesso")
-async def refresh_token(data: Any) -> schemas.TokenSchema:
-    return await UsuarioUseCase.refresh_access_token(data.refresh_token)
+async def refresh_token(db: AsyncDBDependency, data: schemas.RefreshTokenSchema) -> schemas.TokenSchema:
+    return await UsuarioUseCase.refresh_access_token(db, data.refresh_token)
 
 
 @model_router.post(

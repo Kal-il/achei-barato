@@ -37,7 +37,7 @@ class UsuarioUseCase:
         return TokenSchema(access_token=access_token, refresh_token=refresh_token)
 
     @staticmethod
-    async def refresh_access_token(refresh_token: str):
+    async def refresh_access_token(db: AsyncSession, refresh_token: str):
         try:
             payload = jwt.decode(refresh_token, settings.secret_key, settings.algorithm)
             token_data = TokenPayload(**payload)

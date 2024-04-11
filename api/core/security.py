@@ -8,7 +8,7 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from api import usuario
 from api.core.config import settings
 from api.core.database import AsyncDBDependency
-from api.usuario.usuario.schemas import TokenBase, TokenData
+from api.usuario.usuario.schemas import Token, TokenData
 from api.usuario.usuario.models import UsuarioManager, Usuario
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated=["auto"])
@@ -38,7 +38,7 @@ def create_access_token(
     }
 
     jwt_encoded = jwt.encode(jwt_data, settings.secret_key, settings.algorithm)
-    jwt_token = TokenBase(token=jwt_encoded, token_type="bearer")
+    jwt_token = Token(token=jwt_encoded, token_type="bearer")
 
     return jwt_token
 
@@ -58,7 +58,7 @@ def create_refresh_token(
     }
 
     jwt_encoded = jwt.encode(jwt_data, settings.secret_key, settings.algorithm)
-    jwt_token = TokenBase(token=jwt_encoded, token_type="bearer")
+    jwt_token = Token(token=jwt_encoded, token_type="bearer")
 
     return jwt_token
 
