@@ -71,19 +71,24 @@ async def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    print('oi')
     try:
         payload = jwt.decode(
-            token, settings.secret_key, algorithms=[settings.algorithm]
+            token, settings.secret_key, algorithms=settings.algorithm
         )
         email: str = payload.get("sub")
         if email is None:
+            print('oi')
             raise credentials_exception
         token_data = TokenData(email=email)
-    except JWTError:
+    except JWTError as err:
+        print(f'jwt error: {err}')
         raise credentials_exception
+
     usuario_manager = UsuarioManager(db=db)
     user = await usuario_manager.get_usuario_by_email(email=token_data.email)
     if user is None:
+        print('oiofdfsfd')
         raise credentials_exception
     return user
 

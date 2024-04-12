@@ -15,6 +15,7 @@ import axios from "axios";
 import { fetchToken, setToken, deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import { ApiClient } from "./api/apiClient";
 
 export default function App() {
   const Stack = createNativeStackNavigator()
@@ -33,8 +34,11 @@ const HomeScreen = ({navigation}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  deleteToken("access-token");
+  deleteToken("refresh-token");
 
-  deleteToken();
+  let token = fetchToken("access-token");
+  console.log("token: ", token)
 
   const handleLogin = () => {
     // lógica para autenticar o usuário aqui
@@ -46,19 +50,9 @@ const HomeScreen = ({navigation}) => {
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-  
-    axios
-      .post("http://192.168.105.20:8000/api/v1/usuario/usuario/login", formData)
-      .then(function (response) {
-        console.log(response.data.access_token, "response.data.access_token");
-        if (response.data.access_token) {
-          setToken(response.data.access_token);
-          console.log("token jwt definido");
-        }
-      })
-      .catch(function (error) {
-        console.log(error, "error");
-      });
+
+    api = new ApiClient();
+    api.login(formData);
   };
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
@@ -109,27 +103,20 @@ const HomeScreen = ({navigation}) => {
 }
 
 const TesteScreen = ({navigation}) => {
-  const jwtToken = fetchToken("jwt_token");
   const [username, setUsername] = useState("");
 
   const getUsername = async () => {
+
+    const api = new ApiClient();
     console.log("chama api");
-    await axios
-    .get("http://192.168.105.20:8000/api/v1/usuario/usuario/eu", {
-      headers: {'Authorization': 'Bearer ' + jwtToken, }
-    })
-    .then(function (response) {
-      setUsername(response.data['nome']);
-    }).catch(function (error) {
-      console.log(error);
-      console.log("não autenticado");
-      setUsername("Você não está autenticado");
-      // Trata erro (redireciona, exibe mensagem de erro, etc)
-    });
+    api.getUserDetail("api/v1/usuario/usuario/eu")
+    usuario = await api.getUserDetail("api/v1/usuario/usuario/eu")
+    setUsername(usuario["nome"])
+
   };
 
   getUsername();
-
+  
   return(
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       {/* { username && (
