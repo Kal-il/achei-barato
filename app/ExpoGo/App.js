@@ -34,11 +34,16 @@ const HomeScreen = ({navigation}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  deleteToken("access-token");
-  deleteToken("refresh-token");
+
 
   let token = fetchToken("access-token");
   console.log("token: ", token)
+
+	const handleDeleteTokens = () => {
+		deleteToken("access-token");
+		deleteToken("refresh-token");
+		console.log("tokens apagados")
+	}
 
   const handleLogin = () => {
     // lógica para autenticar o usuário aqui
@@ -88,11 +93,14 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
 
+		<View style={flexDirection="row"}>
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
+        <Button title="apagra" onPress={handleDeleteTokens}/>
 
         <Button title="teste" onPress={() => navigation.navigate('TesteScreen')}/>
+		</View>
 
         <TouchableOpacity> 
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>

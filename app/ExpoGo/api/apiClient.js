@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export class ApiClient {
     constructor() {
-        this._apiBaseUrl = `http://192.168.105.20:8000/`;
+        this._apiBaseUrl = `http://192.168.1.176:8000/`;
     }
 
     async getUserDetail () {
@@ -28,7 +28,7 @@ export class ApiClient {
             }
         })
         .catch(function (error) {
-            console.error("erro ao logar usuário.")
+            console.error("erro ao logar usuário.", error)
         });
     }
 
@@ -60,18 +60,18 @@ export class ApiClient {
         const url = `${this._apiBaseUrl}${path}`;
 
         let token = fetchToken("access-token");
-        console.log("pica", token)
         
-        try {
-            return await this._callApiWithToken(url, method, data, token);
-        } catch (err) {
-            console.log("erro: ", err);
-        }
+		var response = await this._callApiWithToken(url, method, data, token);
+		if (response.status == 401) {
+			console.log("refresco");
+			self.refresh();
+			token = fetchToken("access-token");
+			return await this._callApiWithToken(url, method, data, token);
+		}
     }
 
     async _callApiWithToken(url, method, data, token) {
         const [result, setResult] = useState([]);
-        console.log('tokenfadfsdf', token)
 
         var response = await axios({
             url,
@@ -85,8 +85,9 @@ export class ApiClient {
         })
 
         console.log("resultado: ", response)
+		console.log("result: ", result)
 
-        return response;
+        return result;
     }
 
 }
