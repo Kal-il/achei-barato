@@ -29,4 +29,4 @@ class TokenSchema(BaseModel):
     token_type: str
     
 class TokenData(BaseModel):
-    Email : str = None
+    email : str = None

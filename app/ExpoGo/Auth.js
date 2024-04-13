@@ -1,7 +1,15 @@
+import * as SecureStore from 'expo-secure-store'
+
 export const setToken = (token) => {
-  console.log("token: ", token);
+  SecureStore.setItem("jwt-token", token);
+
 };
 
 export const fetchToken = () => {
-  return localStorage.getItem("jwt-token");
+  return SecureStore.getItem("jwt-token");
 };
+
+export const deleteToken = async () => {
+  console.log("deletando usuario")
+  await SecureStore.deleteItemAsync("jwt-token")
+}
