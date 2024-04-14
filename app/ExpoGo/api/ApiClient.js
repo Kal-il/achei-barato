@@ -16,7 +16,7 @@ export class ApiClient {
     }
 
 	async loginUser (formData) {
-			// Função que chama endpoint para autenticar o usuário no sistema
+		// Função que chama endpoint para autenticar o usuário no sistema
 		return await this._authenticator.authenticateUser(formData);
 	}
 
@@ -32,7 +32,6 @@ export class ApiClient {
 			// nós atualizamos o token de acesso pela função refresh() e realizamos
 			// a chamada novamente.
 			//
-			console.log('erro: ', err)
 			if (err.response.status == 401) {
 				try {
 					await this._authenticator.refreshAccessToken();

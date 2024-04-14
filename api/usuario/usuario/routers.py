@@ -1,6 +1,5 @@
-from typing import Annotated, Any
-from fastapi import APIRouter, Body, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from typing import Annotated
+from fastapi import APIRouter, Depends
 from api.core.database import AsyncDBDependency
 from api.usuario.usuario import schemas
 from api.usuario.usuario.use_cases import UsuarioUseCase

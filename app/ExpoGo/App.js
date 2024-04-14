@@ -113,7 +113,6 @@ const TesteScreen = ({navigation}) => {
   const fetchUsername = async () => {
 
     const api = new ApiClient();
-    console.log("chama api");
     api.getUserDetail("api/v1/usuario/usuario/eu")
     usuario = await api.getUserDetail("api/v1/usuario/usuario/eu")
     setUsername(usuario["nome"])

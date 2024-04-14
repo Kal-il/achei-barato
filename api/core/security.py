@@ -4,12 +4,11 @@ from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from typing import Annotated
-from fastapi import Depends, FastAPI, HTTPException, status
-from api import usuario
+from fastapi import Depends, HTTPException, status
 from api.core.config import settings
 from api.core.database import AsyncDBDependency
 from api.usuario.usuario.models import UsuarioManager, Usuario
-from api.usuario.usuario.schemas import TokenData
+from api.usuario.auth.schemas import TokenData
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated=["auto"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/usuario/auth/login")

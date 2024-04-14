@@ -1,13 +1,11 @@
 from typing import Optional
+
 from fastapi import HTTPException, status
-from jose.exceptions import ExpiredSignatureError
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from api.core.config import settings
-from api.core.security import create_access_token, create_refresh_token, verify_password
-from jose import jwt
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from api.usuario.usuario.models import Usuario, UsuarioManager
-from api.usuario.usuario.schemas import TokenPayload, UsuarioAuth, TokenSchema
+from api.usuario.usuario.schemas import UsuarioAuth
 
 
 class UsuarioUseCase:
