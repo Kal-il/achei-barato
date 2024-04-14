@@ -1,14 +1,14 @@
 from typing import Optional
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from api.core.database import Base
+from core.database import Base
 from sqlalchemy import UUID, Boolean, DateTime, String, select
 from sqlalchemy.orm import mapped_column, Mapped
 import uuid
 import datetime
 
 
-from api.usuario.usuario.schemas import UsuarioAuth
+from usuario.usuario.schemas import UsuarioAuth
 
 
 class Usuario(Base):
@@ -22,13 +22,10 @@ class Usuario(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[str] = mapped_column(Boolean, default=True)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
+    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)   
+    dono_mercado: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class UsuarioManager:
