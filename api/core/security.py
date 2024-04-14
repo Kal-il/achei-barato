@@ -8,11 +8,11 @@ from fastapi import Depends, FastAPI, HTTPException, status
 from api import usuario
 from api.core.config import settings
 from api.core.database import AsyncDBDependency
-from api.usuario.usuario.schemas import Token, TokenData
 from api.usuario.usuario.models import UsuarioManager, Usuario
+from api.usuario.usuario.schemas import TokenData
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated=["auto"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/usuario/usuario/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/usuario/auth/login")
 
 
 def get_hashed_password(password: str) -> str:
@@ -38,9 +38,8 @@ def create_access_token(
     }
 
     jwt_encoded = jwt.encode(jwt_data, settings.secret_key, settings.algorithm)
-    jwt_token = Token(token=jwt_encoded, token_type="bearer")
 
-    return jwt_token
+    return jwt_encoded
 
 
 def create_refresh_token(
@@ -58,9 +57,8 @@ def create_refresh_token(
     }
 
     jwt_encoded = jwt.encode(jwt_data, settings.secret_key, settings.algorithm)
-    jwt_token = Token(token=jwt_encoded, token_type="bearer")
 
-    return jwt_token
+    return jwt_encoded
 
 
 async def get_current_user(
@@ -68,27 +66,24 @@ async def get_current_user(
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Não foi possível validar as credenciais",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    print('oi')
     try:
         payload = jwt.decode(
             token, settings.secret_key, algorithms=settings.algorithm
         )
-        email: str = payload.get("sub")
+        email = payload.get("sub")
+        email = str(email)
         if email is None:
-            print('oi')
             raise credentials_exception
         token_data = TokenData(email=email)
-    except JWTError as err:
-        print(f'jwt error: {err}')
+    except JWTError:
         raise credentials_exception
 
     usuario_manager = UsuarioManager(db=db)
     user = await usuario_manager.get_usuario_by_email(email=token_data.email)
     if user is None:
-        print('oiofdfsfd')
         raise credentials_exception
     return user
 
@@ -97,5 +92,8 @@ async def get_current_active_user(
     current_user: Annotated[Usuario, Depends(get_current_user)],
 ):
     if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Usuário inativo."
+        )
     return current_user

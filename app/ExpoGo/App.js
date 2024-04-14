@@ -7,15 +7,13 @@ import {
   StyleSheet,
   Image,
   Button,
-  FlatList, Center, NativeBaseProvider,
-  Box,
+	ActivityIndicator 
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import axios from "axios";
-import { fetchToken, setToken, deleteToken } from "./Auth";
+import { deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import { ApiClient } from "./api/apiClient";
+import { ApiClient } from "./api/ApiClient";
 
 export default function App() {
   const Stack = createNativeStackNavigator()
@@ -35,10 +33,7 @@ const HomeScreen = ({navigation}) => {
   const [password, setPassword] = useState("");
 
 
-
-  let token = fetchToken("access-token");
-  console.log("token: ", token)
-
+	// Botão auxiliar para deletar tokens
 	const handleDeleteTokens = () => {
 		deleteToken("access-token");
 		deleteToken("refresh-token");
@@ -57,8 +52,9 @@ const HomeScreen = ({navigation}) => {
     formData.append('password', password);
 
     api = new ApiClient();
-    api.login(formData);
+    api.loginUser(formData);
   };
+
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
@@ -111,28 +107,35 @@ const HomeScreen = ({navigation}) => {
 }
 
 const TesteScreen = ({navigation}) => {
-  const [username, setUsername] = useState("");
+	const [username, setUsername] = useState("");
+	const [loading, setLoading] = useState(true);
 
-  const getUsername = async () => {
+  const fetchUsername = async () => {
 
     const api = new ApiClient();
     console.log("chama api");
     api.getUserDetail("api/v1/usuario/usuario/eu")
     usuario = await api.getUserDetail("api/v1/usuario/usuario/eu")
     setUsername(usuario["nome"])
+	setLoading(false);
 
   };
 
-  getUsername();
+	useEffect(() => {
+	  fetchUsername();
+	}, []);
+
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" color="#0000ff" />
+		  <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
+      </View>
+    );
+  }
   
   return(
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
-      {/* { username && (
-        <FlatList
-          data={username}
-          renderItem={renderUsername}
-        />
-      )} */}
       <Text> {username} </Text>
       <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
   </LinearGradient>

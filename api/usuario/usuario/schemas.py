@@ -27,24 +27,3 @@ class UsuarioLogin(BaseModel):
     username: str
     password: str
 
-
-class Token(BaseModel):
-    token: str
-    token_type: str
-
-
-class TokenSchema(BaseModel):
-    access_token: Token
-    refresh_token: Token
-
-
-class TokenPayload(BaseModel):
-    sub: str = None
-    exp: int = None
-
-
-class TokenData(BaseModel):
-    email: str = None
-
-class RefreshTokenSchema(BaseModel):
-    refresh_token: str

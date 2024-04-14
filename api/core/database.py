@@ -23,7 +23,6 @@ ASYNC_DB_HOST = settings.async_db_host
 SQLALCHEMY_DATABASE_URI: str = (
     f"{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
-print(SQLALCHEMY_DATABASE_URI)
 engine = create_engine(SQLALCHEMY_DATABASE_URI, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -36,7 +35,6 @@ def get_db() -> Generator:
         db.close()
         
 ASYNC_SQLALCHEMY_DATABASE_URI: str = f"{ASYNC_DB_ENGINE}+asyncpg://{ASYNC_DB_USER}:{ASYNC_DB_PASSWORD}@{ASYNC_DB_HOST}:{ASYNC_DB_PORT}/{ASYNC_DB_NAME}"
-print(ASYNC_SQLALCHEMY_DATABASE_URI)
 async_engine = create_async_engine(ASYNC_SQLALCHEMY_DATABASE_URI)
 AsyncSessionLocal = sessionmaker(
     autocommit=False,
