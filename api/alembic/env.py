@@ -20,7 +20,9 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 models = [
-    'usuario.usuario.models.Usuario',
+    "usuario.usuario.models.Usuario",
+    "usuario.consumidor.models.Consumidor",
+    "mercado.mercado.models.Mercado",
 ]
 
 for model in models:
