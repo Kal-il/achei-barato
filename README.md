@@ -143,7 +143,7 @@ Este requisito possibilida ao usuário compartilhar uma promoção com outros us
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero compartilhar uma promoção com outros usuários, para permitir que outros usuários possam acessar promoções com maior facilidade. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse.|
 
 ## Protótipo
-![RF07_-Compartilhar Promoção](https://drive.google.com/file/d/1LnB8stltvA5bFYkstspNwaqTirazPUVJ/view?usp=sharing)
+![RF07_-Compartilhar Promoção](https://i.ibb.co/4sdNVKT/Produto.jpg)
 
 ---
 
@@ -166,7 +166,7 @@ Este requisito possibilida ao usuário tenha acesso ao perfil do mercado.
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero acessar o perfil do mercado, para saber todas as promções válidas. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de perfil do mercado. |
 
 ## Protótipo
-![RF08_-Acessar Perfil de Mercado](https://drive.google.com/file/d/11VRDJJWYNxK9i_TmDKMyspVEV2W5D_xa/view?usp=sharing)
+![RF08_-Acessar Perfil de Mercado](https://i.ibb.co/7j3zTVp/Curtidas-2-home-curtida.png)
 
 ---
 
@@ -187,9 +187,6 @@ Este requisito possibilida ao usuário tenha possa seguir o perfil do mercado.
 |-|-|-|
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero acessar o perfil do mercado, e receber notificações sobre todas as promções válidas. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de perfil do mercado. |
 
-## Protótipo
-![RF08_-Seguir Mercado](https://drive.google.com/file/d/1bYH7RMns9Ad9vwU8Ksv4mW_tycuvztoE/view?usp=sharing)
-
 ---
 
 ### RF10 - Avaliar Mercado
@@ -209,9 +206,6 @@ Este requisito possibilida ao usuário tenha possa avaliar o mercado.
 |-|-|-|
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero acessar realiza a avaliação do mercado, para que outros usuários possam ter conhecimento da qualidade daquele mercado. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
 
-## Protótipo
-![RF08_-Avaliar Mercado](https://drive.google.com/file/d/1fvdjfRMLVYAF_dTuJeiHCPH0CNvFGgRx/view?usp=sharing)
-
 ---
 
 ### RF11 - Realizar Pesquisa
@@ -230,9 +224,6 @@ Este requisito possibilida ao usuário tenha possa realizar a pesquisa por merca
 | Épico | User Story | Critério de Aceitação |
 |-|-|-|
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero pesquisar por promoção ou mercado, para que possa realizar a compração de promoções entre mercados | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção ou mercado. |
-
-## Protótipo
-![RF08_-Realizar Pesquisa](https://drive.google.com/file/d/1a75Qoir315V3CMrCwV25MlUicrgs1mUx/view?usp=sharing)
 ### RF12: Realizar Filtragem de Pesquisa
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
