@@ -1,12 +1,13 @@
 import axios from "axios";
 import { Authenticator } from "./Authenticator";
+import Config from "react-native-config";
 
 export class ApiClient {
 	// Classe que realiza o consumo da API. Qualquer função que chame a API 
 	// deve ser implementada como método assíncrono desta classe.
     constructor() {
 		// ALTERAR CONFORME O SEU IP
-        this._apiBaseUrl = `http://192.168.0.108:8000/`;
+        this._apiBaseUrl = `http://${process.env.EXPO_PUBLIC_IP_HOST}:8000/`;
 		this._authenticator = new Authenticator();
     }
 
@@ -31,7 +32,6 @@ export class ApiClient {
 			// Caso o erro retornado seja um erro de autorização (de código 401),
 			// nós atualizamos o token de acesso pela função refresh() e realizamos
 			// a chamada novamente.
-			//
 			if (err.response.status == 401) {
 				try {
 					await this._authenticator.refreshAccessToken();
@@ -41,7 +41,10 @@ export class ApiClient {
 				} catch (err) {
 					// Caso a atualização do token de acesso falhe, o usuário é deslogado.
 					// TODO: Implementar lógica de deslogar usuário.
-					console.error('erro', err)
+					if (err.response.status == 401) {
+						console.log('error', err)
+						this._authenticator.cleanUserState();
+					}
 				}
 			}
 		}

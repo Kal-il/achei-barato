@@ -1,5 +1,4 @@
 from typing import Optional
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import Base
 from sqlalchemy import UUID, Boolean, DateTime, String, select
@@ -33,7 +32,7 @@ class UsuarioManager:
         self.db = db
 
     async def create_usuario(self, data: UsuarioAuth) -> Usuario:
-        from api.core.security import get_hashed_password
+        from core.security import get_hashed_password
         _usuario = Usuario(
             nome=data.nome,
             email=data.email,

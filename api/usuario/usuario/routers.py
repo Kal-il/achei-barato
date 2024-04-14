@@ -1,10 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
-from api.core.database import AsyncDBDependency
-from api.usuario.usuario import schemas
-from api.usuario.usuario.use_cases import UsuarioUseCase
-from api.usuario.usuario.models import Usuario
-from api.core.security import get_current_active_user
+from core.database import AsyncDBDependency
+from usuario.usuario import schemas
+from usuario.usuario.use_cases import UsuarioUseCase
+from usuario.usuario.models import Usuario
+from core.security import get_current_active_user
 
 router = APIRouter()
 

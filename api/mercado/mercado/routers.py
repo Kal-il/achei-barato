@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+
 router = APIRouter()
 
 MODEL_NAME = "mercado"

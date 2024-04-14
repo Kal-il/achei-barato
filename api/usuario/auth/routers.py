@@ -1,9 +1,9 @@
 from typing import Annotated, Any
 from fastapi import APIRouter, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from api.core.database import AsyncDBDependency
-from api.usuario.auth import schemas
-from api.usuario.auth.use_cases import AuthUseCase
+from core.database import AsyncDBDependency
+from usuario.auth import schemas
+from usuario.auth.use_cases import AuthUseCase
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ model_router = APIRouter(
 
 
 @model_router.post("/login", summary=f"Login usuário")
-async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> schemas.TokenSchema:
+async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> schemas.TokenSchema | None:
     return await AuthUseCase.authenticate(db, data.username, data.password)
 
 
