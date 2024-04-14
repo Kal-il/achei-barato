@@ -125,6 +125,105 @@ Este requisito possibilida ao usuário adicionar uma promoção à sua lista de 
 |-|-|-|
 | Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero adicionar uma promoção à minha lista de itens curtidos, para poder acessar suas informações com maior facilidade 
 posteriormente. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
+### RF07 - Compartilhar Promoção
+
+- **Autor:** @Coutinhopmw - Cássio Coutinho Lima
+- **Revisor:** @Kal-il - Kalil Garcia Canuto
+
+#### Descrição
+Este requisito possibilida ao usuário compartilhar uma promoção com outros usuários.
+#### Relatório de Usuário
+| Relatório | Descrição | Formato |
+|-|-|-|
+| O ícone de promoção será alterado | Demonstra que a promoção foi devidamente compatilhada. | Ícone |
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero compartilhar uma promoção com outros usuários, para permitir que outros usuários possam acessar promoções com maior facilidade. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse.|
+
+## Protótipo
+![RF07_-Compartilhar Promoção](https://i.ibb.co/4sdNVKT/Produto.jpg)
+
+---
+
+### RF08 - Acessar Perfil de Mercado
+
+- **Autor:** @Coutinhopmw - Cássio Coutinho Lima
+- **Revisor:** @Kal-il - Kalil Garcia Canuto
+
+#### Descrição
+Este requisito possibilida ao usuário tenha acesso ao perfil do mercado.
+
+#### Relatório de Usuário
+| Relatório | Descrição | Formato |
+|-|-|-|
+| O acesso do usuário ao perfil do mercado | Demonstra que o usuário está no perfil do mercado. | Ícone |
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero acessar o perfil do mercado, para saber todas as promções válidas. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de perfil do mercado. |
+
+## Protótipo
+![RF08_-Acessar Perfil de Mercado](https://i.ibb.co/7j3zTVp/Curtidas-2-home-curtida.png)
+
+---
+
+### RF09 - Seguir Mercado
+
+- **Autor:** @Coutinhopmw - Cássio Coutinho Lima
+- **Revisor:** @Kal-il - Kalil Garcia Canuto
+
+#### Descrição
+Este requisito possibilida ao usuário tenha possa seguir o perfil do mercado.
+#### Relatório de Usuário
+| Relatório | Descrição | Formato |
+|-|-|-|
+| O acesso do usuário ao perfil do mercado | Demonstra que o usuário está no seguindo o perfil do mercado. | Ícone |
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero acessar o perfil do mercado, e receber notificações sobre todas as promções válidas. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de perfil do mercado. |
+
+---
+
+### RF10 - Avaliar Mercado
+
+- **Autor:** @Coutinhopmw - Cássio Coutinho Lima
+- **Revisor:** @Kal-il - Kalil Garcia Canuto
+
+#### Descrição
+Este requisito possibilida ao usuário tenha possa avaliar o mercado.
+#### Relatório de Usuário
+| Relatório | Descrição | Formato |
+|-|-|-|
+| O acesso do usuário ao perfil do mercado | Demonstra que o usuário já realizou a avaliação do mercado. | Ícone |
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero acessar realiza a avaliação do mercado, para que outros usuários possam ter conhecimento da qualidade daquele mercado. | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção de interesse. |
+
+---
+
+### RF11 - Realizar Pesquisa
+
+- **Autor:** @Coutinhopmw - Cássio Coutinho Lima
+- **Revisor:** @Kal-il - Kalil Garcia Canuto
+
+#### Descrição
+Este requisito possibilida ao usuário tenha possa realizar a pesquisa por mercado ou promoções.
+#### Relatório de Usuário
+| Relatório | Descrição | Formato |
+|-|-|-|
+| Busca por um mercado ou promoção | Demonstra que o usuário já realizou a pesquisa do mercado ou promoção | Ícone |
+
+#### User Story - Usuário Consumidor
+| Épico | User Story | Critério de Aceitação |
+|-|-|-|
+| Ações e Gerenciamento do Consumidor | Como usuário consumidor, quero pesquisar por promoção ou mercado, para que possa realizar a compração de promoções entre mercados | O usuário deve estar autenticado no sistema e deve ter acessado a tela de detalhes da promoção ou mercado. |
 ### RF12: Realizar Filtragem de Pesquisa
 
 - **Autor:** @ana-flav - Ana Flavia Moreira Pires
