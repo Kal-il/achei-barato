@@ -37,7 +37,6 @@ const HomeScreen = ({navigation}) => {
 	const handleDeleteTokens = () => {
 		deleteToken("access-token");
 		deleteToken("refresh-token");
-		console.log("tokens apagados")
 	}
 
   const handleLogin = () => {
@@ -45,7 +44,6 @@ const HomeScreen = ({navigation}) => {
     if ((username == "") & (password == "")) {
       return;
     }
-
 
     const formData = new URLSearchParams();
     formData.append('username', username);

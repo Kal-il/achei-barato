@@ -5,18 +5,18 @@ from jose import jwt
 from jose.exceptions import ExpiredSignatureError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.usuario.usuario.models import Usuario, UsuarioManager
-from api.core.security import verify_password
-from api.core.config import settings
-from api.core.security import create_access_token, create_refresh_token
-from api.usuario.auth.schemas import TokenSchema, TokenPayload
+from usuario.usuario.models import Usuario, UsuarioManager
+from core.security import verify_password
+from core.config import settings
+from core.security import create_access_token, create_refresh_token
+from usuario.auth.schemas import TokenSchema, TokenPayload
 
 
 class AuthUseCase:
     @staticmethod
     async def authenticate(
         db: AsyncSession, email: str, password: str
-    ) -> Optional[Usuario]:
+    ) -> Optional[TokenSchema]:
         usuario_manager = UsuarioManager(db=db)
         _usuario = await usuario_manager.get_usuario_by_email(email)
 

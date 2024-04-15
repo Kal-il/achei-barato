@@ -4,8 +4,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.usuario.usuario.models import Usuario, UsuarioManager
-from api.usuario.usuario.schemas import UsuarioAuth
+from usuario.usuario.models import Usuario, UsuarioManager
+from usuario.usuario.schemas import UsuarioAuth
 
 
 class UsuarioUseCase:

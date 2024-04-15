@@ -6,7 +6,7 @@ export class Authenticator {
 	// à autenticação.
 	constructor() {
 		// ALTERAR CONFORME O SEU IP
-        this._apiBaseUrl = `http://192.168.0.108:8000/`;
+        this._apiBaseUrl = `http://${process.env.EXPO_PUBLIC_IP_HOST}:8000/`;
     }
 	
 	fetchAccessToken() {
@@ -17,6 +17,13 @@ export class Authenticator {
 		return SecureStore.getItem('refresh-token');
 	}
 
+	_deleteAccessToken() {
+		SecureStore.deleteItemAsync('access-token');
+	}
+
+	_deleteRefreshToken() {
+		SecureStore.deleteItemAsync('refresh-token');
+	}
 
 	_setAccessToken(tokenData) {
 		SecureStore.setItem('access-token', tokenData);
@@ -25,7 +32,7 @@ export class Authenticator {
 	_setRefreshToken(tokenData) {
 		SecureStore.setItem('refresh-token', tokenData);
 	}
-	
+
 	async authenticateUser(userData) {
 		// Função que chama endpoint de Login
         path = `api/v1/usuario/auth/login`;
@@ -63,13 +70,20 @@ export class Authenticator {
         .then(async (response) => {
             if (response.data.access_token) {
 				// Caso a resposta da API esteja OK, com o campo de access_token retornado corretamente,
+ 
 				// nós adicionamos o refresh e access token ao SecureStorage da aplicação.
 				this._setAccessToken(response.data.access_token);
 				this._setRefreshToken(response.data.refresh_token);
             }
         })
         .catch(function (error) {
-            console.log('erro', error)
+            throw error
         })
+	}
+
+	async cleanUserState() {
+		// Função que limpa o estado do usuário, deslogando ele do sistema.
+		this._deleteRefreshToken();
+		this._deleteAccessToken();
 	}
 }
