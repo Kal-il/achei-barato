@@ -16,7 +16,7 @@ const GoogleSignInScreen = () => {
       const userInfo = await GoogleSignin.signIn();
       console.log('Usuário logado:', userInfo);
     } catch (error) {
-        // ISSO AQUI E PARA TESTAR E VER OQ UE TA ACOMTECENDO 
+        // ISSO AQUI E PARA TESTAR E VER OQ UE TA ACOMTECENDO tratamento de erro
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {

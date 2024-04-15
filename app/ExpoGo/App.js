@@ -15,7 +15,7 @@ import axios from "axios";
 import { fetchToken, setToken, deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import { ApiClient } from "./api/ApiClient";
+
 import GoogleSignInScreen from "./GoogleSignIn";
 
 export default function App() {
@@ -98,6 +98,8 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
 
+        <GoogleSignInScreen />
+        
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
