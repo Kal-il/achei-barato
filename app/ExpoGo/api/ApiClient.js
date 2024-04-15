@@ -40,7 +40,6 @@ export class ApiClient {
 					response = await this._callApiWithToken(url, method, data, token);
 				} catch (err) {
 					// Caso a atualização do token de acesso falhe, o usuário é deslogado.
-					// TODO: Implementar lógica de deslogar usuário.
 					if (err.response.status == 401) {
 						console.log('error', err)
 						this._authenticator.cleanUserState();
