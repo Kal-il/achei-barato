@@ -1,8 +1,9 @@
-
 from sqlalchemy import ForeignKey, Integer, String, UUID
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import mapped_column, Mapped
 from core.database import Base
 from sqlalchemy.orm import relationship, backref
+from mercado.mercado.schemas import MercadoCreate
 from usuario.usuario.models import Usuario
 import uuid
 
@@ -29,3 +30,26 @@ class Mercado(Base):
     nome_responsavel: Mapped[str] = mapped_column(String(255), nullable=False)
     cpf_responsavel: Mapped[str] = mapped_column(String(11), nullable=False)
     
+class MercadoManager:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def create_mercado(self, data: MercadoCreate):
+        _mercado = Mercado(
+            cnpj=data.cnpj,
+            razao_social=data.razao_social,
+            telefone=data.telefone,
+            cep=data.cep,
+            estado=data.estado,
+            cidade=data.cidade,
+            bairro=data.bairro,
+            endereco=data.endereco,
+            numero_endereco=data.numero_endereco,
+            nome_responsavel=data.nome_responsavel,
+            cpf_responsavel=data.cpf_responsavel,
+        )
+
+        self.db.add(_mercado)
+        await self.db.commit()
+
+        return _mercado
