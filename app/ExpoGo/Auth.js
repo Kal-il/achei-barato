@@ -10,6 +10,5 @@ export const fetchToken = () => {
 };
 
 export const deleteToken = async () => {
-  console.log("deletando usuario")
   await SecureStore.deleteItemAsync("jwt-token")
 }

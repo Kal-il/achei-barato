@@ -16,11 +16,12 @@ import { fetchToken, setToken, deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 
-import GoogleSignInScreen from "./GoogleSignIn";
+import {GoogleSignInScreen} from "./GoogleSignIn";
+
 
 export default function App() {
   const Stack = createNativeStackNavigator()
-
+  
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -36,10 +37,20 @@ export default function App() {
 const HomeScreen = ({navigation}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-
+  
+  
   deleteToken();
-
+  
+  const signOut = async () => {
+    console.log('Deslogando usuário');
+    try {
+      await GoogleSignin.signOut();
+      console.log('Usuário deslogado');
+  
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleLogin = () => {
     // lógica para autenticar o usuário aqui
     if ((username == "") & (password == "")) {
@@ -98,13 +109,15 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
 
+        <Button title="teste" onPress={() => signOut }/>
+        
+        
+
         <GoogleSignInScreen />
         
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
-
-        <Button title="teste" onPress={() => navigation.navigate('TesteScreen')}/>
 
         <TouchableOpacity> 
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
