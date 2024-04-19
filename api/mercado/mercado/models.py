@@ -1,6 +1,6 @@
-from sqlalchemy import ForeignKey, Integer, String, UUID
+from sqlalchemy import BigInteger, ForeignKey, Integer, String, UUID, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, selectinload
 from core.database import Base
 from sqlalchemy.orm import relationship, backref
 from mercado.mercado.schemas import MercadoCreate
@@ -16,10 +16,12 @@ class Mercado(Base):
     )
     usuario_id = mapped_column(UUID, ForeignKey('usuario_usuario.id'))
     usuario = relationship(Usuario, backref=backref("mercado", uselist=False)) 
-    cnpj: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
+    cnpj: Mapped[str] = mapped_column(String(18), nullable=False, unique=True)
     razao_social: Mapped[str] = mapped_column(String(255), nullable=False)
     nome_fantasia: Mapped[str] = mapped_column(String(255), nullable=False)
-    telefone: Mapped[int] = mapped_column(Integer, nullable=False)
+    descricao: Mapped[str] = mapped_column(String(500), nullable=True)
+    logo: Mapped[str] = mapped_column(String(255), nullable=True)
+    telefone: Mapped[int] = mapped_column(BigInteger, nullable=False)
     cep: Mapped[str] = mapped_column(String(8), nullable=False)
     estado: Mapped[str] = mapped_column(String(255), nullable=False)
     cidade: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -37,7 +39,9 @@ class MercadoManager:
     async def create_mercado(self, data: MercadoCreate):
         _mercado = Mercado(
             cnpj=data.cnpj,
+            usuario_id=data.usuario.id,
             razao_social=data.razao_social,
+            nome_fantasia=data.nome_fantasia,
             telefone=data.telefone,
             cep=data.cep,
             estado=data.estado,
@@ -53,3 +57,13 @@ class MercadoManager:
         await self.db.commit()
 
         return _mercado
+
+    async def get_mercado_by_cnpj(self, cnpj: str):
+        try:
+            _query = select(Mercado).where(Mercado.cnpj == cnpj)
+            _mercado = await self.db.execute(_query)
+            _mercado = _mercado.scalar()
+
+            return _mercado
+        except:
+            return None
