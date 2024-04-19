@@ -13,7 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import { ApiClient } from "./api/ApiClient";
+import { ApiClient } from "../api/ApiClient.js";
 
 import {GoogleSignInScreen} from "./GoogleSignIn";
 
