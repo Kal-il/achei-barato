@@ -1,8 +1,11 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
+from api.usuario.usuario.models import Usuario
+
 
 class MercadoBase(BaseModel):
+    usuario: Usuario
     cnpj: str = Field(..., max_length=14, description="CNPJ")
     razao_social: str = Field(..., max_length=255, description="Razão social")
     nome_fantasia: str = Field(..., max_length=255, description="Nome fantasia")
