@@ -7,14 +7,13 @@ import {
   StyleSheet,
   Image,
   Button,
-  FlatList, Center, NativeBaseProvider,
-  Box,
+	ActivityIndicator 
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import axios from "axios";
-import { fetchToken, setToken, deleteToken } from "./Auth";
+import { deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import { ApiClient } from "./api/ApiClient";
 
 import {GoogleSignInScreen} from "./GoogleSignIn";
 
@@ -37,44 +36,28 @@ export default function App() {
 const HomeScreen = ({navigation}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
-  
-  deleteToken();
-  
-  const signOut = async () => {
-    console.log('Deslogando usuário');
-    try {
-      await GoogleSignin.signOut();
-      console.log('Usuário deslogado');
-  
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
+
+	// Botão auxiliar para deletar tokens
+	const handleDeleteTokens = () => {
+		deleteToken("access-token");
+		deleteToken("refresh-token");
+	}
+
   const handleLogin = () => {
     // lógica para autenticar o usuário aqui
     if ((username == "") & (password == "")) {
       return;
     }
 
-
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-  
-    axios
-      .post("http://192.168.105.20:8000/api/v1/usuario/usuario/login", formData)
-      .then(function (response) {
-        console.log(response.data.access_token, "response.data.access_token");
-        if (response.data.access_token) {
-          setToken(response.data.access_token);
-          console.log("token jwt definido");
-        }
-      })
-      .catch(function (error) {
-        console.log(error, "error");
-      });
+
+    api = new ApiClient();
+    api.loginUser(formData);
   };
+
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
@@ -109,14 +92,14 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity> */}
 
-        
-        
-
-        <GoogleSignInScreen />
-        
+		<View style={flexDirection="row"}>
         <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
+        <Button title="apagra" onPress={handleDeleteTokens}/>
+
+        <Button title="teste" onPress={() => navigation.navigate('TesteScreen')}/>
+		</View>
 
         <TouchableOpacity> 
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
@@ -127,35 +110,34 @@ const HomeScreen = ({navigation}) => {
 }
 
 const TesteScreen = ({navigation}) => {
-  const jwtToken = fetchToken("jwt_token");
-  const [username, setUsername] = useState("");
+	const [username, setUsername] = useState("");
+	const [loading, setLoading] = useState(true);
 
-  const getUsername = async () => {
-    console.log("chama api");
-    await axios
-    .get("http://192.168.105.20:8000/api/v1/usuario/usuario/eu", {
-      headers: {'Authorization': 'Bearer ' + jwtToken, }
-    })
-    .then(function (response) {
-      setUsername(response.data['nome']);
-    }).catch(function (error) {
-      console.log(error);
-      console.log("não autenticado");
-      setUsername("Você não está autenticado");
-      // Trata erro (redireciona, exibe mensagem de erro, etc)
-    });
+  const fetchUsername = async () => {
+
+    const api = new ApiClient();
+    api.getUserDetail("api/v1/usuario/usuario/eu")
+    usuario = await api.getUserDetail("api/v1/usuario/usuario/eu")
+    setUsername(usuario["nome"])
+	setLoading(false);
+
   };
 
-  getUsername();
+	useEffect(() => {
+	  fetchUsername();
+	}, []);
 
+  if (loading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" color="#0000ff" />
+		  <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
+      </View>
+    );
+  }
+  
   return(
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
-      {/* { username && (
-        <FlatList
-          data={username}
-          renderItem={renderUsername}
-        />
-      )} */}
       <Text> {username} </Text>
       <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
   </LinearGradient>
