@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 import axios from "axios";
-import {GoogleManager} from '../app/GoogleSignIn';
+import {GoogleManager} from '../src/app/GoogleSignIn';
 
 export class Authenticator {
 	// Classe que implementa lógicas e chamadas de API relacionadas

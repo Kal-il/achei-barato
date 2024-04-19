@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Button } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
-import { Authenticator } from './api/Authenticator';
+import { Authenticator } from '../api/Authenticator';
 
 export const GoogleManager = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -30,12 +30,8 @@ export const GoogleManager = () => {
       await GoogleSignin.hasPlayServices();
       const userInfoGoogle = await GoogleSignin.signIn();
       setUserInfo(userInfoGoogle);
-      
-      const signInWithGoogle = new Authenticator();
-      await signInWithGoogle.googleAuthenticateUser(userInfoGoogle);
-
+    
     } catch (error) {
-      console.log('Erro ao fazer login:', error.code, error.message, error.details);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -46,6 +42,15 @@ export const GoogleManager = () => {
         console.log('Erro ao fazer login:', error);
       }
     }
+
+    try {
+      const signInWithGoogle = new Authenticator();
+      await signInWithGoogle.googleAuthenticateUser(userInfoGoogle);
+    } catch (error) {
+      signOut();
+      console.error("Erro ao autenticar usuário com Google:", error);
+    }
+    
   };
 
   return { userInfo, signIn, signOut };
