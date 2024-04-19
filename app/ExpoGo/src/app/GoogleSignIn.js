@@ -32,6 +32,7 @@ export const GoogleManager = () => {
       setUserInfo(userInfoGoogle);
     
     } catch (error) {
+		
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {
