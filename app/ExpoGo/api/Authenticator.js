@@ -53,6 +53,28 @@ export class Authenticator {
         });
 	}
 
+	async googleAuthenticateUser(userData) {
+		// Função que chama endpoint de autenticação e registros com Google
+
+		path = `api/v1/usuario/auth/google`;
+		url = `${this._apiBaseUrl}${path}`;
+
+		await axios
+		.post(url,{
+			token_google: userData.idToken})
+		.then(async (response) => {
+			if (response.data.access_token) {
+				this._setAccessToken(response.data.access_token);
+				this._setRefreshToken(response.data.refresh_token);
+			}
+		})
+		.catch(function (error) {
+			console.error(error)
+		});
+
+		console.log(this.fetchAccessToken())
+	}
+
 	async refreshAccessToken() {
 		// Função que chama endpoint de atualização de token de acesso
         path = `api/v1/usuario/auth/refresh`;
@@ -86,4 +108,5 @@ export class Authenticator {
 		this._deleteRefreshToken();
 		this._deleteAccessToken();
 	}
+
 }

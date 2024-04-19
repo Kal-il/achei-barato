@@ -33,6 +33,7 @@ class UsuarioManager:
 
     async def create_usuario(self, data: UsuarioAuth) -> Usuario:
         from core.security import get_hashed_password
+        breakpoint()
         _usuario = Usuario(
             nome=data.nome,
             email=data.email,

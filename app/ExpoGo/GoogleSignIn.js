@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Button } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
+import { Authenticator } from './api/Authenticator';
 
 export const GoogleManager = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -13,12 +14,11 @@ export const GoogleManager = () => {
   }, []);
 
   const signOut = async () => {
+    const signOutWithGoogle = new Authenticator();
     try {
-      console.log('Deslogando usuário');
-      console.log(userInfo)
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      console.log('Usuário deslogado');
+      await signOutWithGoogle.cleanUserState();
       setUserInfo(null);
     } catch (error) {
       console.error(error);
@@ -30,8 +30,10 @@ export const GoogleManager = () => {
       await GoogleSignin.hasPlayServices();
       const userInfoGoogle = await GoogleSignin.signIn();
       setUserInfo(userInfoGoogle);
+      
+      const signInWithGoogle = new Authenticator();
+      await signInWithGoogle.googleAuthenticateUser(userInfoGoogle);
 
-      console.log('Usuário logado:', userInfo);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');

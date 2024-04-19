@@ -87,7 +87,7 @@ const HomeScreen = ({navigation}) => {
             onChangeText={(text) => setPassword(text)}
           />
         </View> */}
-        
+        <GoogleSignInScreen/>
         {/* <TouchableOpacity> 
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity> */}

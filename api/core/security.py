@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, Union
+from typing import Any, Optional, Union
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from jose import jwt, JWTError
@@ -7,6 +7,8 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from core.config import settings
 from core.database import AsyncDBDependency
+from google.auth.transport import requests
+from google.oauth2 import id_token
 from usuario.usuario.models import UsuarioManager, Usuario
 from usuario.auth.schemas import TokenData
 
@@ -96,3 +98,19 @@ async def get_current_active_user(
             detail="Usuário inativo."
         )
     return current_user
+
+
+def verify_token_google(token: str) -> Optional[dict]:
+        try:
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.google_client_id)
+            
+            data = {
+                "email": idinfo['email'],
+                "nome": idinfo['name'],
+                "picture": idinfo['picture'],
+                "id": idinfo['sub'],
+            }
+            return data
+        except ValueError:
+            return None
+        
