@@ -68,44 +68,54 @@ class AuthUseCase:
     
     async def authenticate_google(db: AsyncSession, token: GoogleAuthSchema):
         try:
+            dia = 10/0
             data_user = verify_token_google(token.token_google)   
-            if data_user:
-                usuario_manager = UsuarioManager(db=db)
-                _usuario = await usuario_manager.get_usuario_by_email(data_user.get("email"))
-                if not _usuario:
-                    data_usuario = {
-                        "email": data_user.get('email'),
-                        "nome": data_user.get('nome'),
-                        'password': 'google'
-                    }
-                    
-                    _usuario = await usuario_manager.create_usuario(UsuarioAuth(**data_usuario))
+            
+            if not data_user:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Erro durante a autenticação com Google.",
+                )
                 
-                    if not _usuario:
-                        raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Erro durante a criação do usuário.",
-                        )
-                        
-                    data_usuario_google = {
-                        "id_google": data_user.get('id'),
-                        "id_usuario": _usuario.id,
-                    }
-                    data_auth_google = await UsuarioAuthGoogleManager(db=db).create_usuario_auth_google(
-                       data_usuario_google
+            usuario_manager = UsuarioManager(db=db)
+            _usuario = await usuario_manager.get_usuario_by_email(data_user.get("email"))
+            
+            if not _usuario:
+                data_usuario = {
+                    "email": data_user.get('email'),
+                    "nome": data_user.get('nome'),
+                    'password': 'google'
+                }
+                
+                _usuario = await usuario_manager.create_usuario(UsuarioAuth(**data_usuario))
+            
+                if not _usuario:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Erro durante a criação do usuário.",
                     )
-                    if not data_auth_google:
-                        raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Erro durante a criação do registro de autenticação com Google.",
-                        )
-                        
-                access_token = create_access_token(subject=_usuario.email)
-                refresh_token = create_refresh_token(subject=_usuario.email)
-                return TokenSchema(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
-            pass
+                    
+                data_usuario_google = {
+                    "id_google": data_user.get('id'),
+                    "id_usuario": _usuario.id,
+                }
+                data_auth_google = await UsuarioAuthGoogleManager(db=db).create_usuario_auth_google(
+                data_usuario_google
+                )
+                if not data_auth_google:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Erro durante a criação do registro de autenticação com Google.",
+                    )  
+            access_token = create_access_token(subject=_usuario.email)
+            refresh_token = create_refresh_token(subject=_usuario.email)
+            
+            return TokenSchema(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
         except Exception as e:
-            pass
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro durante a autenticação com Google: %s" % e,
+            )
     
  
  

@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 import axios from "axios";
+import {GoogleManager} from './../GoogleSignIn';
 
 export class Authenticator {
 	// Classe que implementa lógicas e chamadas de API relacionadas
@@ -59,6 +60,8 @@ export class Authenticator {
 		path = `api/v1/usuario/auth/google`;
 		url = `${this._apiBaseUrl}${path}`;
 
+		const googleManager = new GoogleManager();
+
 		await axios
 		.post(url,{
 			token_google: userData.idToken})
@@ -69,7 +72,8 @@ export class Authenticator {
 			}
 		})
 		.catch(function (error) {
-			console.error(error)
+			googleManager.signOut();	
+			throw error
 		});
 
 		console.log(this.fetchAccessToken())
@@ -108,5 +112,7 @@ export class Authenticator {
 		this._deleteRefreshToken();
 		this._deleteAccessToken();
 	}
+
+	
 
 }

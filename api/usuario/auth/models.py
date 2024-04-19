@@ -1,7 +1,7 @@
 import uuid
 from core.database import Base
 from usuario.usuario.schemas import UsuarioAuth
-from sqlalchemy import UUID, ForeignKey, String, Integer
+from sqlalchemy import UUID, ForeignKey, String, Integer, select
 from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy.orm import relationship
 from usuario.usuario.models import Usuario
@@ -22,11 +22,19 @@ class UsuarioAuthGoogleManager:
         self.db = db
 
     async def get_usuario_auth_google_by_id_google(self, id_google: str) -> UsuarioAuthGoogle:
-        return await self.db.get(UsuarioAuthGoogle, id_google=id_google)
+        select_query = select(UsuarioAuthGoogle).where(UsuarioAuthGoogle.id_google == id_google)    
+        usuario_auth_google = await self.db.execute(select_query)
+        return usuario_auth_google.scalar()
+    
 
     async def create_usuario_auth_google(self, data: dict) -> UsuarioAuthGoogle:
+        breakpoint()
+        if usuario_auth_google := await self.get_usuario_auth_google_by_id_google(data['id_google']):
+            return usuario_auth_google
+        
         usuario_auth_google = UsuarioAuthGoogle(**data)
         self.db.add(usuario_auth_google)
         await self.db.commit()
         return usuario_auth_google
- 
+    
+    

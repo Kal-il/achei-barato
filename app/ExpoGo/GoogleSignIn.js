@@ -35,6 +35,7 @@ export const GoogleManager = () => {
       await signInWithGoogle.googleAuthenticateUser(userInfoGoogle);
 
     } catch (error) {
+      console.log('Erro ao fazer login:', error.code, error.message, error.details);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {
