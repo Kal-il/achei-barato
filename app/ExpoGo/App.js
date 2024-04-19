@@ -78,13 +78,13 @@ const HomeScreen = ({navigation}) => {
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image source={require('./assets/logo.png')} />
+        {/* <Image source={require('./assets/logo.png')} />
         <Text style={styles.logo}>
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
           <Text style={{ color: '#7F48CA' }}>Barato</Text>
-        </Text>
-        <View style={styles.inputView}>
+        </Text> */}
+        {/* <View style={styles.inputView}>
 
           <TextInput
             style={styles.inputText}
@@ -93,8 +93,8 @@ const HomeScreen = ({navigation}) => {
             value={username}
             onChangeText={(text) => setUsername(text)}
           />
-        </View>
-        <View style={styles.inputView}>
+        </View> */}
+        {/* <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
             placeholder="Senha"
@@ -103,13 +103,12 @@ const HomeScreen = ({navigation}) => {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-        </View>
+        </View> */}
         
-        <TouchableOpacity> 
+        {/* <TouchableOpacity> 
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <Button title="teste" onPress={() => signOut }/>
         
         
 
