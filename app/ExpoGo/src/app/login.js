@@ -56,7 +56,7 @@ const HomeScreen = ({navigation}) => {
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image source={require('/home/kalil/Documents/projeto/achei-barato/app/ExpoGo/src/assets/logo.png')} />
+        <Image source={require('../assets/logo.png')} />
         <Text style={styles.logo}>
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
