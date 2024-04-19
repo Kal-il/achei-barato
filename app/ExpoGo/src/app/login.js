@@ -13,7 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { deleteToken } from "./Auth";
 import {NavigationContainer} from '@react-navigation/native'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import { ApiClient } from "./api/ApiClient";
+import { ApiClient } from "../api/ApiClient.js";
 
 export default function App() {
   const Stack = createNativeStackNavigator()
@@ -56,7 +56,7 @@ const HomeScreen = ({navigation}) => {
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image source={require('./assets/logo.png')} />
+        <Image source={require('/home/kalil/Documents/projeto/achei-barato/app/ExpoGo/src/assets/logo.png')} />
         <Text style={styles.logo}>
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
