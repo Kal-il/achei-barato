@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Achei Barato",
-    "slug": "achei-barato",
+    "name": "ExpoGo",
+    "slug": "ExpoGo",
     "scheme": "ExpoGo",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -34,14 +34,8 @@
     },
     "plugins": [
       "expo-secure-store",
-      "@react-native-google-signin/google-signin", 
-      "expo-router"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "6600ca8f-6208-454c-897a-3c6c919d99be"
-      }
-    }
-
+      "expo-router",
+      "@react-native-google-signin/google-signin"
+    ]
   }
 }

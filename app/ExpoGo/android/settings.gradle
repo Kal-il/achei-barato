@@ -1,4 +1,4 @@
-rootProject.name = 'Achei Barato'
+rootProject.name = 'ExpoGo'
 
 dependencyResolutionManagement {
   versionCatalogs {
