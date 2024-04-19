@@ -6,7 +6,7 @@ export class Authenticator {
 	// à autenticação.
 	constructor() {
 		// ALTERAR CONFORME O SEU IP
-        this._apiBaseUrl = `http://${process.env.EXPO_PUBLIC_IP_HOST}192.168.1.10:8000/`;
+        this._apiBaseUrl = `http://${process.env.EXPO_PUBLIC_IP_HOST}:8000/`;
     }
 	
 	fetchAccessToken() {
