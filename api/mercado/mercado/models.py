@@ -1,11 +1,23 @@
-from sqlalchemy import BigInteger, ForeignKey, Integer, String, UUID, select
+import datetime
+import uuid
+
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    UUID,
+    select,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import mapped_column, Mapped, selectinload
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import backref, relationship
+
 from core.database import Base
-from sqlalchemy.orm import relationship, backref
 from mercado.mercado.schemas import MercadoCreate
 from usuario.usuario.models import Usuario
-import uuid
 
 
 class Mercado(Base):
@@ -31,7 +43,10 @@ class Mercado(Base):
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
     nome_responsavel: Mapped[str] = mapped_column(String(255), nullable=False)
     cpf_responsavel: Mapped[str] = mapped_column(String(11), nullable=False)
-    
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
+    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)   
+   
 class MercadoManager:
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -52,6 +67,7 @@ class MercadoManager:
             nome_responsavel=data.nome_responsavel,
             cpf_responsavel=data.cpf_responsavel,
         )
+
 
         self.db.add(_mercado)
         await self.db.commit()

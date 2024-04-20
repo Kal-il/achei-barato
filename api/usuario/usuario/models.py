@@ -7,7 +7,6 @@ from sqlalchemy.orm import mapped_column, Mapped
 import uuid
 import datetime
 
-from core.security import get_hashed_password
 
 from usuario.usuario.schemas import UsuarioAuth, UsuarioBase
 
@@ -34,6 +33,7 @@ class UsuarioManager:
         self.db = db
 
     async def create_usuario(self, data: UsuarioAuth) -> Usuario:
+        from core.security import get_hashed_password
         _usuario = Usuario(
             nome=data.nome,
             email=data.email,

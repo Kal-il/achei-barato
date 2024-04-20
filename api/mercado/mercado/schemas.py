@@ -1,16 +1,17 @@
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 from validate_docbr import CNPJ
 
+from mercado.mercado.utils import digitos_doc
 from usuario.usuario.schemas import UsuarioBase
 
 
 class MercadoBase(BaseModel):
-    cnpj: str = Field(..., max_length=14, description="CNPJ")
+    cnpj: str = Field(..., max_length=18, description="CNPJ")
     razao_social: str = Field(..., description="Razão social")
     nome_fantasia: str = Field(..., description="Nome fantasia")
     telefone: int = Field(..., description="Telefone")
-    cep: str = Field(..., max_length=8, description="CEP")
+    cep: str = Field(..., max_length=9, description="CEP")
     estado: str = Field(..., max_length=255, description="Estado")
     cidade: str = Field(..., max_length=255, description="Cidade")
     bairro: str = Field(..., max_length=255, description="Bairro")
@@ -18,9 +19,7 @@ class MercadoBase(BaseModel):
     numero_endereco: int = Field(..., description="Número")
     complemento: Optional[str] = Field(..., max_length=255, description="Complemento")
     nome_responsavel: str = Field(..., max_length=255, description="Nome do responsável")
-    cpf_responsavel: str = Field(..., max_length=11, description="CPF do responsável")
-
-
+    cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
 
 class MercadoCreate(MercadoBase):
     usuario: Optional[UsuarioBase]
@@ -49,10 +48,6 @@ class MercadoCreate(MercadoBase):
 
         return erros
 
-    def _validar_cnpj(self):
-        validador = CNPJ()
-        if not validador.validate(self.cnpj):
-            return "Insira um CNPJ válido."
 
     def _validar_razao_social(self):
         if len(self.razao_social) > 30:
@@ -66,8 +61,21 @@ class MercadoCreate(MercadoBase):
         if len(str(self.telefone)) > 13:
             return "Este número de telefone é muito grande."
 
+    def _validar_cnpj(self):
+        validador = CNPJ()
+        self.cnpj = digitos_doc(self.cnpj)
+        if len(self.cnpj) > 14 or not validador.validate(self.cnpj):
+            return "Insira um CNPJ válido."
+
+    def _validar_cpf_responsavel(self):
+        self.cpf_responsavel = digitos_doc(self.cpf_responsavel)
+        if not self.cpf_responsavel.isdigit() or len(self.cpf_responsavel) > 11:
+            return "Insira um CPF válido."
+
     def _validar_cep(self):
         _erros = []
+
+        self.cep = digitos_doc(self.cep)
         if len(self.cep) > 8:
             _erros.append("O CEP deve ter no máximo 8 caracteres")
 
@@ -75,10 +83,6 @@ class MercadoCreate(MercadoBase):
             _erros.append("O CEP deve conter apenas dígitos")
 
         return _erros
-
-    def _validar_cpf_responsavel(self):
-        if len(self.cpf_responsavel) > 11:
-            return "CPF inválido."
 
 class MercadoUpdate(MercadoBase):
     pass

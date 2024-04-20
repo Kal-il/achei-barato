@@ -1,10 +1,11 @@
 from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
-from core.security import get_current_active_user, get_current_user
-from mercado.mercado.use_cases import mercado_usecases
 from core.database import AsyncDBDependency
+from core.security import get_current_active_user
 from mercado.mercado.schemas import MercadoCreate
+from mercado.mercado.use_cases import mercado_usecases
 from usuario.usuario.models import Usuario
 
 router = APIRouter()
@@ -18,8 +19,8 @@ model_router = APIRouter(
 
 @model_router.post("/cadastrar", summary="Cadastrar mercado.")
 async def cadastrar_mercado(db: AsyncDBDependency, data: MercadoCreate, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
-    data.usuario = usuario
-    print(f'usuario : {data.usuario.nome}')
+    if usuario:
+        data.usuario = usuario
     return await mercado_usecases.cadastrar_mercado(db=db, data=data)
 
 

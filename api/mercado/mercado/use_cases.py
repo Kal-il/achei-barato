@@ -1,29 +1,33 @@
-import re
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.security import get_current_user
-from mercado.mercado.schemas import MercadoCreate
-from mercado.mercado.models import Mercado, MercadoManager
 from fastapi import HTTPException, status
-from validate_docbr import CNPJ, CPF
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from mercado.mercado.models import MercadoManager
+from mercado.mercado.schemas import MercadoCreate
 from usuario.usuario.models import UsuarioManager
 
 
 
 class MercadoUseCases:
     async def cadastrar_mercado(self, db: AsyncSession, data: MercadoCreate):
+        # Verifica se o usuário já é dono de mercado
+        if data.usuario.dono_mercado:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, 
+                detail="Este usuário já cadastrou um mercado."
+            )
+
         # Verifica se campos do formulário são válidos
         await self._validar_cadastro(db, data)
-       
-        
+        _mercado = await self._save(db, data)
+
         usuario_manager = UsuarioManager(db=db)
         if data.usuario:
             await usuario_manager.set_dono_mercado(data.usuario)
 
-        _mercado = await self._save(db, data)
         return _mercado
 
     async def _save(self, db: AsyncSession, data: MercadoCreate):
+        # Método que salva o mercado no banco de dados
         mercado_manager = MercadoManager(db=db)
         try:
            _mercado = await mercado_manager.create_mercado(data) 
@@ -36,16 +40,17 @@ class MercadoUseCases:
         return _mercado
 
     async def _validar_cadastro(self, db: AsyncSession, data: MercadoCreate):
+        # Método privado que verifica se o mercado já existe e realiza 
+        # a validação dos campos
         mercado_manager = MercadoManager(db=db)
         _mercado = await mercado_manager.get_mercado_by_cnpj(data.cnpj)
+
         if _mercado:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Já existe um cadastro com este CNPJ."
             )
 
-        data.cpf_responsavel = re.sub(r"\D", "", data.cpf_responsavel)
-        data.cnpj = re.sub(r"\D", "", data.cnpj)
         _erros = data.validar_campos()
         if _erros:
                raise HTTPException(
