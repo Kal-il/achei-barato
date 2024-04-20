@@ -1,4 +1,4 @@
-venv
+cleavenv
 __pycache__/
 .env
 api/.env
@@ -7,3 +7,4 @@ app/ExpoGo/node_modules
 app/ExpoGo/.expo
 app/ExpoGo/%ProgramData%
 .idea
+node_modules
