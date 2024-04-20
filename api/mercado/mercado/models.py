@@ -28,9 +28,9 @@ class Mercado(Base):
     )
     usuario_id = mapped_column(UUID, ForeignKey('usuario_usuario.id'))
     usuario = relationship(Usuario, backref=backref("mercado", uselist=False)) 
-    cnpj: Mapped[str] = mapped_column(String(18), nullable=False, unique=True)
-    razao_social: Mapped[str] = mapped_column(String(255), nullable=False)
-    nome_fantasia: Mapped[str] = mapped_column(String(255), nullable=False)
+    cnpj: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
+    razao_social: Mapped[str] = mapped_column(String(30), nullable=False)
+    nome_fantasia: Mapped[str] = mapped_column(String(55), nullable=False)
     descricao: Mapped[str] = mapped_column(String(500), nullable=True)
     logo: Mapped[str] = mapped_column(String(255), nullable=True)
     telefone: Mapped[int] = mapped_column(BigInteger, nullable=False)
@@ -67,7 +67,6 @@ class MercadoManager:
             nome_responsavel=data.nome_responsavel,
             cpf_responsavel=data.cpf_responsavel,
         )
-
 
         self.db.add(_mercado)
         await self.db.commit()
