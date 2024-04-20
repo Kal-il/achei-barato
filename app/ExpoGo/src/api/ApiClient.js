@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Authenticator } from "./Authenticator";
-import Config from "react-native-config";
 
 export class ApiClient {
 	// Classe que realiza o consumo da API. Qualquer função que chame a API 
@@ -45,6 +44,7 @@ export class ApiClient {
 						this._authenticator.cleanUserState();
 					}
 				}
+
 			}
 		}
 

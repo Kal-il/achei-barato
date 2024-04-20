@@ -25,4 +25,8 @@ async def refresh_token(db: AsyncDBDependency, data: schemas.RefreshTokenSchema)
     return await AuthUseCase.refresh_access_token(db, data.refresh_token)
 
 
+@model_router.post("/google", summary="Endpoint para administrar registros e autenticação com Google")
+async def auth_google(db: AsyncDBDependency, token: schemas.GoogleAuthSchema) -> schemas.TokenSchema:
+    return await AuthUseCase.authenticate_google(db, token)
+
 router.include_router(model_router)

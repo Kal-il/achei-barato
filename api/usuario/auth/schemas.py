@@ -17,3 +17,10 @@ class TokenPayload(BaseModel):
 
 class RefreshTokenSchema(BaseModel):
     refresh_token: str
+    
+class GoogleAuthSchema(BaseModel):
+    token_google: str
+
+class GoogleAuthData(BaseModel):
+    id_google: str
+    
