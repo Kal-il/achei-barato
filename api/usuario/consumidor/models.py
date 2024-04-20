@@ -1,7 +1,6 @@
 from usuario.usuario.models import Usuario
-from sqlalchemy import UUID, Boolean, DateTime, ForeignKey, String, select, Integer
+from sqlalchemy import UUID, ForeignKey, String, Integer
 from sqlalchemy.orm import mapped_column, Mapped
-import uuid
 
 class Consumidor(Usuario):
     __tablename__ = "usuario_consumidor"
