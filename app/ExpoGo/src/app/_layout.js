@@ -17,9 +17,6 @@ export default function AppLayout() {
       <Stack.Screen name="user-configs/notifications" options={{title: "configurações"}} />
       <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
 
-
-
-
     </Stack>
   );
 }

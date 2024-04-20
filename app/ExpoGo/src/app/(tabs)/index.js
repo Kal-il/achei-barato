@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 
-
 export default function Dashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
         <Text style={styles.title}>Home</Text>
+
         <Link href="/promotion">Promoção</Link>
         <Link href={"/notification"}>Notificações</Link>
         <Link href={"/store-profile"}>Perfil do mercado</Link>
@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
     marginHorizontal: "auto",
   },
   title: {
-    fontSize: 64,
+    fontSize: 32,
     fontWeight: "bold",
+    padding: '5%',
   },
   subtitle: {
     fontSize: 36,
