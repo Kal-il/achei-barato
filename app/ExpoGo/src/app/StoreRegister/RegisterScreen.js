@@ -32,13 +32,13 @@ const RegisterScreen = () => {
       {/* Botão de voltar no canto superior esquerdo */}
       <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
         <Image
-          source={require('C:\Users\mathe\Desktop\AcheiBarato\achei-barato\app\ExpoGo\src\assets\seta2.png')}
+          source={require('../../assets/seta2.png')}
           style={styles.goBackImage}
         />
       </TouchableOpacity>
       {/* Logo no canto superior direito */}
       <Image
-        source={require('C:\Users\mathe\Desktop\AcheiBarato\achei-barato\app\ExpoGo\src\assets\logo.png')}
+        source={require('../../assets/logo2.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>
@@ -74,11 +74,12 @@ const RegisterScreen = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Link href= "./RegisterScreen2">
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Continuar</Text>
-      </TouchableOpacity>
+      <Link href= "/StoreRegister/RegisterScreen2" asChild>
+        <TouchableOpacity style={styles.button} onPress={handleRegister} >
+          <Text style={styles.buttonText}>Continuar</Text>
+        </TouchableOpacity>
       </Link>
+      
       
 
       </LinearGradient>
