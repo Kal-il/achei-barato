@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useNavigation } from "expo-router";
+import { ApiClient } from "../../api/ApiClient.js";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -11,12 +12,23 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     // Lógica para registrar o usuário aqui
-    console.log('Username:', username);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    console.log('Confirm Password:', confirmPassword);   
+	const api = new ApiClient();
+
+	data = {
+			nome: username,
+			email: email,
+			password: password
+		}
+
+	let erros;
+	try {
+		await api.createUser(data);
+	} catch (err) {
+		erros = err.response.data.detail;
+	}
+
   };
 
   const handleGoBack = () => {
@@ -53,7 +65,6 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Seu e-mail"
-        keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
