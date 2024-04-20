@@ -20,6 +20,14 @@ export class ApiClient {
 		return await this._authenticator.authenticateUser(formData);
 	}
 
+	async createUser (formData) {
+		return await this._authenticator.createAndAuthenticateUser(formData);
+	}
+
+	async createMercado (formData) {
+		return await this._callApi("api/v1/mercado/mercado/cadastrar", "POST", formData);
+	}
+
     async _callApi(path, method, data) {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;
@@ -39,12 +47,11 @@ export class ApiClient {
 					response = await this._callApiWithToken(url, method, data, token);
 				} catch (err) {
 					// Caso a atualização do token de acesso falhe, o usuário é deslogado.
-					if (err.response.status == 401) {
-						console.log('error', err)
-						this._authenticator.cleanUserState();
-					}
+					this._authenticator.cleanUserState();
+					throw err
 				}
-
+			} else {
+				throw err
 			}
 		}
 
