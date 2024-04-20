@@ -16,12 +16,12 @@ model_router = APIRouter(
 )
 
 
-@model_router.get("/eu", response_model=schemas.UsuarioBaseSchema)
+@model_router.get("/eu", response_model=schemas.UsuarioBase)
 async def read_users_me(current_user: Annotated[Usuario, Depends(get_current_active_user)],):
     return current_user
 
 
-@model_router.post("/register", summary=f"Registrar", response_model=schemas.UsuarioBaseSchema)
+@model_router.post("/register", summary=f"Registrar", response_model=schemas.UsuarioBase)
 async def create_user(db: AsyncDBDependency, data: schemas.UsuarioAuth):
     return await UsuarioUseCase.create_usuario(db, data)
 

@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "expo-linear-gradient": "^12.7.2",
-    "react-native-linear-gradient": "^2.8.3",
-    "styled-components": "^6.1.8",
-    "react-native-safe-area-context": "4.8.2"
-  }
-}

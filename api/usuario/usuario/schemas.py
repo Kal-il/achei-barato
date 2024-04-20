@@ -3,11 +3,11 @@ from datetime import datetime
 import uuid
 
 
-class UsuarioBaseSchema(BaseModel):
-
-    nome: str = Field(..., max_length=255, description="Nome do usuário")
+class UsuarioBase(BaseModel):
     id: uuid.UUID = Field(..., description="Identificador único do usuário")
+    nome: str = Field(..., max_length=255, description="Nome do usuário")
     email: EmailStr = Field(..., description="E-mail do usuário")
+    dono_mercado: bool = Field(..., description="Dono de mercado")
     is_active: bool = Field(default=True, description="Usuário ativo")
     is_superuser: bool = Field(default=False, description="Usuário superuser")
     created_at: datetime = Field(..., description="Data de criação do usuário")

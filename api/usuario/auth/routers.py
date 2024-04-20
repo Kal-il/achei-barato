@@ -16,7 +16,7 @@ model_router = APIRouter(
 
 
 @model_router.post("/login", summary=f"Login usuário")
-async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> schemas.TokenSchema | None:
+async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> schemas.TokenSchema:
     return await AuthUseCase.authenticate(db, data.username, data.password)
 
 
