@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 
 const RegisterScreen = () => {
+  const navigation = useNavigation();
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,8 +20,7 @@ const RegisterScreen = () => {
   };
 
   const handleGoBack = () => {
-    // Lógica para voltar para a tela anterior
-    console.log('Voltar para tela anterior');
+    navigation.goBack();
   };
 
   return (
@@ -29,20 +30,18 @@ const RegisterScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      {/* Botão de voltar no canto superior esquerdo */}
       <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
         <Image
           source={require('../../assets/seta2.png')}
           style={styles.goBackImage}
         />
       </TouchableOpacity>
-      {/* Logo no canto superior direito */}
       <Image
         source={require('../../assets/logo2.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>
-        Primeiro,seu cadastro {"\n"}
+        Primeiro, seu cadastro {"\n"}
         <Text style={styles.highlightText}>pessoal</Text>
       </Text>
       <TextInput
@@ -59,7 +58,6 @@ const RegisterScreen = () => {
         value={email}
         onChangeText={setEmail}
       />
-      
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -74,31 +72,27 @@ const RegisterScreen = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Link href= "/StoreRegister/RegisterScreen2" asChild>
+      <Link href="/StoreRegister/RegisterScreen2" asChild>
         <TouchableOpacity style={styles.button} onPress={handleRegister} >
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>
       </Link>
-      
-      
-
-      </LinearGradient>
-    
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   highlightText: {
-    color: '#7F48CA', // Cor diferente apenas para a palavra "empresa"
-    fontWeight: 'bold', // Pode adicionar outros estilos necessários
+    color: '#7F48CA',
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#5A6BA9',
-    width: '100%', // Define a largura para ocupar 100% da largura do dispositivo
-    height: '100%', // Define a altura para ocupar 100% da altura do dispositivo
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 24,
@@ -107,7 +101,6 @@ const styles = StyleSheet.create({
     color: "#F67235",
   },
   input: {
-    
     width: '80%',
     height: 50,
     borderWidth: 1,

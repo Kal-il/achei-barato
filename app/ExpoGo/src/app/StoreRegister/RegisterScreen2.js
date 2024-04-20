@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 
 
 const RegisterScreen = () => {
+    const navigation = useNavigation();
   const [cnpj, setCnpj] = useState('');
   const [nomeempresa, setNomeempresa] = useState('');
   const [razaosocial, setRazaosocial] = useState('');
@@ -22,7 +23,7 @@ const RegisterScreen = () => {
 
   const handleGoBack = () => {
     // Lógica para voltar para a tela anterior
-    console.log('Voltar para tela anterior');
+    navigation.goBack();
   };
 
   return (
@@ -52,7 +53,7 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Nome da sua empresa"
-        keyboardType="default"
+        keyboardType="TextInput"
         autoCapitalize="none"
         value={nomeempresa}
         onChangeText={setNomeempresa}
@@ -60,7 +61,7 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Razão Social"
-        keyboardType="default"
+        keyboardType="TextInput"
         autoCapitalize="none"
         value={razaosocial}
         onChangeText={setRazaosocial}
