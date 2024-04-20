@@ -10,51 +10,42 @@ import {
 	ActivityIndicator 
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { deleteToken } from "./Auth";
-import {NavigationContainer} from '@react-navigation/native'
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import { ApiClient } from "../api/ApiClient.js";
 
-export default function App() {
-  const Stack = createNativeStackNavigator()
+    
+  
 
+export default function Dashboard() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+  
+  
+      // Botão auxiliar para deletar tokens
+      const handleDeleteTokens = () => {
+          deleteToken("access-token");
+          deleteToken("refresh-token");
+      }
+  
+    const handleLogin = () => {
+      // lógica para autenticar o usuário aqui
+      if ((username == "") & (password == "")) {
+        return;
+      }
+  
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', password);
+  
+      api = new ApiClient();
+      api.loginUser(formData);
+    };
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen}/>
-        <Stack.Screen name="TesteScreen" component={TesteScreen}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-const HomeScreen = ({navigation}) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-
-	// Botão auxiliar para deletar tokens
-	const handleDeleteTokens = () => {
-		deleteToken("access-token");
-		deleteToken("refresh-token");
-	}
-
-  const handleLogin = () => {
-    // lógica para autenticar o usuário aqui
-    if ((username == "") & (password == "")) {
-      return;
-    }
-
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('password', password);
-
-    api = new ApiClient();
-    api.loginUser(formData);
-  };
-
-  return (
-    <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
+    <LinearGradient
+    colors={['#A9C6FC', '#F67235']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
       <View style={styles.innerContainer}>
         <Image source={require('../assets/logo.png')} />
         <Text style={styles.logo}>
@@ -87,14 +78,10 @@ const HomeScreen = ({navigation}) => {
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
 
-		<View style={flexDirection="row"}>
-        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
-        <Button title="apagra" onPress={handleDeleteTokens}/>
-
-        <Button title="teste" onPress={() => navigation.navigate('TesteScreen')}/>
-		</View>
+    
 
         <TouchableOpacity> 
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
@@ -169,17 +156,26 @@ const styles = StyleSheet.create({
     color: '#7E48CC',
   },
 
-  loginBtn: {
-    width: '50%',
-    backgroundColor: '#3672F6',
-    borderRadius: 25,
-    height: '7%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: '10%',
-    marginBottom: '10%',
-  },
   loginText: {
     color: "white",
   },
+  button: {
+    width: '40%',
+    height: 40,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    marginTop: '5%',
+    marginBottom: '5%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
 });
+
