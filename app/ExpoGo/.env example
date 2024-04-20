@@ -1,0 +1,3 @@
+
+EXPO_PUBLIC_CLIENT_ID= # nosso client id
+EXPO_PUBLIC_IP_HOST = # ip da maquina
