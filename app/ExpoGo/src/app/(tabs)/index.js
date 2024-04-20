@@ -11,6 +11,7 @@ export default function Dashboard() {
         <Link href={"/notification"}>Notificações</Link>
         <Link href={"/store-profile"}>Perfil do mercado</Link>
         <Link href={"/login"}>login</Link>
+        <Link href={"/RegisterScreen"}>login</Link>
       </View>
     </View>
   );

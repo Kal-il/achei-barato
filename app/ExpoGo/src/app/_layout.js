@@ -15,6 +15,7 @@ export default function AppLayout() {
       <Stack.Screen name="user-configs/about-us" options={{title: "configurações"}} />
       <Stack.Screen name="user-configs/acount" options={{title: "configurações"}} />
       <Stack.Screen name="user-configs/notifications" options={{title: "configurações"}} />
+      <Stack.Screen name="RegisterScreen" options={{ headerShown: false }} />
 
 
 
