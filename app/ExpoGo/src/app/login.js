@@ -52,7 +52,8 @@ export default function Dashboard() {
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
           <Text style={{ color: '#7F48CA' }}>Barato</Text>
-        </Text> */}
+        </Text> 
+        
         {/* <View style={styles.inputView}>
 
           <TextInput
