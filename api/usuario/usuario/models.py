@@ -13,7 +13,6 @@ from usuario.usuario.schemas import UsuarioAuth, UsuarioBase
 
 
 class Usuario(Base):
-    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
     __tablename__ = "usuario_usuario"
 
     id: Mapped[str] = mapped_column(
