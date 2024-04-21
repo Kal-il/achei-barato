@@ -21,6 +21,9 @@ class MercadoBase(BaseModel):
     nome_responsavel: str = Field(..., max_length=255, description="Nome do responsável")
     cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
 
+class Mercado(MercadoBase):
+    pass
+
 class MercadoCreate(MercadoBase):
     usuario: Optional[UsuarioBase]
     pass

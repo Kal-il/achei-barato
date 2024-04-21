@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import HTTPException, status
+from pydantic import ConfigDict
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import Base
 from sqlalchemy import UUID, Boolean, DateTime, String, select, update
@@ -12,6 +13,7 @@ from usuario.usuario.schemas import UsuarioAuth, UsuarioBase
 
 
 class Usuario(Base):
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
     __tablename__ = "usuario_usuario"
 
     id: Mapped[str] = mapped_column(
@@ -26,6 +28,8 @@ class Usuario(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
     updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)   
+
+
 
 
 class UsuarioManager:
