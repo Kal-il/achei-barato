@@ -13,7 +13,6 @@ const RegisterScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = async () => {
-    // Lógica para registrar o usuário aqui
 	const api = new ApiClient();
 
 	data = {
