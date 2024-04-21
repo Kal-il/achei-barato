@@ -1,4 +1,4 @@
-venv
+cleavenv
 __pycache__/
 .env
 api/.env
@@ -7,7 +7,5 @@ app/ExpoGo/node_modules
 app/ExpoGo/.expo
 app/ExpoGo/%ProgramData%
 .idea
-Cong
-api/lib
 node_modules
 .vscode
