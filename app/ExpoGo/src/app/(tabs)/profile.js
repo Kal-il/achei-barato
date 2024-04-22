@@ -11,6 +11,7 @@ export default function Dashboard() {
         <Link href = {"/user-configs/configuration"}>Configurações</Link>
         <Link href={"/edit-location"}>Editar localização</Link>
         <Link href={"/logout"}>logout</Link>
+        <Link href={"/register-client/register-user-1"}>Trem</Link>
       </View>
     </View>
   );

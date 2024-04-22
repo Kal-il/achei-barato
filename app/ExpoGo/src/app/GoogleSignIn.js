@@ -63,7 +63,6 @@ export const GoogleSignInScreen = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View style={{ alignItems:'center' }}>
       <GoogleSigninButton
         style={{ width: 192, height: 48}}
         size={GoogleSigninButton.Size.Wide}
@@ -72,17 +71,6 @@ export const GoogleSignInScreen = () => {
       />
 
       </View>
-      <View>
-      <Button
-      onPress={signOut}
-      title="LogOut"
-      color="red">
-
-
-  </Button>
-  </View>
-    </View>
-    
   );
 };
 
