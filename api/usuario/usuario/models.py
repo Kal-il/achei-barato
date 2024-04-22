@@ -55,6 +55,16 @@ class UsuarioManager:
             return _usuario
         except Exception as e:
             return None
+        
+    async def get_usuario_by_id(self, id: uuid.UUID) -> Optional[Usuario]:  
+        try:
+            _query = select(Usuario).where(Usuario.id == id)
+            _usuario = await self.db.execute(_query)
+            _usuario = _usuario.scalar()
+
+            return _usuario
+        except Exception as e:
+            return None
 
     async def set_dono_mercado(self, usuario: UsuarioBase):
         try:
