@@ -13,20 +13,20 @@ const RegisterScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = async () => {
-	const api = new ApiClient();
+    const api = new ApiClient();
 
-	data = {
-			nome: username,
-			email: email,
-			password: password
-		}
+    data = {
+        nome: username,
+        email: email,
+        password: password
+      }
 
-	let erros;
-	try {
-		await api.createUser(data);
-	} catch (err) {
-		erros = err.response.data.detail;
-	}
+    let erros;
+    try {
+      await api.createUser(data);
+    } catch (err) {
+      erros = err.response.data.detail;
+    }
 
   };
 

@@ -15,7 +15,6 @@ class ConsumidorUseCase:
         consumidor_manager = ConsumidorManager(db=db)
 
         try:
-            breakpoint()
             if await consumidor_manager.get_consumidor_by_email(data.email):
                 raise HTTPException(
                     status_code=status.HTTP_409_CONFLICT,
@@ -24,16 +23,16 @@ class ConsumidorUseCase:
             _consumidor = await consumidor_manager.create_consumidor(data)
             if not _consumidor:
                 raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail="Erro ao cadastrar consumidor",
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Erro ao cadastrar consumidor 1",
                 )
             
             return _consumidor
 
         except Exception as e:
             raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Erro ao cadastrar consumidor",
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro ao cadastrar consumidor 2",
             )
             
     async def create_consumidor_google(db: AsyncSession, data: ConsumidorGoogle) -> Optional[Consumidor]:

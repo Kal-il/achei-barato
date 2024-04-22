@@ -24,6 +24,7 @@ class Consumidor(Usuario):
         "inherit_condition": (id_usuario == Usuario.id),
     }
 
+
 class ConsumidorManager:
     def __init__(self, db):
         self.db = db
@@ -44,13 +45,14 @@ class ConsumidorManager:
             telefone=data.get("telefone"),
         )
 
+        breakpoint()
         self.db.add(_consumidor)
         await self.db.commit()
         return _consumidor
 
     async def get_consumidor_by_email(self, email: str):
         try:
-            _query = select(Usuario).where(Usuario.email == email)
+            _query = select(Consumidor).where(Consumidor.email == email)
             _consumidor = await self.db.execute(_query)
             _consumidor = _consumidor.scalar()
 

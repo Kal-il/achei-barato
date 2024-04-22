@@ -26,13 +26,12 @@ export const GoogleManager = () => {
   };
 
   const signIn = async () => {
+    let userInfoGoogle
     try {
       await GoogleSignin.hasPlayServices();
-      const userInfoGoogle = await GoogleSignin.signIn();
-      setUserInfo(userInfoGoogle);
+      userInfoGoogle = await GoogleSignin.signIn();
     
     } catch (error) {
-		
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -45,11 +44,12 @@ export const GoogleManager = () => {
     }
 
     try {
+  
       const signInWithGoogle = new Authenticator();
       await signInWithGoogle.googleAuthenticateUser(userInfoGoogle);
     } catch (error) {
       signOut();
-      console.error("Erro ao autenticar usuário com Google:", error);
+      console.error("Erro ao autenticar usuário com Google:", error.response);
     }
     
   };
@@ -63,7 +63,6 @@ export const GoogleSignInScreen = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View style={{ alignItems:'center' }}>
       <GoogleSigninButton
         style={{ width: 192, height: 48}}
         size={GoogleSigninButton.Size.Wide}
@@ -72,17 +71,6 @@ export const GoogleSignInScreen = () => {
       />
 
       </View>
-      <View>
-      <Button
-      onPress={signOut}
-      title="LogOut"
-      color="red">
-
-
-  </Button>
-  </View>
-    </View>
-    
   );
 };
 
