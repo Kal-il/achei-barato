@@ -23,6 +23,7 @@ models = [
     "usuario.usuario.models.Usuario",
     "usuario.consumidor.models.Consumidor",
     "mercado.mercado.models.Mercado",
+    "usuario.auth.models.UsuarioAuthGoogle",
 ]
 
 for model in models:

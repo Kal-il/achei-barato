@@ -1,6 +1,6 @@
 # Inicializando a API
-#### Autores:
-- Romeu Borges - @romeuborges19
+**Última edição:** 15/04/2024\
+**Autor:** Romeu Borges - @romeuborges19
 
 Este documento tem como objetivo fornecer um passo a passo de como inicializar o back-end do projeto num ambiente de desenvolvimento.
 
@@ -24,7 +24,7 @@ Copie o conteúdo do `.env.example` para um arquivo `.env` na raiz do projeto e 
 Exemplo:
 
 ```
-DB_ENGINE=postgresql
+DB_ENGINE=postgresql5
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=db_achei_barato
@@ -55,7 +55,7 @@ venv\Scripts\activate
 
 No Linux:
 ```
-source venv\bin\activate
+source venv/bin/activate
 ```
 
 Com o ambiente virtual inicializado, instale as dependências com o seguinte comando:
@@ -74,15 +74,15 @@ Caso você seja do front e queira testar a integração com a API, verifique, no
 
 Você utilizará esse IP como host para iniciar a API, para garantir que os requests do front cheguem no back devidamente.
 
-Volte para o diretório raiz com `cd ..` e inicie a API com o seguinte comando:
+Inicie a API com o seguinte comando:
 
 ```
-uvicorn api.main:app --host <SEU_IP> --port 8000 --reload
+uvicorn main:app --host <SEU_IP> --port 8000 --reload
 ```
 
 Caso você não queira testar nenhuma integração, basta usar:
 ```
-uvicorn api.main:app --reload
+uvicorn main:app --reload
 ```
 
 Este comando deve inicializar a aplicação sem erros.
