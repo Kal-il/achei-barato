@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
-
+import { Link, useNavigation } from "expo-router";
+import * as SecureStore from 'expo-secure-store'
 
 const RegisterScreen = () => {
-  const [cnpj, setCnpj] = useState('');
-  const [nomeempresa, setNomeempresa] = useState('');
-  const [razaosocial, setRazaosocial] = useState('');
+    const navigation = useNavigation();
+  const [cnpj, setCNPJ] = useState('');
+  const [nomeEmpresa, setNomeEmpresa] = useState('');
+  const [razaoSocial, setRazaoSocial] = useState('');
   const [telefone, setTelefone] = useState('');
 
   const handleRegister = () => {
     // Lógica para registrar o usuário aqui
     
-    console.log('Cnpj:', cnpj);
-    console.log('Nomeempresa', nomeempresa);
-    console.log('Razaosocial', razaosocial);
-    console.log('Telefone:', telefone);
-       
+	SecureStore.setItem("cnpj", cnpj);
+	SecureStore.setItem("nomeEmpresa", nomeEmpresa);
+	SecureStore.setItem("razaoSocial", razaoSocial);
+	SecureStore.setItem("telefone", telefone);
   };
 
   const handleGoBack = () => {
     // Lógica para voltar para a tela anterior
-    console.log('Voltar para tela anterior');
+    navigation.goBack();
   };
 
   return (
@@ -52,18 +52,18 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Nome da sua empresa"
-        keyboardType="default"
+        keyboardType="TextInput"
         autoCapitalize="none"
-        value={nomeempresa}
-        onChangeText={setNomeempresa}
+        value={nomeEmpresa}
+        onChangeText={setNomeEmpresa}
       />
       <TextInput
         style={styles.input}
         placeholder="Razão Social"
-        keyboardType="default"
+        keyboardType="TextInput"
         autoCapitalize="none"
-        value={razaosocial}
-        onChangeText={setRazaosocial}
+        value={razaoSocial}
+        onChangeText={setRazaoSocial}
       />
       <TextInput
         style={styles.input}
@@ -71,7 +71,7 @@ const RegisterScreen = () => {
         keyboardType="numbers-and-punctuation"
         autoCapitalize="none"
         value={cnpj}
-        onChangeText={setCnpj}
+        onChangeText={setCNPJ}
       />
       <TextInput
         style={styles.input}

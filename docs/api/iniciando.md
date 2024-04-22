@@ -24,7 +24,7 @@ Copie o conteúdo do `.env.example` para um arquivo `.env` na raiz do projeto e 
 Exemplo:
 
 ```
-DB_ENGINE=postgresql
+DB_ENGINE=postgresql5
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=db_achei_barato

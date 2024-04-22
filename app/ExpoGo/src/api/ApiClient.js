@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Authenticator } from "./Authenticator";
-import Config from "react-native-config";
 
 export class ApiClient {
 	// Classe que realiza o consumo da API. Qualquer função que chame a API 
@@ -19,6 +18,14 @@ export class ApiClient {
 	async loginUser (formData) {
 		// Função que chama endpoint para autenticar o usuário no sistema
 		return await this._authenticator.authenticateUser(formData);
+	}
+
+	async createUser (formData) {
+		return await this._authenticator.createAndAuthenticateUser(formData);
+	}
+
+	async createMercado (formData) {
+		return await this._callApi("api/v1/mercado/mercado/cadastrar", "POST", formData);
 	}
 
     async _callApi(path, method, data) {
@@ -40,11 +47,11 @@ export class ApiClient {
 					response = await this._callApiWithToken(url, method, data, token);
 				} catch (err) {
 					// Caso a atualização do token de acesso falhe, o usuário é deslogado.
-					if (err.response.status == 401) {
-						console.log('error', err)
-						this._authenticator.cleanUserState();
-					}
+					this._authenticator.cleanUserState();
+					throw err
 				}
+			} else {
+				throw err
 			}
 		}
 

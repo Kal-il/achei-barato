@@ -1,28 +1,83 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
+import { Link, useNavigation } from "expo-router";
+import * as SecureStore from 'expo-secure-store'
+import { ApiClient } from '../../api/ApiClient';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
+  const navigation = useNavigation();
+
+
   const [cep, setCep] = useState('');
   const [estado, setEstado] = useState('');
   const [cidade, setCidade] = useState('');
   const [bairro, setBairro] = useState('');
   const [endereco, setEndereco] = useState('');
 
-  const handleRegister = () => {
-    // Lógica para registrar o usuário aqui
-    
-    console.log('Cep:', cep);
-    console.log('Estado', estado);
-    console.log('Cidade', cidade);
-    console.log('Bairro:', bairro);
-    console.log('Endereco:', endereco);
+  var cnpj = SecureStore.getItem('cnpj');
+  var nomeEmpresa = SecureStore.getItem('nomeEmpresa');
+  var razaoSocial = SecureStore.getItem('razaoSocial');
+  var telefone = SecureStore.getItem('telefone');
+
        
+  const handleRegister = async () => {
+    // Lógica para registrar o usuário aqui
+   
+	  data = {
+		cnpj: cnpj,
+		razao_social: razaoSocial,
+		nome_fantasia: nomeEmpresa,
+		telefone: telefone,
+		cep: cep,
+		estado: estado,
+		cidade: cidade,
+		bairro: bairro,
+		endereco: endereco,
+		numero_endereco: 1,
+		complemento: "string",
+		nome_responsavel: "string",
+		cpf_responsavel: "09263613176",
+		usuario: {
+			id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			nome: "string",
+			email: "user@example.com",
+			dono_mercado: true,
+			is_active: true,
+			is_superuser: false,
+			created_at: "2024-04-20T19:05:32.869Z",
+			updated_at: "2024-04-20T19:05:32.869Z",
+			deleted: false
+		  }
+		}
+
+		// Chama API
+		const api = new ApiClient();
+
+		// Chama API e guarda retornados erros, caso existam.
+		let erros;
+		try {
+			await api.createMercado(data);
+		} catch (err) {
+			erros = err.response.data.detail;
+		}
+
+		if (erros) {
+			console.error(erros);
+		} else {
+			console.log('sucesso');
+		}
+
+		// Remove itens salvos no SecureStore
+		await SecureStore.deleteItemAsync("cnpj");
+		await SecureStore.deleteItemAsync("nomeEmpresa");
+		await SecureStore.deleteItemAsync("razaoSocial");
+		await SecureStore.deleteItemAsync("telefone");
   };
 
   const handleGoBack = () => {
     // Lógica para voltar para a tela anterior
-    console.log('Voltar para tela anterior');
+    navigation.goBack();
   };
 
   return (

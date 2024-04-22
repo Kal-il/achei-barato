@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
 
     ip_host: str = "127.0.0.1"
+    
+    google_client_id: str
 
     model_config = ConfigDict(env_file=".env")
 

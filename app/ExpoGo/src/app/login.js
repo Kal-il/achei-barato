@@ -52,8 +52,9 @@ export default function Dashboard() {
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
           <Text style={{ color: '#7F48CA' }}>Barato</Text>
-        </Text>
-        <View style={styles.inputView}>
+        </Text> 
+        
+        {/* <View style={styles.inputView}>
 
           <TextInput
             style={styles.inputText}
@@ -62,8 +63,8 @@ export default function Dashboard() {
             value={username}
             onChangeText={(text) => setUsername(text)}
           />
-        </View>
-        <View style={styles.inputView}>
+        </View> */}
+        {/* <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
             placeholder="Senha"
@@ -72,11 +73,11 @@ export default function Dashboard() {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-        </View>
-        
-        <TouchableOpacity> 
+        </View> */}
+        <GoogleSignInScreen/>
+        {/* <TouchableOpacity> 
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>

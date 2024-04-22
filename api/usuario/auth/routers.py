@@ -16,7 +16,7 @@ model_router = APIRouter(
 
 
 @model_router.post("/login", summary=f"Login usuário")
-async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> schemas.TokenSchema | None:
+async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> schemas.TokenSchema:
     return await AuthUseCase.authenticate(db, data.username, data.password)
 
 
@@ -24,5 +24,9 @@ async def login(db: AsyncDBDependency, data: Annotated[OAuth2PasswordRequestForm
 async def refresh_token(db: AsyncDBDependency, data: schemas.RefreshTokenSchema) -> schemas.TokenSchema:
     return await AuthUseCase.refresh_access_token(db, data.refresh_token)
 
+
+@model_router.post("/google", summary="Endpoint para administrar registros e autenticação com Google")
+async def auth_google(db: AsyncDBDependency, token: schemas.GoogleAuthSchema) -> schemas.TokenSchema:
+    return await AuthUseCase.authenticate_google(db, token)
 
 router.include_router(model_router)

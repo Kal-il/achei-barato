@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 import axios from "axios";
+import { useState } from 'react';
 
 export class Authenticator {
 	// Classe que implementa lógicas e chamadas de API relacionadas
@@ -33,8 +34,32 @@ export class Authenticator {
 		SecureStore.setItem('refresh-token', tokenData);
 	}
 
+	async createAndAuthenticateUser(userData) {
+        path = `api/v1/usuario/usuario/register`;
+        url = `${this._apiBaseUrl}${path}`;
+
+		let email;
+
+        await axios
+        .post(url, userData)
+        .then(async (response) => {
+            if (response.data.email) {
+				email = response.data.email;
+            }
+        })
+
+		const formData = new URLSearchParams();
+      	formData.append('username', email);
+      	formData.append('password', userData.password);
+
+		await this.authenticateUser(formData);
+
+		console.log(this.fetchAccessToken())
+	}
+
 	async authenticateUser(userData) {
 		// Função que chama endpoint de Login
+		console.log('oi');
         path = `api/v1/usuario/auth/login`;
         url = `${this._apiBaseUrl}${path}`;
 
@@ -51,6 +76,27 @@ export class Authenticator {
         .catch(function (error) {
             console.error("erro ao logar usuário:", error)
         });
+	}
+
+	async googleAuthenticateUser(userData) {
+		// Função que chama endpoint de autenticação e registros com Google
+
+		path = `api/v1/usuario/auth/google`;
+		url = `${this._apiBaseUrl}${path}`;
+
+
+		await axios
+		.post(url,{
+			token_google: userData.idToken})
+		.then(async (response) => {
+			if (response.data.access_token) {
+				this._setAccessToken(response.data.access_token);
+				this._setRefreshToken(response.data.refresh_token);
+			}
+		})
+		.catch(function (error) {
+			throw error
+		});
 	}
 
 	async refreshAccessToken() {
@@ -86,4 +132,7 @@ export class Authenticator {
 		this._deleteRefreshToken();
 		this._deleteAccessToken();
 	}
+
+	
+
 }
