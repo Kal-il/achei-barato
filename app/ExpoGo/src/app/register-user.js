@@ -35,7 +35,7 @@ const CadastroScreen = ({ navigation }) => {
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image source={require('./assets/logo.png')} 
+        <Image source={require('../assets/logo.png')} 
           style={{ width: 85, height: 85, marginTop: '20%' }}
         />
         <Text style={styles.logo}>

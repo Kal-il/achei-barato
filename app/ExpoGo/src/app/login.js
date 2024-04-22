@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
+import { GoogleSignInScreen, GoogleLoginScreen } from "../components/GoogleSignIn.js";
 
     
   
@@ -54,7 +55,7 @@ export default function Dashboard() {
           <Text style={{ color: '#7F48CA' }}>Barato</Text>
         </Text> 
         
-        {/* <View style={styles.inputView}>
+         <View style={styles.inputView}>
 
           <TextInput
             style={styles.inputText}
@@ -63,8 +64,8 @@ export default function Dashboard() {
             value={username}
             onChangeText={(text) => setUsername(text)}
           />
-        </View> */}
-        {/* <View style={styles.inputView}>
+        </View> 
+         <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
             placeholder="Senha"
@@ -73,15 +74,19 @@ export default function Dashboard() {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-        </View> */}
-        <GoogleSignInScreen/>
-        {/* <TouchableOpacity> 
+        </View> 
+        
+         <TouchableOpacity> 
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity> 
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
+
+        <Text style={styles.loginText}>Ou</Text>
+
+        <GoogleSignInScreen style={{margin: 2}}/>
     
 
         <TouchableOpacity> 

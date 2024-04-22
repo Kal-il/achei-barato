@@ -52,16 +52,17 @@ export default function Dashboard() {
             <Text style={styles.textLocalization}>Localização</Text>
           </View>
           <CardPromotion 
-          promotionName={"Batata"} 
+          promotionName={"Banana madura"} 
           promotionPrice={"R$ 05,00"} 
           tag = {"Mais Barato"} 
           imageSource={require('../../assets/banana.png')}
           storeProfile={require('../../assets/supermercado.png')}
           />
 
+
           {/* <Link href="/promotion">Promoção</Link>
         
-        <Link href={"/login"}>login</Link>
+       
         <Link href={"/StoreRegister/RegisterScreen"}>tela de registro de mercado</Link>
         */}
         </ScrollView>

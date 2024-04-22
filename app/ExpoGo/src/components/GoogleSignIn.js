@@ -70,16 +70,13 @@ export const GoogleSignInScreen = () => {
         color={GoogleSigninButton.Color.Dark}
         onPress={signIn} 
       />
-
-      </View>
-      <View>
-      <Button
+ <Button
       onPress={signOut}
       title="LogOut"
       color="red">
-
-
-  </Button>
+      </Button>
+      </View>
+      <View>
   </View>
     </View>
     

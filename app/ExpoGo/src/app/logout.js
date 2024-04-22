@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 
-
 export default function Dashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
         <Text style={styles.title}>Logout</Text>
+        
       </View>
     </View>
   );

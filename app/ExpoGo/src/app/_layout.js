@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import GradientBackground from './components/gradient';
+import GradientBackground from '../components/gradient';
 
 export default function AppLayout() {
   return (
