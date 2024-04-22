@@ -5,12 +5,10 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
-  Button,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link } from "expo-router";
+import * as SecureStore from 'expo-secure-store'
 
 const CadastroScreen = ({ navigation }) => {
   const [cep, setCep] = useState("");

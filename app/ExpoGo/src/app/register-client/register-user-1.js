@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Button,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link } from "expo-router";
+import * as SecureStore from 'expo-secure-store'
+import GoogleSignInScreen from "../GoogleSignIn";
 
 const CadastroScreen = ({ navigation }) => {
   const [nome, setNome] = useState("");
@@ -35,11 +36,11 @@ const CadastroScreen = ({ navigation }) => {
 
   const formatarTelefone = (input) => {
     let formattedInput = input.replace(/\D/g, "");
-    formattedInput = formattedInput.substring(0, 11);
-    formattedInput = formattedInput.replace(
-      /^(\d{2})(\d{5})(\d{4})/,
-      "($1) $2-$3"
-    );
+    // formattedInput = formattedInput.substring(0, 11);
+    // formattedInput = formattedInput.replace(
+    //   /^(\d{2})(\d{5})(\d{4})/,
+    //   "($1) $2-$3"
+    // );
     setTelefone(formattedInput);
   };
 
@@ -97,6 +98,7 @@ const CadastroScreen = ({ navigation }) => {
           <View style={styles.line}></View>
         </View>
 
+      <GoogleSignInScreen/>
         <View style={styles.socialBtnContainer}>
           <TouchableOpacity
             style={[styles.socialBtn, { backgroundColor: "#fff" }]}

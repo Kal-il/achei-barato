@@ -6,16 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Button,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
+import * as SecureStore from 'expo-secure-store'
+import { ApiClient } from "../../api/ApiClient";
 
 const CadastroScreen = ({ navigation }) => {
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
-  const handleCadastrar = () => {
+  const handleCadastrar = async () => {
     // Lógica para cadastrar o usuário aqui
     if (
       senha === "" ||
@@ -27,9 +27,41 @@ const CadastroScreen = ({ navigation }) => {
       return;
     }
 
+    const nome = SecureStore.getItem("nome");
+    const email = SecureStore.getItem("email");
+    const telefone = SecureStore.getItem("telefone");
+    const cep = SecureStore.getItem("cep");
+    const estado = SecureStore.getItem("estado");
+    const cidade = SecureStore.getItem("cidade");
+    const bairro = SecureStore.getItem("bairro");
+    const endereco = SecureStore.getItem("endereco");
+
+    costumer = {
+      nome: nome,
+      email: email,
+      password: senha,
+      cep: cep,
+      estado: estado,
+      cidade: cidade,
+      bairro: bairro,
+      endereco: endereco,
+      numero_endereco: 1,
+      telefone: parseInt(telefone)
+    }
+
+    const api = new ApiClient();
     
+    let erros;
+    try {
+      await api.createCostumer(costumer);
+    } catch (err) {
+      erros = err.response;
+      console.log('erro', err)
+    }
 
-
+    if (erros) {
+      console.error(erros);
+    }
   };
 
   return (
@@ -63,10 +95,6 @@ const CadastroScreen = ({ navigation }) => {
             onChangeText={(text) => setConfirmarSenha(text)}
           />
         </View>
-
-
- 
-
 
         <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
           <Text style={styles.loginText}>Cadastrar</Text>
