@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
+import SignOutButton from "../components/SignOut.js";
 
 export default function Dashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Text style={styles.title}>Logout</Text>
-        
+        <SignOutButton/>
       </View>
     </View>
   );

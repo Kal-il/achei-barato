@@ -30,9 +30,9 @@ export const GoogleManager = () => {
       await GoogleSignin.hasPlayServices();
       const userInfoGoogle = await GoogleSignin.signIn();
       setUserInfo(userInfoGoogle);
-    
+
     } catch (error) {
-		
+
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -51,7 +51,7 @@ export const GoogleManager = () => {
       signOut();
       console.error("Erro ao autenticar usuário com Google:", error);
     }
-    
+
   };
 
   return { userInfo, signIn, signOut };
@@ -63,23 +63,16 @@ export const GoogleSignInScreen = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View style={{ alignItems:'center' }}>
-      <GoogleSigninButton
-        style={{ width: 192, height: 48}}
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={signIn} 
-      />
- <Button
-      onPress={signOut}
-      title="LogOut"
-      color="red">
-      </Button>
+      <View style={{ alignItems: 'center' }}>
+        <GoogleSigninButton
+          style={{ width: 192, height: 48 }}
+          size={GoogleSigninButton.Size.Wide}
+          color={GoogleSigninButton.Color.Dark}
+          onPress={signIn}
+        />
       </View>
-      <View>
-  </View>
     </View>
-    
+
   );
 };
 

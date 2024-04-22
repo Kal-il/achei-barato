@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
-import { GoogleSignInScreen, GoogleLoginScreen } from "../components/GoogleSignIn.js";
+import { GoogleSignInScreen} from "../components/GoogleSignIn.js";
 
     
   
@@ -27,7 +27,7 @@ export default function Dashboard() {
           deleteToken("refresh-token");
       }
   
-    const handleLogin = () => {
+    const handleLogin = async () => {
       // lógica para autenticar o usuário aqui
       if ((username == "") & (password == "")) {
         return;
@@ -38,7 +38,10 @@ export default function Dashboard() {
       formData.append('password', password);
   
       api = new ApiClient();
-      api.loginUser(formData);
+      const response = await api.loginUser(formData);
+
+      await AsyncStorage.setItem("access-token", response["access"]);
+
     };
   return (
     <LinearGradient
