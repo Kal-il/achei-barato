@@ -28,6 +28,10 @@ export class ApiClient {
 		return await this._callApi("api/v1/mercado/mercado/cadastrar", "POST", formData);
 	}
 
+	async createCostumer (formData) {
+		return await this._authenticator.createCostumer(formData);
+	}
+
     async _callApi(path, method, data) {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;

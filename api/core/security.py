@@ -71,9 +71,7 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(
-            token, settings.secret_key, algorithms=settings.algorithm
-        )
+        payload = jwt.decode(token, settings.secret_key, algorithms=settings.algorithm)
         email = payload.get("sub")
         email = str(email)
         if email is None:
@@ -94,23 +92,23 @@ async def get_current_active_user(
 ):
     if not current_user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Usuário inativo."
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Usuário inativo."
         )
     return current_user
 
 
 def verify_token_google(token: str) -> Optional[dict]:
-        try:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.google_client_id)
-            
-            data = {
-                "email": idinfo['email'],
-                "nome": idinfo['name'],
-                "picture": idinfo['picture'],
-                "id": idinfo['sub'],
-            }
-            return data
-        except ValueError:
-            return None
-        
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            token, requests.Request(), settings.google_client_id
+        )
+
+        data = {
+            "email": idinfo["email"],
+            "nome": idinfo["name"],
+            "picture": idinfo["picture"],
+            "id": idinfo["sub"],
+        }
+        return data
+    except ValueError:
+        return None
