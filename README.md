@@ -9,6 +9,7 @@
 * [Cabeçalho](#projetos-de-sistemas---20241--universidade-federal-do-tocantins---palmas)
 * [Descrição do projeto](#sobre-achei-barato)
 * [Escopo](#escopo)
+* [Relatórios de Gestão](#relatótios-de-gestão)
 * [Requisitos funcionais](#definindo-os-requisitos-funcionais-do-projeto)
 
 ## Projetos de Sistemas - 2024.1 | Universidade Federal do Tocantins - Palmas
@@ -25,6 +26,14 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 - **Épico 2 - Ações e Gerenciamento do Mercado:**
 - **Épico 3 - Gerenciamento do Produto:**
 - **Épico 4 - Gerenciamento da Promoção:**
+
+---
+## Relatórios de gestão
+- **Sprint 1 - [Relatório 1](https://docs.google.com/spreadsheets/d/1JYtBeIh1ozdBSjyhj6umkUPKthkBhvYNAX-quXvdXMw/edit?usp=sharing)
+- **Sprint 2 - [Relatório 2](https://docs.google.com/spreadsheets/d/1RNmKx5fS-MpNN2gncAuM-W69uN_GUAbJRsWX5HXrOY8/edit?usp=sharing)
+- **Sprint 3 -
+- **Sprint 4 -
+- **Sprint 5 -
 
 ---
 ## Definindo os requisitos funcionais do projeto
