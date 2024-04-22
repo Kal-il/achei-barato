@@ -10,3 +10,4 @@ app/ExpoGo/%ProgramData%
 node_modules
 .vscode
 venv
+api/
