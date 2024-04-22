@@ -68,7 +68,6 @@ class AuthUseCase:
     
     async def authenticate_google(db: AsyncSession, token: GoogleAuthSchema):
         try:
-            dia = 10/0
             data_user = verify_token_google(token.token_google)   
             
             if not data_user:
@@ -114,7 +113,7 @@ class AuthUseCase:
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Erro durante a autenticação com Google: %s" % e,
+                detail=f"Erro durante a autenticação com Google: {e}",
             )
     
  

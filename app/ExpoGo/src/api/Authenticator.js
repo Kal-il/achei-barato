@@ -57,6 +57,22 @@ export class Authenticator {
 		console.log(this.fetchAccessToken())
 	}
 
+	async createCostumer(costumerData) {
+        path = `api/v1/usuario/consumidor/create`;
+        url = `${this._apiBaseUrl}${path}`;
+
+		console.log('url', url)
+
+        await axios
+        .post(url, costumerData)
+        .then(async (response) => {
+			console.log('sucesso', response);
+        })
+		.catch(function (error) {
+            throw error;
+        });
+	}
+
 	async authenticateUser(userData) {
 		// Função que chama endpoint de Login
 		console.log('oi');
@@ -83,7 +99,6 @@ export class Authenticator {
 
 		path = `api/v1/usuario/auth/google`;
 		url = `${this._apiBaseUrl}${path}`;
-
 
 		await axios
 		.post(url,{

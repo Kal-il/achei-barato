@@ -11,7 +11,13 @@ export default function Dashboard() {
         <Link href = {"/user-configs/configuration"}>Configurações</Link>
         <Link href={"/edit-location"}>Editar localização</Link>
         <Link href={"/logout"}>logout</Link>
+<<<<<<< HEAD
         <Link href={"/login"}>login</Link>
+=======
+        <Link href={"/register-client/register-user-1"}>Trem</Link>
+        <Link href={"/login"}>Login</Link>
+        <Link href={"SuperMarkets/RegisterScreen"}>Cadastrar Mercado</Link>
+>>>>>>> desenvolvimento
       </View>
     </View>
   );

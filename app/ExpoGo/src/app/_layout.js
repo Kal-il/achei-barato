@@ -31,6 +31,8 @@ export default function AppLayout() {
       <Stack.Screen name="configuration" options={{title: "configurações"}} />
       <Stack.Screen name="about-us" options={{title: "Sobre o achei barato"}} />
       <Stack.Screen name="acount" options={{title: "conta"}} />
+      <Stack.Screen name="register-client/register-user-1" options={{title: "registrar consumidor"}}/>
+      <Stack.Screen name="register-client/register-user-2" options={{title: "registrar consumidor - segunda etapa"}}/>
       <Stack.Screen name="notificationsConfig" options={{title: "notificações"}} />
       <Stack.Screen name="SuperMarkets/RegisterScreen" options={{}} />
       <Stack.Screen name="SuperMarkets/RegisterScreen2"  />
