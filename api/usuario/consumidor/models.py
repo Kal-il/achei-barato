@@ -32,20 +32,19 @@ class ConsumidorManager:
     async def create_consumidor(self, data):
         
         _consumidor = Consumidor(
-            nome=data.get("nome"),
-            email=data.get("email"),
-            hashed_password=data.get("hashed_password"), 
-            cep=data.get("cep"),
-            estado=data.get("estado"),
-            cidade=data.get("cidade"),
-            bairro=data.get("bairro"),
-            endereco=data.get("endereco"),
-            complemento=data.get("complemento"),
-            numero_endereco=data.get("numero_endereco"),
-            telefone=data.get("telefone"),
+            nome=data.nome,
+            email=data.email,
+            hashed_password=get_hashed_password(data.password), 
+            cep=data.cep,
+            estado=data.estado,
+            cidade=data.cidade,
+            bairro=data.bairro,
+            endereco=data.endereco,
+            complemento=data.complemento,
+            numero_endereco=data.numero_endereco,
+            telefone=data.telefone,
         )
 
-        breakpoint()
         self.db.add(_consumidor)
         await self.db.commit()
         return _consumidor

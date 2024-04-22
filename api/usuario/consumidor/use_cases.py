@@ -20,7 +20,16 @@ class ConsumidorUseCase:
                     status_code=status.HTTP_409_CONFLICT,
                     detail="Este e-mail já está sendo usado",
                 )
+                
+            erros = data.validar_campos()
+            if erros:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=erros,
+                )
+                
             _consumidor = await consumidor_manager.create_consumidor(data)
+            
             if not _consumidor:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -62,6 +71,7 @@ class ConsumidorUseCase:
                         detail="Este e-mail já está sendo usado",
                     )
                 else:
+                    
                     _data_consumidor = {
                         "nome": data_user.get("nome"),
                         "email": data_user.get("email"),
@@ -76,8 +86,8 @@ class ConsumidorUseCase:
                         "telefone": data.telefone
                     }
                     
-
-                    _new_consumidor = await consumidor_manager.create_consumidor(_data_consumidor)
+                    _consumidor_auth_google = ConsumidorAuth(**_data_consumidor)
+                    _new_consumidor = await consumidor_manager.create_consumidor(_consumidor_auth_google)
                     
                     if not _new_consumidor:
                         raise HTTPException(
