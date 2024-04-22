@@ -9,3 +9,4 @@ app/ExpoGo/%ProgramData%
 .idea
 node_modules
 .vscode
+venv
