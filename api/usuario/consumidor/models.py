@@ -1,5 +1,5 @@
 from usuario.usuario.models import Usuario
-from sqlalchemy import UUID, ForeignKey, String, Integer, select
+from sqlalchemy import UUID, BigInteger, ForeignKey, String, Integer, select
 from sqlalchemy.orm import mapped_column, Mapped
 from core.security import get_hashed_password
 import uuid
@@ -18,7 +18,7 @@ class Consumidor(Usuario):
     endereco: Mapped[str] = mapped_column(String(255), nullable=False)
     numero_endereco: Mapped[int] = mapped_column(Integer, nullable=False)
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
-    telefone: Mapped[int] = mapped_column(Integer, nullable=False)
+    telefone: Mapped[int] = mapped_column(BigInteger, nullable=False)
 
     __mapper_args__ = {
         "inherit_condition": (id_usuario == Usuario.id),

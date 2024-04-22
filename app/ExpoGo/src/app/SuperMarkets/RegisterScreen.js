@@ -82,7 +82,7 @@ const RegisterScreen = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Link href="/StoreRegister/RegisterScreen2" asChild>
+      <Link href="/SuperMarkets/RegisterScreen2" asChild>
         <TouchableOpacity style={styles.button} onPress={handleRegister} >
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>

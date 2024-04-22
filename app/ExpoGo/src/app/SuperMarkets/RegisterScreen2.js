@@ -83,7 +83,7 @@ const RegisterScreen = () => {
       />
       
       
-      <Link href= "/StoreRegister/RegisterScreen3" asChild>
+      <Link href= "/SuperMarkets/RegisterScreen3" asChild>
         <TouchableOpacity style={styles.button} onPress={handleRegister} >
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>

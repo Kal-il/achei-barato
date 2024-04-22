@@ -45,6 +45,7 @@ const CadastroScreen = ({ navigation }) => {
       cidade: cidade,
       bairro: bairro,
       endereco: endereco,
+      complemento: "",
       numero_endereco: 1,
       telefone: parseInt(telefone)
     }
