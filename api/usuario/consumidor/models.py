@@ -29,9 +29,11 @@ class ConsumidorManager:
         self.db = db
 
     async def create_consumidor(self, data):
-
+        
         _consumidor = Consumidor(
-            id=data.get("id"),
+            nome=data.get("nome"),
+            email=data.get("email"),
+            hashed_password=data.get("hashed_password"), 
             cep=data.get("cep"),
             estado=data.get("estado"),
             cidade=data.get("cidade"),

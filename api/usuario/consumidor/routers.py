@@ -16,7 +16,7 @@ async def create_user(db: AsyncDBDependency, data: schemas.ConsumidorAuth):
     return await ConsumidorUseCase.create_consumidor(db, data)
 
 
-@model_router.post("/create/google", summary=f"Criar Consumidor com Google", response_model=schemas.ConsumidorGoogle)
+@model_router.post("/create/google", summary=f"Criar Consumidor com Google", response_model=schemas.ConsumidorBase)
 async def create_consumidor_google(db: AsyncDBDependency, data: schemas.ConsumidorGoogle):
     return await ConsumidorUseCase.create_consumidor_google(db, data)
 router.include_router(model_router)

@@ -25,10 +25,14 @@ class UsuarioAuthGoogleManager:
         select_query = select(UsuarioAuthGoogle).where(UsuarioAuthGoogle.id_google == id_google)    
         usuario_auth_google = await self.db.execute(select_query)
         _info_usuario_google = usuario_auth_google.scalar()
-        select_usuario = select(Usuario).where(Usuario.id == _info_usuario_google.id_usuario)   
-        usuario = await self.db.execute(select_usuario)
-        usuario = usuario.scalar()
-        return usuario
+        
+        if _info_usuario_google:
+            select_usuario = select(Usuario).where(Usuario.id == _info_usuario_google.id_usuario)   
+            usuario = await self.db.execute(select_usuario)
+            usuario = usuario.scalar()
+            return usuario
+        
+        return None
     
     async def create_usuario_auth_google(self, data: dict) -> UsuarioAuthGoogle:
         if usuario_auth_google := await self.get_usuario_auth_google_by_id_google(data['id_google']):

@@ -5,6 +5,8 @@ from usuario.consumidor.models import Consumidor, ConsumidorManager
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
+from core.security import verify_token_google
+from core.security import get_hashed_password
 
 
 class ConsumidorUseCase:
@@ -37,19 +39,35 @@ class ConsumidorUseCase:
     async def create_consumidor_google(db: AsyncSession, data: ConsumidorGoogle) -> Optional[Consumidor]:
         
         try:
-            
             consumidor_manager = ConsumidorManager(db=db)
             usuarioauth_manager = UsuarioAuthGoogleManager(db=db)
-            usuario_manager = UsuarioManager(db=db)
-            
-            breakpoint()
-            if _usuario_google := await usuarioauth_manager.get_usuario_auth_google_by_id_google(data.id_google):
-                breakpoint()
-                if _consumidor := await consumidor_manager.get_consumidor_by_id(_usuario_google.id):
-                    return _consumidor
+       
+            _usuario_google = await usuarioauth_manager.get_usuario_auth_google_by_id_google(data.id_google)
+            if _usuario_google: 
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Este usuário já está cadastrado com o google",
+                )
+            else:
+                data_user = verify_token_google(data.id_google)
+                if not data_user:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Erro durante a autenticação com Google.",
+                    )
+                
+                _consumidor = await consumidor_manager.get_consumidor_by_email(data_user.get("email"))
+                if _consumidor:
+                    raise HTTPException(
+                        status_code=status.HTTP_409_CONFLICT,
+                        detail="Este e-mail já está sendo usado",
+                    )
                 else:
                     _data_consumidor = {
-                        "id": _usuario_google.id,   
+                        "nome": data_user.get("nome"),
+                        "email": data_user.get("email"),
+                        "hashed_password": get_hashed_password("google"),
+                        "cep": data.cep,
                         "estado": data.estado,
                         "cidade": data.cidade,
                         "bairro": data.bairro,
@@ -58,15 +76,30 @@ class ConsumidorUseCase:
                         "complemento": data.complemento,
                         "telefone": data.telefone
                     }
-                    _consumidor = await consumidor_manager.create_consumidor(_data_consumidor)
                     
-                    if not _consumidor:
+
+                    _new_consumidor = await consumidor_manager.create_consumidor(_data_consumidor)
+                    
+                    if not _new_consumidor:
                         raise HTTPException(
                             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail="Erro ao cadastrar consumidor",
                         )
+                        
+                    _data_auth_google = {
+                        "id_google": data.id_google,
+                        "id_usuario": _new_consumidor.id,
+                    }
+                    _auth_google = await usuarioauth_manager.create_usuario_auth_google(_data_auth_google)
+                    
+                    if not _auth_google:
+                        raise HTTPException(
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="Erro durante a criação do registro de autenticação com Google.",
+                        )
+                        
+                    return _new_consumidor
                 
-                    return _consumidor
         except Exception as e:  
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
