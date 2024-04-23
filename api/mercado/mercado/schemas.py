@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from validate_docbr import CNPJ
 
 from mercado.mercado.utils import digitos_doc
@@ -7,10 +7,12 @@ from usuario.usuario.schemas import UsuarioBase
 
 
 class MercadoBase(BaseModel):
+
     cnpj: str = Field(..., max_length=18, description="CNPJ")
     razao_social: str = Field(..., description="Razão social")
     nome_fantasia: str = Field(..., description="Nome fantasia")
     telefone: int = Field(..., description="Telefone")
+    descricao: Optional[str] = Field(..., max_length=500, description="Descrição do mercado")
     cep: str = Field(..., max_length=9, description="CEP")
     estado: str = Field(..., max_length=255, description="Estado")
     cidade: str = Field(..., max_length=255, description="Cidade")
@@ -20,13 +22,6 @@ class MercadoBase(BaseModel):
     complemento: Optional[str] = Field(..., max_length=255, description="Complemento")
     nome_responsavel: str = Field(..., max_length=255, description="Nome do responsável")
     cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
-
-class Mercado(MercadoBase):
-    pass
-
-class MercadoCreate(MercadoBase):
-    usuario: Optional[UsuarioBase]
-    pass
 
     def validar_campos(self):
         erros = {}
@@ -86,6 +81,14 @@ class MercadoCreate(MercadoBase):
             _erros.append("O CEP deve conter apenas dígitos")
 
         return _erros
+
+class Mercado(MercadoBase):
+    model_config = ConfigDict(from_attributes=True)
+    pass
+
+class MercadoCreate(MercadoBase):
+    usuario: Optional[UsuarioBase]
+    pass
 
 class MercadoUpdate(MercadoBase):
     pass

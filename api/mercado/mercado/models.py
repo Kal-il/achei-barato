@@ -1,6 +1,7 @@
 import datetime
 import uuid
 
+from fastapi import HTTPException, status
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -10,13 +11,14 @@ from sqlalchemy import (
     String,
     UUID,
     select,
+    update,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import backref, relationship
 
 from core.database import Base
-from mercado.mercado.schemas import MercadoCreate
+from mercado.mercado.schemas import MercadoCreate, MercadoUpdate
 from usuario.usuario.models import Usuario
 
 
@@ -26,8 +28,8 @@ class Mercado(Base):
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    usuario_id = mapped_column(UUID, ForeignKey('usuario_usuario.id'))
-    usuario = relationship(Usuario, backref=backref("mercado", uselist=False)) 
+    usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
+    usuario = relationship(Usuario, backref=backref("mercado", uselist=False))
     cnpj: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
     razao_social: Mapped[str] = mapped_column(String(30), nullable=False)
     nome_fantasia: Mapped[str] = mapped_column(String(55), nullable=False)
@@ -43,10 +45,15 @@ class Mercado(Base):
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
     nome_responsavel: Mapped[str] = mapped_column(String(255), nullable=False)
     cpf_responsavel: Mapped[str] = mapped_column(String(11), nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)   
-   
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
 class MercadoManager:
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -74,11 +81,45 @@ class MercadoManager:
         return _mercado
 
     async def get_mercado_by_cnpj(self, cnpj: str):
-        try:
-            _query = select(Mercado).where(Mercado.cnpj == cnpj)
-            _mercado = await self.db.execute(_query)
-            _mercado = _mercado.scalar()
+        _query = select(Mercado).where(Mercado.cnpj == cnpj)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
 
-            return _mercado
-        except:
-            return None
+        return _mercado
+
+    async def get_mercado_by_usuario(self, id_usuario: str):
+        _query = select(Mercado).where(Mercado.usuario_id == id_usuario)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
+
+        return _mercado
+
+    async def get_mercados_by_nome(self, nome: str):
+        _query = select(Mercado).filter(Mercado.nome_fantasia.like(f"{nome}%"))
+        _mercados = await self.db.execute(_query)
+        _mercados = _mercados.scalars().all()
+
+        return _mercados
+
+    async def update_mercado(self, id_usuario: str, mercado: MercadoUpdate):
+        try:
+            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+                    nome_fantasia=mercado.nome_fantasia,
+                    telefone=mercado.telefone,
+                    descricao=mercado.descricao,
+                    cep=mercado.cep,
+                    estado=mercado.estado,
+                    cidade=mercado.cidade,
+                    bairro=mercado.bairro,
+                    endereco=mercado.endereco,
+                    numero_endereco=mercado.numero_endereco,
+                    complemento=mercado.complemento,
+                )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao atualizar dados do mercado: {err}",
+            )
