@@ -5,6 +5,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -26,8 +27,8 @@ class Mercado(Base):
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    usuario_id = mapped_column(UUID, ForeignKey('usuario_usuario.id'))
-    usuario = relationship(Usuario, backref=backref("mercado", uselist=False)) 
+    usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
+    usuario = relationship(Usuario, backref=backref("mercado", uselist=False))
     cnpj: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
     razao_social: Mapped[str] = mapped_column(String(30), nullable=False)
     nome_fantasia: Mapped[str] = mapped_column(String(55), nullable=False)
@@ -43,10 +44,15 @@ class Mercado(Base):
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
     nome_responsavel: Mapped[str] = mapped_column(String(255), nullable=False)
     cpf_responsavel: Mapped[str] = mapped_column(String(11), nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)   
-   
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
 class MercadoManager:
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -82,3 +88,45 @@ class MercadoManager:
             return _mercado
         except:
             return None
+
+
+class Produto(Base):
+    __tablename__ = "mercado_produto"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
+    mercado = relationship(Mercado, backref=backref("mercado", uselist=False))
+    nome: Mapped[str] = mapped_column(String(255), nullable=False)
+    descricao: Mapped[str] = mapped_column(String(500), nullable=True)
+    preco: Mapped[float] = mapped_column(Float, nullable=False)
+    preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)  
+    imagem: Mapped[str] = mapped_column(String(255), nullable=True)
+    codigo_identifcador: Mapped[str] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class Promocao(Base):
+    __tablename__ = "mercado_promocao"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    
+    data_incial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    data_final: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    percentual_desconto: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
