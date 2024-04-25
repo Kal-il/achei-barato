@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 import uuid
 
 from fastapi import HTTPException, status
@@ -6,6 +7,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -21,6 +23,9 @@ from core.database import Base
 from mercado.mercado.schemas import MercadoCreate, MercadoUpdate
 from usuario.usuario.models import Usuario
 
+from sqlalchemy.dialects.postgresql import JSONB
+from fastapi_storages import FileSystemStorage
+from fastapi_storages.integrations.sqlalchemy import ImageType
 
 class Mercado(Base):
     __tablename__ = "mercado_mercado"
