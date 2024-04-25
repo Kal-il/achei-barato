@@ -21,5 +21,7 @@ class Settings(BaseSettings):
     async_db_name_mercado: str
     async_db_user_mercado: str
     async_db_password_mercado: str
+    
+    model_config = ConfigDict(env_file=".env")
 
 settings = Settings()
