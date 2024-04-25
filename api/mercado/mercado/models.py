@@ -65,6 +65,7 @@ class MercadoManager:
             razao_social=data.razao_social,
             nome_fantasia=data.nome_fantasia,
             telefone=data.telefone,
+            descricao=data.descricao,
             cep=data.cep,
             estado=data.estado,
             cidade=data.cidade,
@@ -114,6 +115,7 @@ class MercadoManager:
                     endereco=mercado.endereco,
                     numero_endereco=mercado.numero_endereco,
                     complemento=mercado.complemento,
+                    updated_at=datetime.datetime.now()
                 )
 
             await self.db.execute(_query)

@@ -1,7 +1,8 @@
+from typing import Union
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from mercado.mercado.models import Mercado, MercadoManager
+from mercado.mercado.models import MercadoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
 
@@ -9,22 +10,23 @@ from usuario.usuario.models import Usuario, UsuarioManager
 class MercadoUseCases:
     async def update_mercado(
         self, db: AsyncSession, novo_mercado: schemas.MercadoUpdate, usuario: Usuario
-    ) -> schemas.Mercado:
+    ) -> schemas.MercadoSchema:
         if not usuario.dono_mercado:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Este usuário não é dono de mercado.",
             )
 
-        mercado_manager = MercadoManager(db=db)
-        _mercado = await mercado_manager.update_mercado(usuario.id, mercado=novo_mercado)
+        await self._validar_cadastro(db=db, data=novo_mercado)
 
-        _mercado = schemas.Mercado.model_validate(_mercado)
-        return _mercado
+        mercado_manager = MercadoManager(db=db)
+        await mercado_manager.update_mercado(
+            usuario.id, mercado=novo_mercado
+        )
 
     async def get_mercado_by_usuario(
         self, db: AsyncSession, usuario: Usuario
-    ) -> schemas.Mercado:
+    ) -> schemas.MercadoSchema:
         if not usuario.dono_mercado:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -55,10 +57,14 @@ class MercadoUseCases:
     async def cadastrar_mercado(self, db: AsyncSession, data: schemas.MercadoCreate):
         # Verifica se o usuário já é dono de mercado
         if data.usuario.dono_mercado:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Este usuário já cadastrou um mercado.",
-            )
+            mercado_manager = MercadoManager(db=db)
+            _mercado = await mercado_manager.get_mercado_by_usuario(data.usuario.id)
+            
+            if _mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Este usuário já cadastrou um mercado.",
+                )
 
         # Verifica se campos do formulário são válidos
         await self._validar_cadastro(db, data)
@@ -83,21 +89,30 @@ class MercadoUseCases:
 
         return _mercado
 
-    async def _validar_cadastro(self, db: AsyncSession, data: schemas.MercadoCreate):
+    async def _validar_cadastro(
+        self,
+        db: AsyncSession,
+        data: Union[schemas.MercadoCreate, schemas.MercadoUpdate],
+    ):
         # Método privado que verifica se o mercado já existe e realiza
         # a validação dos campos
         mercado_manager = MercadoManager(db=db)
-        _mercado = await mercado_manager.get_mercado_by_cnpj(data.cnpj)
 
-        if _mercado:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Já existe um cadastro com este CNPJ.",
-            )
+        if type(data) == schemas.MercadoCreate:
+            _mercado = await mercado_manager.get_mercado_by_cnpj(data.cnpj)
+
+            if _mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="Já existe um cadastro com este CNPJ.",
+                )
 
         _erros = data.validar_campos()
         if _erros:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=_erros)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail=_erros
+                )
 
 
 mercado_usecases = MercadoUseCases()

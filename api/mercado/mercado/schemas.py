@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 from validate_docbr import CNPJ
@@ -7,12 +8,13 @@ from usuario.usuario.schemas import UsuarioBase
 
 
 class MercadoBase(BaseModel):
-
     cnpj: str = Field(..., max_length=18, description="CNPJ")
     razao_social: str = Field(..., description="Razão social")
     nome_fantasia: str = Field(..., description="Nome fantasia")
     telefone: int = Field(..., description="Telefone")
-    descricao: Optional[str] = Field(..., max_length=500, description="Descrição do mercado")
+    descricao: Optional[str] = Field(
+        ..., max_length=500, description="Descrição do mercado"
+    )
     cep: str = Field(..., max_length=9, description="CEP")
     estado: str = Field(..., max_length=255, description="Estado")
     cidade: str = Field(..., max_length=255, description="Cidade")
@@ -20,32 +22,33 @@ class MercadoBase(BaseModel):
     endereco: str = Field(..., max_length=255, description="Endereço")
     numero_endereco: int = Field(..., description="Número")
     complemento: Optional[str] = Field(..., max_length=255, description="Complemento")
-    nome_responsavel: str = Field(..., max_length=255, description="Nome do responsável")
+    nome_responsavel: str = Field(
+        ..., max_length=255, description="Nome do responsável"
+    )
     cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
 
     def validar_campos(self):
         erros = {}
 
         if erro := self._validar_razao_social():
-            erros['razao_social'] = erro
+            erros["razao_social"] = erro
 
         if erro := self._validar_nome_fantasia():
-            erros['nome_fantasia'] = erro
+            erros["nome_fantasia"] = erro
 
         if erro := self._validar_telefone():
-            erros['telefone'] = erro
+            erros["telefone"] = erro
 
         if erro := self._validar_cep():
-            erros['cep'] = erro
+            erros["cep"] = erro
 
         if erro := self._validar_cpf_responsavel():
-            erros['cpf_responsavel'] = erro
+            erros["cpf_responsavel"] = erro
 
         if erro := self._validar_cnpj():
-            erros['cnpj'] = erro
+            erros["cnpj"] = erro
 
         return erros
-
 
     def _validar_razao_social(self):
         if len(self.razao_social) > 30:
@@ -56,19 +59,11 @@ class MercadoBase(BaseModel):
             return "O nome fantasia é muito grande."
 
     def _validar_telefone(self):
-        if len(str(self.telefone)) > 13:
+        if len(str(self.telefone)) > 11:
             return "Este número de telefone é muito grande."
 
-    def _validar_cnpj(self):
-        validador = CNPJ()
-        self.cnpj = digitos_doc(self.cnpj)
-        if len(self.cnpj) > 14 or not validador.validate(self.cnpj):
-            return "Insira um CNPJ válido."
-
-    def _validar_cpf_responsavel(self):
-        self.cpf_responsavel = digitos_doc(self.cpf_responsavel)
-        if not self.cpf_responsavel.isdigit() or len(self.cpf_responsavel) > 11:
-            return "Insira um CPF válido."
+        if len(str(self.telefone)) < 11:
+            return "Este número de telefone não é válido."
 
     def _validar_cep(self):
         _erros = []
@@ -82,13 +77,31 @@ class MercadoBase(BaseModel):
 
         return _erros
 
-class Mercado(MercadoBase):
+    def _validar_cpf_responsavel(self):
+        self.cpf_responsavel = digitos_doc(self.cpf_responsavel)
+        if not self.cpf_responsavel.isdigit() or len(self.cpf_responsavel) > 11:
+            return "Insira um CPF válido."
+
+    def _validar_cnpj(self):
+        validador = CNPJ()
+        self.cnpj = digitos_doc(self.cnpj)
+        if len(self.cnpj) > 14 or not validador.validate(self.cnpj):
+            return "Insira um CNPJ válido."
+
+
+class MercadoSchema(MercadoBase):
     model_config = ConfigDict(from_attributes=True)
+
+    created_at: Optional[datetime.datetime] = Field(..., description="Data de cadastro")
     pass
 
 class MercadoCreate(MercadoBase):
     usuario: Optional[UsuarioBase]
     pass
 
+
 class MercadoUpdate(MercadoBase):
+    cnpj: str = ""
+    nome_responsavel: str = ""
+    cpf_responsavel: str = ""
     pass
