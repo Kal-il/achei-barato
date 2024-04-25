@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 import uuid
 
 from sqlalchemy import (
@@ -20,6 +21,9 @@ from core.database import Base
 from mercado.mercado.schemas import MercadoCreate
 from usuario.usuario.models import Usuario
 
+from sqlalchemy.dialects.postgresql import JSONB
+from fastapi_storages import FileSystemStorage
+from fastapi_storages.integrations.sqlalchemy import ImageType
 
 class Mercado(Base):
     __tablename__ = "mercado_mercado"
@@ -89,6 +93,7 @@ class MercadoManager:
         except:
             return None
 
+storage = FileSystemStorage(path="./media")
 
 class Produto(Base):
     __tablename__ = "mercado_produto"
@@ -98,19 +103,25 @@ class Produto(Base):
     )
     mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
     mercado = relationship(Mercado, backref=backref("mercado", uselist=False))
-    nome: Mapped[str] = mapped_column(String(255), nullable=False)
+    nome: Mapped[str] = mapped_column(String(255), nullable=True)
+    marca: Mapped[str] = mapped_column(String(255), nullable=True)
+    data_validade: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
+    ncm_produto: Mapped[str] = mapped_column(String(10), nullable=True)
+    gtin_produto: Mapped[str] = mapped_column(String(14), nullable=True)
+    mpn_produto: Mapped[str] = mapped_column(String(30), nullable=True)
+    id_produto_erp: Mapped[str] = mapped_column(String(), nullable=True)
     descricao: Mapped[str] = mapped_column(String(500), nullable=True)
-    preco: Mapped[float] = mapped_column(Float, nullable=False)
+    preco: Mapped[float] = mapped_column(Float, nullable=True)
     preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)  
-    imagem: Mapped[str] = mapped_column(String(255), nullable=True)
-    codigo_identifcador: Mapped[str] = mapped_column(String(255), nullable=True)
+    imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
+    codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
     )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    deleted: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
 class Promocao(Base):
@@ -119,8 +130,8 @@ class Promocao(Base):
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    
-    data_incial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    produto: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
+    data_inicial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
     data_final: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
     percentual_desconto: Mapped[float] = mapped_column(Float, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(
