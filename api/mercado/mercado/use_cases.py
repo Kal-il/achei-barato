@@ -20,7 +20,7 @@ class MercadoUseCases:
 
     async def update_mercado(
         self, db: AsyncSession, novo_mercado: schemas.MercadoUpdate, usuario: Usuario
-    ) -> schemas.MercadoSchema:
+    ):
         if not usuario.dono_mercado:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -46,7 +46,7 @@ class MercadoUseCases:
 
     async def get_mercado_by_usuario(
         self, db: AsyncSession, usuario: Usuario
-    ) -> schemas.MercadoSchema:
+    ):
         if not usuario.dono_mercado:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

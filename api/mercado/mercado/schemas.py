@@ -8,7 +8,6 @@ from usuario.usuario.schemas import UsuarioBase
 
 
 class MercadoBase(BaseModel):
-    cnpj: str = Field(..., max_length=18, description="CNPJ")
     razao_social: str = Field(..., description="Razão social")
     nome_fantasia: str = Field(..., description="Nome fantasia")
     telefone: int = Field(..., description="Telefone")
@@ -22,10 +21,6 @@ class MercadoBase(BaseModel):
     endereco: str = Field(..., max_length=255, description="Endereço")
     numero_endereco: int = Field(..., description="Número")
     complemento: Optional[str] = Field(..., max_length=255, description="Complemento")
-    nome_responsavel: str = Field(
-        ..., max_length=255, description="Nome do responsável"
-    )
-    cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
 
     def validar_campos(self):
         erros = {}
@@ -41,12 +36,6 @@ class MercadoBase(BaseModel):
 
         if erro := self._validar_cep():
             erros["cep"] = erro
-
-        if erro := self._validar_cpf_responsavel():
-            erros["cpf_responsavel"] = erro
-
-        if erro := self._validar_cnpj():
-            erros["cnpj"] = erro
 
         return erros
 
@@ -77,6 +66,27 @@ class MercadoBase(BaseModel):
 
         return _erros
 
+
+class Mercado(MercadoBase):
+    """Schema acrescenta campos de CNPJ, nome e CPF do responsável."""
+
+    cnpj: str = Field(..., max_length=18, description="CNPJ")
+    nome_responsavel: str = Field(
+        ..., max_length=255, description="Nome do responsável"
+    )
+    cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
+
+    def validar_campos(self):
+        erros = super().validar_campos()
+
+        if erro := self._validar_cpf_responsavel():
+            erros["cpf_responsavel"] = erro
+
+        if erro := self._validar_cnpj():
+            erros["cnpj"] = erro
+
+        return erros
+
     def _validar_cpf_responsavel(self):
         self.cpf_responsavel = digitos_doc(self.cpf_responsavel)
         if not self.cpf_responsavel.isdigit() or len(self.cpf_responsavel) > 11:
@@ -89,19 +99,17 @@ class MercadoBase(BaseModel):
             return "Insira um CNPJ válido."
 
 
-class MercadoSchema(MercadoBase):
+class MercadoOutput(Mercado):
     model_config = ConfigDict(from_attributes=True)
 
     created_at: Optional[datetime.datetime] = Field(..., description="Data de cadastro")
     pass
 
-class MercadoCreate(MercadoBase):
+
+class MercadoCreate(Mercado):
     usuario: Optional[UsuarioBase]
     pass
 
 
 class MercadoUpdate(MercadoBase):
-    cnpj: str = ""
-    nome_responsavel: str = ""
-    cpf_responsavel: str = ""
     pass

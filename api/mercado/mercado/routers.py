@@ -2,14 +2,10 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends
 
+from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
-from mercado.mercado.schemas import (
-    MercadoBase,
-    MercadoCreate,
-    MercadoSchema,
-    MercadoUpdate,
-)
+from mercado.mercado import schemas
 from mercado.mercado.use_cases import mercado_usecases
 from usuario.usuario.models import Usuario
 
@@ -24,7 +20,7 @@ model_router = APIRouter(
 
 
 @model_router.get(
-    "/", summary="Pesquisar mercados por nome", response_model=List[MercadoSchema]
+    "/", summary="Pesquisar mercados por nome", response_model=List[schemas.Mercado]
 )
 async def get_mercado_by_nome(db: AsyncDBDependency, nome: str):
     return await mercado_usecases.get_mercado_by_nome(db=db, nome=nome)
@@ -33,10 +29,10 @@ async def get_mercado_by_nome(db: AsyncDBDependency, nome: str):
 @model_router.post("/cadastrar", summary="Cadastrar mercado.")
 async def cadastrar_mercado(
     db: AsyncDBDependency,
-    data: MercadoBase,
+    data: schemas.Mercado,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
-    mercado_data = MercadoCreate(
+    mercado_data = schemas.MercadoCreate(
         cnpj=data.cnpj,
         razao_social=data.razao_social,
         nome_fantasia=data.nome_fantasia,
@@ -60,7 +56,7 @@ async def cadastrar_mercado(
 @model_router.get(
     "/obter",
     summary="Obter mercado pelo token do usuário autenticado",
-    response_model=MercadoSchema,
+    response_model=schemas.Mercado,
 )
 async def get_mercado(
     db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
@@ -71,7 +67,7 @@ async def get_mercado(
 @model_router.put("/editar", summary="Editar dados do mercado")
 async def update_mercado(
     db: AsyncDBDependency,
-    mercado: MercadoUpdate,
+    mercado: schemas.MercadoUpdate,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
     return await mercado_usecases.update_mercado(
