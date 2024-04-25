@@ -107,6 +107,13 @@ class MercadoManager:
 
         return _mercados
 
+    async def get_mercados(self):
+        _query = select(Mercado).filter(Mercado.deleted == False)
+        _mercados = await self.db.execute(_query)
+        _mercados = _mercados.scalars().all()
+
+        return _mercados
+
     async def update_mercado(self, id_usuario: str, mercado: MercadoUpdate):
         try:
             _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
@@ -130,3 +137,80 @@ class MercadoManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao atualizar dados do mercado: {err}",
             )
+
+    async def delete_mercado_by_usuario(self, id_usuario):
+        try:
+            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+                deleted=True,
+            )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar mercado: {err}"
+            )
+
+    async def restore_mercado_by_usuario(self, id_usuario):
+        try:
+            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+                deleted=False,
+            )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao restaurar mercado: {err}"
+            )   
+
+storage = FileSystemStorage(path="./media")
+
+class Produto(Base):
+    __tablename__ = "mercado_produto"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
+    mercado = relationship(Mercado, backref=backref("mercado", uselist=False))
+    nome: Mapped[str] = mapped_column(String(255), nullable=True)
+    marca: Mapped[str] = mapped_column(String(255), nullable=True)
+    data_validade: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
+    ncm_produto: Mapped[str] = mapped_column(String(10), nullable=True)
+    gtin_produto: Mapped[str] = mapped_column(String(14), nullable=True)
+    mpn_produto: Mapped[str] = mapped_column(String(30), nullable=True)
+    id_produto_erp: Mapped[str] = mapped_column(String(), nullable=True)
+    descricao: Mapped[str] = mapped_column(String(500), nullable=True)
+    preco: Mapped[float] = mapped_column(Float, nullable=True)
+    preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)  
+    imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
+    codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class Promocao(Base):
+    __tablename__ = "mercado_promocao"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    produto: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
+    data_inicial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    data_final: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    percentual_desconto: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)

@@ -8,6 +8,16 @@ from usuario.usuario.models import Usuario, UsuarioManager
 
 
 class MercadoUseCases:
+    async def restore_mercado(self, db: AsyncSession, usuario: Usuario):
+        if not usuario.dono_mercado:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Este usuário não é dono de mercado.",
+            )
+
+        mercado_manager = MercadoManager(db=db)
+        await mercado_manager.restore_mercado_by_usuario(usuario.id)
+
     async def update_mercado(
         self, db: AsyncSession, novo_mercado: schemas.MercadoUpdate, usuario: Usuario
     ) -> schemas.MercadoSchema:
@@ -23,6 +33,16 @@ class MercadoUseCases:
         await mercado_manager.update_mercado(
             usuario.id, mercado=novo_mercado
         )
+
+    async def delete_mercado(self, db: AsyncSession, usuario: Usuario):
+        if not usuario.dono_mercado:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Este usuário não é dono de mercado.",
+            )       
+
+        mercado_manager = MercadoManager(db=db)
+        await mercado_manager.delete_mercado_by_usuario(usuario.id)
 
     async def get_mercado_by_usuario(
         self, db: AsyncSession, usuario: Usuario
@@ -40,7 +60,7 @@ class MercadoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Mercado não encontrado."
             )
 
-        _mercado = schemas.Mercado.model_validate(_mercado)
+        _mercado = schemas.MercadoSchema.model_validate(_mercado)
         return _mercado
 
     async def get_mercado_by_nome(self, db: AsyncSession, nome: str):

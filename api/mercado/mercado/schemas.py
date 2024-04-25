@@ -69,8 +69,8 @@ class MercadoBase(BaseModel):
         _erros = []
 
         self.cep = digitos_doc(self.cep)
-        if len(self.cep) > 8:
-            _erros.append("O CEP deve ter no máximo 8 caracteres")
+        if len(self.cep) != 8:
+            _erros.append("O CEP deve conter 8 dígitos")
 
         if not self.cep.isdigit():
             _erros.append("O CEP deve conter apenas dígitos")
