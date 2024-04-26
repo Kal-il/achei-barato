@@ -2,6 +2,7 @@ import datetime
 from typing import Any
 import uuid
 
+from fastapi import HTTPException, status
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -12,13 +13,14 @@ from sqlalchemy import (
     String,
     UUID,
     select,
+    update,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import backref, relationship
 
 from core.database import Base
-from mercado.mercado.schemas import MercadoCreate
+from mercado.mercado.schemas import MercadoCreate, MercadoUpdate
 from usuario.usuario.models import Usuario
 
 from sqlalchemy.dialects.postgresql import JSONB
@@ -68,6 +70,7 @@ class MercadoManager:
             razao_social=data.razao_social,
             nome_fantasia=data.nome_fantasia,
             telefone=data.telefone,
+            descricao=data.descricao,
             cep=data.cep,
             estado=data.estado,
             cidade=data.cidade,
@@ -84,14 +87,84 @@ class MercadoManager:
         return _mercado
 
     async def get_mercado_by_cnpj(self, cnpj: str):
-        try:
-            _query = select(Mercado).where(Mercado.cnpj == cnpj)
-            _mercado = await self.db.execute(_query)
-            _mercado = _mercado.scalar()
+        _query = select(Mercado).where(Mercado.cnpj == cnpj)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
 
-            return _mercado
-        except:
-            return None
+        return _mercado
+
+    async def get_mercado_by_usuario(self, id_usuario: str):
+        _query = select(Mercado).where(Mercado.usuario_id == id_usuario)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
+
+        return _mercado
+
+    async def get_mercados_by_nome(self, nome: str):
+        _query = select(Mercado).filter(Mercado.nome_fantasia.like(f"{nome}%"))
+        _mercados = await self.db.execute(_query)
+        _mercados = _mercados.scalars().all()
+
+        return _mercados
+
+    async def get_mercados(self):
+        _query = select(Mercado).filter(Mercado.deleted == False)
+        _mercados = await self.db.execute(_query)
+        _mercados = _mercados.scalars().all()
+
+        return _mercados
+
+    async def update_mercado(self, id_usuario: str, mercado: MercadoUpdate):
+        try:
+            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+                    nome_fantasia=mercado.nome_fantasia,
+                    telefone=mercado.telefone,
+                    descricao=mercado.descricao,
+                    cep=mercado.cep,
+                    estado=mercado.estado,
+                    cidade=mercado.cidade,
+                    bairro=mercado.bairro,
+                    endereco=mercado.endereco,
+                    numero_endereco=mercado.numero_endereco,
+                    complemento=mercado.complemento,
+                    updated_at=datetime.datetime.now()
+                )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao atualizar dados do mercado: {err}",
+            )
+
+    async def delete_mercado_by_usuario(self, id_usuario):
+        try:
+            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+                deleted=True,
+            )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar mercado: {err}"
+            )
+
+    async def restore_mercado_by_usuario(self, id_usuario):
+        try:
+            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+                deleted=False,
+            )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao restaurar mercado: {err}"
+            )   
 
 storage = FileSystemStorage(path="./media")
 
