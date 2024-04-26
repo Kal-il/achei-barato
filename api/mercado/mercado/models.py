@@ -1,5 +1,5 @@
 import datetime
-from typing import Any
+from typing import Any, List
 import uuid
 
 from fastapi import HTTPException, status
@@ -12,6 +12,7 @@ from sqlalchemy import (
     Integer,
     String,
     UUID,
+    delete,
     select,
     update,
 )
@@ -20,12 +21,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import backref, relationship
 
 from core.database import Base
-from mercado.mercado.schemas import MercadoCreate, MercadoUpdate, ProdutoCreate
+from mercado.mercado.schemas import MercadoCreate, MercadoUpdate, ProdutoBase
 from usuario.usuario.models import Usuario
 
 from sqlalchemy.dialects.postgresql import JSONB
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
+
+from core.redis import redis
+
 
 class Mercado(Base):
     __tablename__ = "mercado_mercado"
@@ -114,6 +118,13 @@ class MercadoManager:
 
         return _mercado_id
 
+    async def get_cnpj_by_usuario(self, id_usuario: str):
+        _query = select(Mercado.cnpj).filter(Mercado.usuario_id == id_usuario)
+        _cnpj = await self.db.execute(_query)
+        _cnpj = _cnpj.scalar()
+
+        return _cnpj
+
     async def get_mercados(self):
         _query = select(Mercado).filter(Mercado.deleted == False)
         _mercados = await self.db.execute(_query)
@@ -123,7 +134,10 @@ class MercadoManager:
 
     async def update_mercado(self, id_usuario: str, mercado: MercadoUpdate):
         try:
-            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
+            _query = (
+                update(Mercado)
+                .where(Mercado.usuario_id == id_usuario)
+                .values(
                     nome_fantasia=mercado.nome_fantasia,
                     telefone=mercado.telefone,
                     descricao=mercado.descricao,
@@ -134,8 +148,9 @@ class MercadoManager:
                     endereco=mercado.endereco,
                     numero_endereco=mercado.numero_endereco,
                     complemento=mercado.complemento,
-                    updated_at=datetime.datetime.now()
+                    updated_at=datetime.datetime.now(),
                 )
+            )
 
             await self.db.execute(_query)
             await self.db.commit()
@@ -147,8 +162,12 @@ class MercadoManager:
 
     async def delete_mercado_by_usuario(self, id_usuario):
         try:
-            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
-                deleted=True,
+            _query = (
+                update(Mercado)
+                .where(Mercado.usuario_id == id_usuario)
+                .values(
+                    deleted=True,
+                )
             )
 
             await self.db.execute(_query)
@@ -156,13 +175,17 @@ class MercadoManager:
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro ao deletar mercado: {err}"
+                detail=f"Erro ao deletar mercado: {err}",
             )
 
     async def restore_mercado_by_usuario(self, id_usuario):
         try:
-            _query = update(Mercado).where(Mercado.usuario_id == id_usuario).values(
-                deleted=False,
+            _query = (
+                update(Mercado)
+                .where(Mercado.usuario_id == id_usuario)
+                .values(
+                    deleted=False,
+                )
             )
 
             await self.db.execute(_query)
@@ -170,10 +193,12 @@ class MercadoManager:
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro ao restaurar mercado: {err}"
-            )   
+                detail=f"Erro ao restaurar mercado: {err}",
+            )
+
 
 storage = FileSystemStorage(path="./media")
+
 
 class Produto(Base):
     __tablename__ = "mercado_produto"
@@ -192,7 +217,7 @@ class Produto(Base):
     id_produto_erp: Mapped[str] = mapped_column(String(), nullable=True)
     descricao: Mapped[str] = mapped_column(String(500), nullable=True)
     preco: Mapped[float] = mapped_column(Float, nullable=True)
-    preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)  
+    preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)
     imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
     codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
@@ -203,11 +228,23 @@ class Produto(Base):
     )
     deleted: Mapped[bool] = mapped_column(Boolean, default=True)
 
+
 class ProdutoManager:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-        
+    async def clean_redis(self, id_mercado):
+        await redis.flush()
+
+    async def get_produto_by_id(self, cnpj: str, id_produto: str):
+        _produto = await redis.get_produto(cnpj=cnpj, id_produto=id_produto)
+
+        return _produto
+
+    async def sync_produtos(self, cnpj: str, produtos: List[ProdutoBase]):
+        await redis.store_produtos_hash(cnpj=cnpj, produtos=produtos)
+
+
 
 
 class Promocao(Base):

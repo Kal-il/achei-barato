@@ -1,12 +1,13 @@
+from datetime import datetime
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile
 
 from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
 from mercado.mercado import schemas
-from mercado.mercado.use_cases import mercado_usecases
+from mercado.mercado.use_cases import mercado_usecases, produto_usecases
 from usuario.usuario.models import Usuario
 
 router = APIRouter()
@@ -87,6 +88,44 @@ async def restore_mercado(
     db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
 ):
     return await mercado_usecases.restore_mercado(db=db, usuario=usuario)
+
+
+@model_router.post(
+    "/produtos/sync-produtos", summary="Sincroniza base de produtos com ERP"
+)
+async def sync_produtos(
+    db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
+):
+    produtos = []
+    for i in range(0, 10):
+        produto = schemas.ProdutoBase(
+            nome=f"pão de queijo {i}",
+            marca="pão de acúcar",
+            data_validade=datetime.now().date().strftime("%d/%m/%Y"),
+            gtin_produto="",
+            mpn_produto="",
+            id_produto_erp="",
+            codigo_produto="",
+            ncm_produto="0402.10.90",
+            preco=5.00,
+            preco_promocional=3.50,
+            descricao="pão de queijo do bom",
+        )
+
+        produtos.append(produto)
+
+    return await produto_usecases.sync_produtos(db, produtos, usuario)
+
+
+@model_router.get("/produtos/{id_produto}", summary="Obtém produto através do ID", response_model=schemas.ProdutoBase)
+async def sync_produtos(
+    db: AsyncDBDependency,
+    id_produto: str,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await produto_usecases.get_produto_by_id(
+        db=db, id_produto=id_produto, usuario=usuario
+    )
 
 
 router.include_router(model_router)

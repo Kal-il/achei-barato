@@ -1,9 +1,9 @@
-from ast import List
-from typing import Union
+from email.policy import HTTP
+from typing import List, Union
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from mercado.mercado.models import MercadoManager
+from mercado.mercado.models import MercadoManager, ProdutoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
 
@@ -31,23 +31,19 @@ class MercadoUseCases:
         await self._validar_cadastro(db=db, data=novo_mercado)
 
         mercado_manager = MercadoManager(db=db)
-        await mercado_manager.update_mercado(
-            usuario.id, mercado=novo_mercado
-        )
+        await mercado_manager.update_mercado(usuario.id, mercado=novo_mercado)
 
     async def delete_mercado(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Este usuário não é dono de mercado.",
-            )       
+            )
 
         mercado_manager = MercadoManager(db=db)
         await mercado_manager.delete_mercado_by_usuario(usuario.id)
 
-    async def get_mercado_by_usuario(
-        self, db: AsyncSession, usuario: Usuario
-    ):
+    async def get_mercado_by_usuario(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -80,7 +76,7 @@ class MercadoUseCases:
         if data.usuario.dono_mercado:
             mercado_manager = MercadoManager(db=db)
             _mercado = await mercado_manager.get_mercado_by_usuario(data.usuario.id)
-            
+
             if _mercado:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
@@ -130,15 +126,33 @@ class MercadoUseCases:
 
         _erros = data.validar_campos()
         if _erros:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, 
-                detail=_erros
-                )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=_erros)
 
 
 class ProdutoUseCases:
-    async def sync_produtos(self, db: AsyncSession, produtos: List[schemas.Produto], usuario: Usuario):
-        
-        pass
+    async def sync_produtos(self, db: AsyncSession, produtos: List[schemas.ProdutoBase], usuario: Usuario):
+        # Método que sincroniza base de produtos do ERP com banco no Redis
+        _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
+
+        produto_manager = ProdutoManager(db=db)
+        await produto_manager.sync_produtos(_cnpj, produtos)
+
+    async def get_produto_by_id(self, db: AsyncSession, id_produto: str, usuario: Usuario):
+        # Método que obtém produto através de seu ID.
+        _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
+
+        produto_manager = ProdutoManager(db=db)
+        _produto = await produto_manager.get_produto_by_id(_cnpj, id_produto)
+
+        if not _produto:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Produto não encontrado"
+            )
+
+        _produto = schemas.ProdutoBase(**_produto)
+        return _produto
+
 
 mercado_usecases = MercadoUseCases()
+produto_usecases = ProdutoUseCases()
