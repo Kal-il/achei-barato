@@ -8,13 +8,15 @@ from sqlalchemy import (
     String,
     BigInteger,
     Integer,
+    select,
 )
 from sqlalchemy.orm import mapped_column, Mapped
 import uuid
 import datetime
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
-
+from erp.mercado.schemas import MercadoCreate, ProdutoCreate
+from core.database import AsyncSession
 
 storage_logo = FileSystemStorage(path="./media/logo")
 
@@ -54,6 +56,23 @@ class Mercado(Base):
 storage = FileSystemStorage(path="./media/produtos")
 
 
+class MercadoManager:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def insert_mercado(self, mercados: list[MercadoCreate]) -> Mercado:
+        
+        mercados = [Mercado(**mercado.dict()) for mercado in mercados]
+        self.db.add_all(mercados)
+        await self.db.commit()
+        return mercados
+    
+    async def get_mercados(self):
+
+        id_mercados = await self.db.execute(select(Mercado.id).where(Mercado.deleted == False))
+        breakpoint()
+        return id_mercados.fetchmany()
+
 class Produto(Base):
     __tablename__ = "mercado_produto"
 
@@ -79,3 +98,16 @@ class Produto(Base):
         DateTime, default=datetime.datetime.now()
     )
     deleted: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class ProdutoManager:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def insert_produto(self, produto: list[Produto]) -> Produto:
+        breakpoint()
+        produtos = [Produto(**prod.dict()) for prod in produto]
+        breakpoint()
+        self.db.add_all(produto)
+        await self.db.commit()
+        return produtos
