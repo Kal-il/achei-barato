@@ -1,3 +1,4 @@
+from ast import List
 from typing import Union
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -134,5 +135,10 @@ class MercadoUseCases:
                 detail=_erros
                 )
 
+
+class ProdutoUseCases:
+    async def sync_produtos(self, db: AsyncSession, produtos: List[schemas.Produto], usuario: Usuario):
+        
+        pass
 
 mercado_usecases = MercadoUseCases()

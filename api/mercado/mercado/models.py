@@ -20,7 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import backref, relationship
 
 from core.database import Base
-from mercado.mercado.schemas import MercadoCreate, MercadoUpdate
+from mercado.mercado.schemas import MercadoCreate, MercadoUpdate, ProdutoCreate
 from usuario.usuario.models import Usuario
 
 from sqlalchemy.dialects.postgresql import JSONB
@@ -106,6 +106,13 @@ class MercadoManager:
         _mercados = _mercados.scalars().all()
 
         return _mercados
+
+    async def get_mercado_id(self, id_usuario: str):
+        _query = select(Mercado.id).filter(Mercado.usuario_id == id_usuario)
+        _mercado_id = await self.db.execute(_query)
+        _mercado_id = _mercado_id.scalar()
+
+        return _mercado_id
 
     async def get_mercados(self):
         _query = select(Mercado).filter(Mercado.deleted == False)
@@ -195,6 +202,12 @@ class Produto(Base):
         DateTime, default=datetime.datetime.now()
     )
     deleted: Mapped[bool] = mapped_column(Boolean, default=True)
+
+class ProdutoManager:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+        
 
 
 class Promocao(Base):
