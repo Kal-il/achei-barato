@@ -11,7 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link } from "expo-router";
 import * as SecureStore from 'expo-secure-store'
-import GoogleSignInScreen from "../GoogleSignIn";
+import GoogleSignInScreen from "../../components/GoogleSignIn";
 
 const CadastroScreen = ({ navigation }) => {
   const [nome, setNome] = useState("");
@@ -47,14 +47,9 @@ const CadastroScreen = ({ navigation }) => {
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
-<<<<<<< HEAD:app/ExpoGo/src/app/register-user.js
-        <Image source={require('../assets/logo.png')} 
-          style={{ width: 85, height: 85, marginTop: '20%' }}
-=======
         <Image
           source={require("../../assets/logo.png")}
           style={{ width: 85, height: 85, marginTop: "20%" }}
->>>>>>> desenvolvimento:app/ExpoGo/src/app/register-client/register-user-1.js
         />
         <Text style={styles.logo}>
           <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}

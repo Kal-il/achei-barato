@@ -29,17 +29,10 @@ export const GoogleManager = () => {
     let userInfoGoogle
     try {
       await GoogleSignin.hasPlayServices();
-<<<<<<< HEAD:app/ExpoGo/src/components/GoogleSignIn.js
-      const userInfoGoogle = await GoogleSignin.signIn();
-      setUserInfo(userInfoGoogle);
-
-    } catch (error) {
-
-=======
       userInfoGoogle = await GoogleSignin.signIn();
     
     } catch (error) {
->>>>>>> desenvolvimento:app/ExpoGo/src/app/GoogleSignIn.js
+
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelado');
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -71,7 +64,6 @@ export const GoogleSignInScreen = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-<<<<<<< HEAD:app/ExpoGo/src/components/GoogleSignIn.js
       <View style={{ alignItems: 'center' }}>
         <GoogleSigninButton
           style={{ width: 192, height: 48 }}
@@ -82,16 +74,6 @@ export const GoogleSignInScreen = () => {
       </View>
     </View>
 
-=======
-      <GoogleSigninButton
-        style={{ width: 192, height: 48}}
-        size={GoogleSigninButton.Size.Wide}
-        color={GoogleSigninButton.Color.Dark}
-        onPress={signIn} 
-      />
-
-      </View>
->>>>>>> desenvolvimento:app/ExpoGo/src/app/GoogleSignIn.js
   );
 };
 

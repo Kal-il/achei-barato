@@ -1,10 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, TextInput, Image, Dimensions, ImageBackground, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TextInput, Image, Dimensions, StatusBar} from "react-native";
 import { Link } from "expo-router";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons, Feather } from '@expo/vector-icons';
-import FavoriteButton from "../../components/favoriteButton";
 import CardPromotion from "../../components/CardComponent";
-
 import { LinearGradient } from "expo-linear-gradient";
 
 const windowDimensions = Dimensions.get('window');
@@ -58,6 +56,20 @@ export default function Dashboard() {
           imageSource={require('../../assets/banana.png')}
           storeProfile={require('../../assets/supermercado.png')}
           />
+          <CardPromotion 
+          promotionName={"Banana madura"} 
+          promotionPrice={"R$ 05,00"} 
+          tag = {"Mais Barato"} 
+          imageSource={require('../../assets/banana.png')}
+          storeProfile={require('../../assets/supermercado.png')}
+          />
+          <CardPromotion 
+          promotionName={"Banana madura"} 
+          promotionPrice={"R$ 05,00"} 
+          tag = {"Mais Barato"} 
+          imageSource={require('../../assets/banana.png')}
+          storeProfile={require('../../assets/supermercado.png')}
+          />
 
 
           {/* <Link href="/promotion">Promoção</Link>
@@ -79,16 +91,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   innerHeader: {
+    paddingTop: StatusBar.currentHeight + 5, // milagre do frontend
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: "row",
-    padding: '4%',
-    marginTop: '6%',
+    padding: '3%',
     flex: 1,
   },
   inputView: {
     flex: 1,
-    marginRight: '5%',
+    marginRight: '3%',
   },
   inputText: {
     flex: 1,
@@ -100,7 +112,7 @@ const styles = StyleSheet.create({
   notification: {
     aspectRatio: 1, // Mantém a proporção
     backgroundColor: '#fff',
-    padding: '3%',
+    padding: '2%',
     borderRadius: 100,//é um circulo
   },
   Scrolpromocoes: {

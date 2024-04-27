@@ -27,9 +27,7 @@ const CardPromotion = ({ imageSource, storeProfile, promotionName, promotionPric
           </View>
 
           <View style={styles.innerCardPromotion}>
-
-
-
+            
             <View style={styles.Nametag}>
               <Text style={styles.productName} numberOfLines={1}>{promotionName}</Text>
             </View>
