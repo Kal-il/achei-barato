@@ -1,24 +1,24 @@
+import subprocess
+
+
 class RedisProtocol:
     def __init__(self):
         self.protocol = ""
         self.length = 0
 
-    def create_protocol(self, *command):
+    def add_to_protocol(self, *command):
         proto = ""
-        proto = fr"*{len(command)}\r\n"
+        proto = f"*{len(command)}\r\n"
 
         for cmd in command:
-            proto += fr"${bytesize(cmd)}\r\n{cmd}\r\n"
+            proto += f"${bytesize(cmd)}\r\n{cmd}\r\n"
 
-        print(f"proto : {proto}")
         self.protocol += proto
 
-    def generate_protocol_file(self):
-        print("arquivo")
-        with open("protocol.txt", "w") as proto_file:
-            print('escrevendo')
-            proto_file.write(rf"{self.protocol}")
-
+    def run_protocol(self):
+        command = 'redis-cli --pipe'
+        process = subprocess.Popen(command, stdin=subprocess.PIPE, shell=True)
+        process.communicate(self.protocol.encode())
 
 def bytesize(string: str):
     return len(string.encode('utf-8'))
