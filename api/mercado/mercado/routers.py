@@ -117,6 +117,10 @@ async def sync_produtos(
     return await produto_usecases.sync_produtos(db, produtos, usuario)
 
 
+@model_router.get("/produtos", summary="Obtém todos os produtos do mercado")
+async def get_produtos(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
+    return await produto_usecases.get_produtos(db=db, usuario=usuario)
+    
 @model_router.get("/produtos/{id_produto}", summary="Obtém produto através do ID", response_model=schemas.ProdutoBase)
 async def sync_produtos(
     db: AsyncDBDependency,

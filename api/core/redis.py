@@ -64,9 +64,15 @@ class RedisCache:
         _cod_cnpj = self._get_cod_cnpj(cnpj)
 
         try:
+            _produtos = []
             for bucket in self.redis_conn.scan_iter(f"mercado_bucket:{_cod_cnpj}:*"):
-                print(bucket)
+                keys = self.redis_conn.hkeys(bucket)
+                for key in keys:
+                    _produto = self.redis_conn.hget(bucket, key)
+                    _produto = json.loads(_produto)
+                    _produtos.append(_produto)
 
+            return _produtos
         except Exception as err:
             raise Exception(f"Erro ao obter produto do cache: {err}")
 

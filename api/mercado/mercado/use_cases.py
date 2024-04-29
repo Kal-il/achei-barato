@@ -157,7 +157,7 @@ class ProdutoUseCases:
         _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
 
         produto_manager = ProdutoManager(db=db)
-        _produtos = await produto_manager.get_produtos_by_cnpj(usuario.id)
+        _produtos = await produto_manager.get_produtos_by_cnpj(_cnpj)
 
         if not _produtos:
             raise HTTPException(
@@ -167,9 +167,6 @@ class ProdutoUseCases:
 
         _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
         return _produtos
-
-
-
 
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()
