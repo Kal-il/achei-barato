@@ -241,11 +241,11 @@ class ProdutoManager:
 
         return _produto
 
+    async def get_produtos_by_cnpj(self, cnpj: str):
+        _produto = await redis.get_produtos(cnpj)
+
     async def sync_produtos(self, cnpj: str, produtos: List[ProdutoBase]):
         await redis.store_produtos_hash(cnpj=cnpj, produtos=produtos)
-
-
-
 
 class Promocao(Base):
     __tablename__ = "mercado_promocao"

@@ -60,6 +60,17 @@ class RedisCache:
 
         return _produto
 
+    async def get_produtos(self, cnpj: str):
+        _cod_cnpj = self._get_cod_cnpj(cnpj)
+
+        try:
+            for bucket in self.redis_conn.scan_iter(f"mercado_bucket:{_cod_cnpj}:*"):
+                print(bucket)
+
+        except Exception as err:
+            raise Exception(f"Erro ao obter produto do cache: {err}")
+
+
     async def flush(self):
         try:
             self.redis_conn.flushdb()

@@ -153,6 +153,23 @@ class ProdutoUseCases:
         _produto = schemas.ProdutoBase(**_produto)
         return _produto
 
+    async def get_produtos(self, db: AsyncSession, usuario: Usuario):
+        _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
+
+        produto_manager = ProdutoManager(db=db)
+        _produtos = await produto_manager.get_produtos_by_cnpj(usuario.id)
+
+        if not _produtos:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Produto não encontrado"
+            )
+
+        _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
+        return _produtos
+
+
+
 
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()
