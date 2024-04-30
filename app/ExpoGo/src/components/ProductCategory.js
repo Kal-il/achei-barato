@@ -1,7 +1,10 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Image, ImageBackground, Dimensions } from 'react-native';
 import React from 'react';
 import { Link } from "expo-router";
 import TransparentGradientBackground from './TransparentGradient';
+
+const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
+
 
 const ProductCategory = ({CategoryName, CategoryImage}) => {
     
@@ -23,13 +26,14 @@ const ProductCategory = ({CategoryName, CategoryImage}) => {
 const styles = StyleSheet.create({
 
     imageBG: {
-        width: 120,
-        height: 120,
+        width: width * 0.32,//calcula a largura da imagem de acordo com a largura da tela
+        height: height * 0.15,//calcula a altura da imagem de acordo com a altura da tela
         borderRadius: 16,
         //borderWidth: 1,
         borderColor: '#F67235',
         justifyContent: 'flex-end',
         overflow: 'hidden',
+        aspectRatio: 1,
     },
     Card: {
         height: '30%',

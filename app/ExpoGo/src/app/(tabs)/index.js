@@ -11,7 +11,7 @@ const Height = '100%';
 
 export default function Dashboard() {
   return (
-    <View style={styles.container}>
+   <>
       <LinearGradient
         colors={['#A9C6FC', '#F67235']}
         start={{ x: 0, y: 0 }}
@@ -79,40 +79,40 @@ export default function Dashboard() {
         */}
         </ScrollView>
       </ScrollView>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
-    flexDirection: "row",
+   // flexDirection: "row",
+    height: '11%',
   },
   innerHeader: {
     paddingTop: StatusBar.currentHeight + 5, // milagre do frontend
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    alignContent: 'center',
     justifyContent: 'space-between',
     flexDirection: "row",
-    padding: '3%',
-    flex: 1,
+    padding: '2%',
+   // flex: 1,
   },
   inputView: {
-    flex: 1,
-    marginRight: '3%',
+    flex: 0.95, //isso faz com que a barra de pesquisa se expanda verticalmente por 95% da header
   },
   inputText: {
-    flex: 1,
+    flex: 0.8,
     color: 'grey',
     paddingLeft: 20,
     backgroundColor: '#fff',
-    borderRadius: 24,
+    borderRadius: 16,
   },
   notification: {
+    height: '80%',
     aspectRatio: 1, // Mantém a proporção
     backgroundColor: '#fff',
-    padding: '2%',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 100,//é um circulo
   },
   Scrolpromocoes: {

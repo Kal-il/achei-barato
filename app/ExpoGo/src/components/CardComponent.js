@@ -46,7 +46,7 @@ const CardPromotion = ({ imageSource, storeProfile, promotionName, promotionPric
 
 const styles = StyleSheet.create({
   cardPromotion: {
-    height: 200,
+    height: '45%',
     margin: 10,
     borderRadius: 16,
     overflow: 'hidden',
