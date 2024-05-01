@@ -5,8 +5,8 @@ async-timeout==4.0.3
 asyncpg==0.29.0
 bcrypt==4.0.1
 beautifulsoup4==4.12.3
-boto3==1.34.92
-botocore==1.34.92
+boto3==1.34.95
+botocore==1.34.95
 cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
@@ -24,7 +24,9 @@ google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.0
 greenlet==3.0.3
 h11==0.14.0
+httpcore==1.0.5
 httplib2==0.22.0
+httpx==0.27.0
 idna==3.6
 jmespath==1.0.1
 Mako==1.3.2
@@ -32,6 +34,7 @@ MarkupSafe==2.1.5
 oauthlib==3.2.2
 passlib==1.7.4
 pillow==10.3.0
+psycopg2==2.9.9
 psycopg2-binary==2.9.9
 pyasn1==0.6.0
 pyasn1_modules==0.4.0

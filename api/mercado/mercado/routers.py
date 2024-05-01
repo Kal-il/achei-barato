@@ -10,6 +10,8 @@ from mercado.mercado import schemas
 from mercado.mercado.use_cases import mercado_usecases, produto_usecases
 from usuario.usuario.models import Usuario
 
+from mercado.mercado.erp_requests import ErpRequest 
+
 router = APIRouter()
 
 MODEL_NAME = "mercado"
@@ -131,5 +133,8 @@ async def sync_produtos(
         db=db, id_produto=id_produto, usuario=usuario
     )
 
+@model_router.get("teste/erp")
+async def teste_auth_erp():
+    return await ErpRequest.auth_erp()
 
 router.include_router(model_router)

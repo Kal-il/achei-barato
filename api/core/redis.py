@@ -82,6 +82,17 @@ class RedisCache:
             self.redis_conn.flushdb()
         except: 
             raise Exception("Erro ao limpar banco no redis.")
+        
+    async def save_string(self, key: str, value: dict | str):
+        try:
+            self.redis_conn.set(key, value)
+        except:
+            raise Exception("Erro ao salvar chave no redis.")
 
+    async def get_string(self, key: str):   
+        try:
+            return self.redis_conn.get(key)
+        except:
+            raise Exception("Erro ao obter chave no redis.")
 
 redis = RedisCache()
