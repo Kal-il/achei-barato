@@ -16,6 +16,7 @@ dnspython==2.6.1
 ecdsa==0.18.0
 email_validator==2.1.1
 exceptiongroup==1.2.0
+Faker==24.14.0
 fastapi==0.110.1
 fastapi-storages==0.3.0
 google==3.0.0
@@ -46,6 +47,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 python-jose==3.3.0
 python-multipart==0.0.9
+pytz==2024.1
 redis==5.0.4
 requests==2.31.0
 requests-oauthlib==2.0.0
