@@ -61,6 +61,7 @@ class Mercado(Base):
         DateTime, default=datetime.datetime.now()
     )
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    mercado_valido: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class MercadoManager:

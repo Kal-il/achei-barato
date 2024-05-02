@@ -1,11 +1,13 @@
 from email.policy import HTTP
 from typing import List, Union
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from mercado.mercado.models import MercadoManager, ProdutoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
+
+from mercado.mercado.erp_requests import ErpRequest
 
 
 class MercadoUseCases:
@@ -71,7 +73,12 @@ class MercadoUseCases:
 
         return _mercados
 
-    async def cadastrar_mercado(self, db: AsyncSession, data: schemas.MercadoCreate):
+    async def cadastrar_mercado(
+        self,
+        db: AsyncSession,
+        data: schemas.MercadoCreate,
+        background_tasks: BackgroundTasks,
+    ):
         # Verifica se o usuário já é dono de mercado
         if data.usuario.dono_mercado:
             mercado_manager = MercadoManager(db=db)
@@ -130,14 +137,18 @@ class MercadoUseCases:
 
 
 class ProdutoUseCases:
-    async def sync_produtos(self, db: AsyncSession, produtos: List[schemas.ProdutoBase], usuario: Usuario):
+    async def sync_produtos(
+        self, db: AsyncSession, produtos: List[schemas.ProdutoBase], usuario: Usuario
+    ):
         # Método que sincroniza base de produtos do ERP com banco no Redis
         _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
 
         produto_manager = ProdutoManager(db=db)
         await produto_manager.sync_produtos(_cnpj, produtos)
 
-    async def get_produto_by_id(self, db: AsyncSession, id_produto: str, usuario: Usuario):
+    async def get_produto_by_id(
+        self, db: AsyncSession, id_produto: str, usuario: Usuario
+    ):
         # Método que obtém produto através de seu ID.
         _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
 
@@ -146,8 +157,7 @@ class ProdutoUseCases:
 
         if not _produto:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Produto não encontrado"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
         _produto = schemas.ProdutoBase(**_produto)
@@ -161,8 +171,7 @@ class ProdutoUseCases:
 
         if not _produtos:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Produto não encontrado"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
         _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]

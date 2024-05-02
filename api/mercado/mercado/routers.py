@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, BackgroundTasks
 
 from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
@@ -9,8 +9,7 @@ from core.security import get_current_active_user
 from mercado.mercado import schemas
 from mercado.mercado.use_cases import mercado_usecases, produto_usecases
 from usuario.usuario.models import Usuario
-
-from mercado.mercado.erp_requests import ErpRequest 
+from mercado.mercado.erp_requests import ErpRequest
 
 router = APIRouter()
 
@@ -34,6 +33,7 @@ async def cadastrar_mercado(
     db: AsyncDBDependency,
     data: schemas.Mercado,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
+    background_tasks: BackgroundTasks,
 ):
     mercado_data = schemas.MercadoCreate(
         cnpj=data.cnpj,
@@ -53,7 +53,7 @@ async def cadastrar_mercado(
         usuario=usuario,
     )
 
-    return await mercado_usecases.cadastrar_mercado(db=db, data=mercado_data)
+    return await mercado_usecases.cadastrar_mercado(db=db, data=mercado_data, background_tasks=background_tasks)
 
 
 @model_router.get(
@@ -135,6 +135,6 @@ async def sync_produtos(
 
 @model_router.get("teste/erp")
 async def teste_auth_erp():
-    return await ErpRequest.auth_erp()
+    return await ErpRequest.get_produtos_promocao_erp()
 
 router.include_router(model_router)
