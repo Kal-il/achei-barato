@@ -2,8 +2,9 @@ from datetime import datetime
 import httpx
 from core.redis import redis
 from core.config import settings
-from core.redis import RedisCache
+from core.redis import RedisCache, redis_1
 import pytz
+import asyncio
 
 
 class ErpRequest:
@@ -48,32 +49,83 @@ class ErpRequest:
             return await ErpRequest.auth_erp()
         return token
 
-    async def sync_produtos_erp():
-        # sincroniza produtos do ERP com o banco de dados
 
+    async def sync_produtos_erp(page: int):
         token = await ErpRequest.verify_token_erp()
-
-        url = "http://rds.maxdata.com.br:9000/v1/produto/consultar"
+        base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar?limit=1000&page={page}"
         headers = {
             "Content-Type": "application/json",
             "empId": str(settings.emp_id),
             "Authorization": f"Bearer {token.get('token')}",
         }
-        response = httpx.get(url, headers=headers)
-
-        if response.status_code != 200:
-            raise Exception(f"Erro ao sincronizar produtos do ERP: {response.text}")
-
-        info_produtos = response.json()  # lista de produtos
-        redis_1 = RedisCache(db=1)
-        pages = info_produtos.get("pages")  
-        
-        breakpoint()
-        await redis_1.save_id_produto("123", id_produtos)
+        print(page)
+        async with httpx.AsyncClient() as client:
+                
+                response = await client.get(base_url, headers=headers)
+                response.raise_for_status()
+                
         return response.json()
+        
 
+     
     # async def get_produtos_promocao_erp():
 
     @staticmethod
     async def get_produtos_promocao_erp():
-        return await ErpRequest.sync_produtos_erp()
+            
+
+        lista_response = []
+        page = 1
+        while True:
+            response = await ErpRequest.sync_produtos_erp(page)
+            if not response['docs']:
+                break
+        
+            lista_response.extend([produto.get("proId") for produto in response['docs']])
+            page += 1
+            
+        await ErpRequest.get_produtos_promocao_real(lista_response)
+        breakpoint()
+            
+        return f"deu certo {len(lista_response)}"
+            
+            
+    async def get_produtos_promocao_real(lista_response: list):
+        token = await ErpRequest.verify_token_erp()
+        dict_produtos_promo = []
+        base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar"
+        try:
+            for id_produto in lista_response:
+                headers = {
+                    "Content-Type": "application/json",
+                    "empId": str(settings.emp_id),
+                    "Authorization": f"Bearer {token.get('token')}",
+                }
+            
+                async with httpx.AsyncClient() as client:
+                    url = f"{base_url}/{id_produto}"
+                    response = await client.get(url, headers=headers)
+                    response.raise_for_status()
+                    print(id_produto)
+                    try:
+                        response_value = response.json()    
+                    except Exception as err:
+                        response_value = response.__dict__
+                        response_value = response_value.get('_content')
+                    
+                    if response_value['vlrPromocao'] and response_value['vlrPromocao'] > 0:
+                        dict_produtos_promo.append(response_value)
+                
+            breakpoint()        
+            print(dict_produtos_promo)  
+        except Exception as err:
+            breakpoint()
+            print(err)
+            breakpoint()
+ 
+            
+        
+    
+            
+     
+        

@@ -103,3 +103,4 @@ class RedisCache:
             raise Exception("Erro ao salvar id dos produtos no redis.")
 
 redis = RedisCache()
+redis_1 = RedisCache(db=1)
