@@ -1,6 +1,6 @@
-from usuario.usuario.models import UsuarioManager
+from usuario.usuario.models import Usuario, UsuarioManager
 from usuario.auth.models import UsuarioAuthGoogleManager
-from usuario.consumidor.schemas import ConsumidorAuth, ConsumidorGoogle
+from usuario.consumidor.schemas import ConsumidorAuth, ConsumidorBase, ConsumidorGoogle, ConsumidorSchema, ConsumidorUpdate
 from usuario.consumidor.models import Consumidor, ConsumidorManager
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,12 +20,12 @@ class ConsumidorUseCase:
                 detail="Este e-mail já está sendo usado",
             )
             
-        # erros = data.validar_campos()
-        # if erros:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_400_BAD_REQUEST,
-        #         detail=erros,
-        #     )
+        erros = data.validar_campos()
+        if erros:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=erros,
+            )
             
         try:
             _consumidor = await consumidor_manager.create_consumidor(data)
@@ -109,3 +109,44 @@ class ConsumidorUseCase:
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Erro ao cadastrar consumidor",
             )
+
+    async def get_consumidor_data(db: AsyncSession, usuario: Usuario):
+        consumidor_manager = ConsumidorManager(db=db)
+        _consumidor_data = await consumidor_manager.get_consumidor_by_id(usuario.id)
+
+        if not _consumidor_data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Dados do consumidor não encontrados"
+            )
+
+        _consumidor_data = ConsumidorSchema.model_validate(_consumidor_data)
+        return _consumidor_data
+
+    async def update_consumidor_data(db: AsyncSession, new_consumidor: ConsumidorUpdate):
+        consumidor_manager = ConsumidorManager(db=db)
+        _consumidor_exists = await consumidor_manager.get_consumidor_by_id(new_consumidor.id)
+        if not _consumidor_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Não foi possível editar consumidor: usuário não encontrado."
+            )
+
+        erros = new_consumidor.validar_campos()
+        if erros:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=erros
+            )
+
+        update_fields = {}
+        for campo in new_consumidor:
+            if campo[1]:
+                update_fields[campo[0]] = campo[1]
+
+        await consumidor_manager.update_consumidor(update_fields)
+        _consumidor = await consumidor_manager.get_consumidor_by_id(new_consumidor.id)
+        return _consumidor
+
+        
+        
