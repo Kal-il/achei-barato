@@ -1,7 +1,9 @@
 import datetime
+from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+from pydantic import EmailStr
 from usuario.usuario.models import Usuario
-from sqlalchemy import UUID, BigInteger, ForeignKey, String, Integer, select, update
+from sqlalchemy import UUID, BigInteger, ForeignKey, String, Integer, exists, select, update
 from sqlalchemy.orm import mapped_column, Mapped
 from core.security import get_hashed_password
 import uuid
@@ -53,7 +55,7 @@ class ConsumidorManager:
 
     async def get_consumidor_by_email(self, email: str):
         try:
-            _query = select(Usuario).where(Usuario.email == email)
+            _query = select(Consumidor).where(Consumidor.email == email, Consumidor.deleted == False)
             _consumidor = await self.db.execute(_query)
             _consumidor = _consumidor.scalar()
 
@@ -72,10 +74,12 @@ class ConsumidorManager:
 
     async def check_consumidor_exists(self, id: UUID):
         try:
-            _query = select(Consumidor).where(Consumidor.id == id).exists
+            _query = select(Consumidor).where(Consumidor.id == id, Consumidor.deleted == False)
             _exists = await self.db.execute(_query)
+            _exists = _exists.scalar()
             return _exists
         except Exception as e:
+            print(e)
             return None       
 
     async def update_consumidor(self, consumidor_data: dict):
@@ -113,7 +117,21 @@ class ConsumidorManager:
             ).values(
                 **consumidor_data
             )
-
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Ocorreu um erro ao atualizar dados do consumidor: {e}"
+            )
+    
+    async def delete_consumidor(self, id_consumidor: UUID):
+        try:
+            _query = update(Usuario).where(
+                Usuario.id == id_consumidor
+                ).values(
+                    deleted=True
+                )
             await self.db.execute(_query)
             await self.db.commit()
         except Exception as e:
@@ -122,4 +140,28 @@ class ConsumidorManager:
                 detail=f"Ocorreu um erro ao atualizar dados do consumidor: {e}"
             )
 
-        
+    async def check_deleted_consumidor_exists(self, email: EmailStr):
+        try:
+            _query = select(Usuario).where(
+                    Usuario.email == email,
+                    Usuario.deleted == True
+                )
+            _exists = self.db.execute(_query)
+            breakpoint()
+            return _exists
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Ocorreu um erro ao atualizar dados do consumidor: {e}"
+            )
+    
+    async def restore_consumidor_by_email(self, email: EmailStr):
+        try:
+            _query = update(Usuario).where(
+                Usuario.email == email,
+                Usuario.deleted == True,
+            ).values(deleted=False)
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise err

@@ -1,6 +1,10 @@
-from usuario.usuario.models import Usuario, UsuarioManager
+from uuid import UUID
+
+from sqlalchemy.exc import IntegrityError
+from pydantic import EmailStr
+from usuario.usuario.models import Usuario
 from usuario.auth.models import UsuarioAuthGoogleManager
-from usuario.consumidor.schemas import ConsumidorAuth, ConsumidorBase, ConsumidorGoogle, ConsumidorSchema, ConsumidorUpdate
+from usuario.consumidor.schemas import ConsumidorAuth, ConsumidorGoogle, ConsumidorSchema, ConsumidorUpdate
 from usuario.consumidor.models import Consumidor, ConsumidorManager
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -146,7 +150,35 @@ class ConsumidorUseCase:
 
         await consumidor_manager.update_consumidor(update_fields)
         _consumidor = await consumidor_manager.get_consumidor_by_id(new_consumidor.id)
+        _consumidor = ConsumidorSchema.model_validate(_consumidor)
         return _consumidor
 
-        
+    async def delete_consumidor(db: AsyncSession, id_consumidor: UUID):
+        consumidor_manager = ConsumidorManager(db=db)
+        _consumidor_exists = await consumidor_manager.check_consumidor_exists(id_consumidor)
+        if not _consumidor_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Não foi possível deletar consumidor: usuário não encontrado."
+            )
+
+        await consumidor_manager.delete_consumidor(id_consumidor)
+        return "Consumidor deletado com sucesso"
+
+    async def restore_consumidor_by_email(db: AsyncSession, email: EmailStr):
+        consumidor_manager = ConsumidorManager(db=db)
+        _consumidor_exists = await consumidor_manager.check_deleted_consumidor_exists(email)
+        if not _consumidor_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Não foi possível restaurar consumidor: usuário não encontrado"
+            )
+
+        try:
+            await consumidor_manager.restore_consumidor_by_email(email)
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Existe um usuário ativo com este e-mail"
+            )
         

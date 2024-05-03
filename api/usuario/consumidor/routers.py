@@ -1,5 +1,8 @@
 from typing import Annotated
 from urllib import response
+from uuid import UUID
+
+from pydantic import EmailStr
 from core.security import get_current_active_user
 from usuario.usuario.models import Usuario
 from fastapi import APIRouter, Depends
@@ -28,8 +31,17 @@ async def create_consumidor_google(db: AsyncDBDependency, data: schemas.Consumid
 async def get_consumidor_data(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
     return await ConsumidorUseCase.get_consumidor_data(db, usuario)
 
-@model_router.put("/atualizar", summary="Atualiza dados do consumidor")
+@model_router.put("/atualizar", summary="Atualiza dados do consumidor", response_model=schemas.ConsumidorSchema)
 async def update_consumidor_data(db: AsyncDBDependency, new_consumidor: schemas.ConsumidorUpdate):
     return await ConsumidorUseCase.update_consumidor_data(db, new_consumidor)
+
+@model_router.delete("/deletar/{id_consumidor}", summary="Deleta consumidor")
+async def delete_consumidor(db: AsyncDBDependency, id_consumidor: UUID):
+    return await ConsumidorUseCase.delete_consumidor(db, id_consumidor)
+
+@model_router.post("/restaurar/{email}", summary="Restaura a conta do consumidor através do e-mail")
+async def restore_consumidor(db: AsyncDBDependency, email: EmailStr):
+    return await ConsumidorUseCase.restore_consumidor_by_email(db, email)
+    
 
 router.include_router(model_router)
