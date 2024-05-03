@@ -14,7 +14,7 @@ from core.security import get_hashed_password
 
 
 class ConsumidorUseCase:
-
+    @staticmethod
     async def create_consumidor(db: AsyncSession, data: ConsumidorAuth) -> Optional[Consumidor]:
         consumidor_manager = ConsumidorManager(db=db)
         
@@ -42,7 +42,7 @@ class ConsumidorUseCase:
         
         return _consumidor
 
-            
+    @staticmethod 
     async def create_consumidor_google(db: AsyncSession, data: ConsumidorGoogle) -> Optional[Consumidor]:
         
         try:
@@ -114,9 +114,10 @@ class ConsumidorUseCase:
                 detail="Erro ao cadastrar consumidor",
             )
 
-    async def get_consumidor_data(db: AsyncSession, usuario: Usuario):
+    @staticmethod 
+    async def get_consumidor_data(db: AsyncSession, id_consumidor: UUID):
         consumidor_manager = ConsumidorManager(db=db)
-        _consumidor_data = await consumidor_manager.get_consumidor_by_id(usuario.id)
+        _consumidor_data = await consumidor_manager.get_consumidor_by_id(id_consumidor)
 
         if not _consumidor_data:
             raise HTTPException(
@@ -127,9 +128,10 @@ class ConsumidorUseCase:
         _consumidor_data = ConsumidorSchema.model_validate(_consumidor_data)
         return _consumidor_data
 
-    async def update_consumidor_data(db: AsyncSession, new_consumidor: ConsumidorUpdate):
+    @staticmethod
+    async def update_consumidor_data(db: AsyncSession, id_consumidor: UUID, new_consumidor: ConsumidorUpdate):
         consumidor_manager = ConsumidorManager(db=db)
-        _consumidor_exists = await consumidor_manager.get_consumidor_by_id(new_consumidor.id)
+        _consumidor_exists = await consumidor_manager.get_consumidor_by_id(id_consumidor)
         if not _consumidor_exists:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -148,11 +150,12 @@ class ConsumidorUseCase:
             if campo[1]:
                 update_fields[campo[0]] = campo[1]
 
-        await consumidor_manager.update_consumidor(update_fields)
-        _consumidor = await consumidor_manager.get_consumidor_by_id(new_consumidor.id)
+        await consumidor_manager.update_consumidor(id_consumidor, update_fields)
+        _consumidor = await consumidor_manager.get_consumidor_by_id(id_consumidor)
         _consumidor = ConsumidorSchema.model_validate(_consumidor)
         return _consumidor
 
+    @staticmethod
     async def delete_consumidor(db: AsyncSession, id_consumidor: UUID):
         consumidor_manager = ConsumidorManager(db=db)
         _consumidor_exists = await consumidor_manager.check_consumidor_exists(id_consumidor)
@@ -165,6 +168,7 @@ class ConsumidorUseCase:
         await consumidor_manager.delete_consumidor(id_consumidor)
         return "Consumidor deletado com sucesso"
 
+    @staticmethod
     async def restore_consumidor_by_email(db: AsyncSession, email: EmailStr):
         consumidor_manager = ConsumidorManager(db=db)
         _consumidor_exists = await consumidor_manager.check_deleted_consumidor_exists(email)

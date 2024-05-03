@@ -29,14 +29,26 @@ async def create_consumidor_google(db: AsyncDBDependency, data: schemas.Consumid
 
 @model_router.get("/consultar", summary="Obtém dados do consumidor logado")
 async def get_consumidor_data(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
-    return await ConsumidorUseCase.get_consumidor_data(db, usuario)
+    return await ConsumidorUseCase.get_consumidor_data(db, usuario.id)
+
+@model_router.get("/consultar/{id_consumidor}", summary="Obtém dados do consumidor pelo ID")
+async def get_consumidor_data_by_id(db: AsyncDBDependency, id_usuario: UUID):
+    return await ConsumidorUseCase.get_consumidor_data(db, id_usuario)
 
 @model_router.put("/atualizar", summary="Atualiza dados do consumidor", response_model=schemas.ConsumidorSchema)
-async def update_consumidor_data(db: AsyncDBDependency, new_consumidor: schemas.ConsumidorUpdate):
-    return await ConsumidorUseCase.update_consumidor_data(db, new_consumidor)
+async def update_consumidor_data(db: AsyncDBDependency, new_consumidor: schemas.ConsumidorUpdate, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
+    return await ConsumidorUseCase.update_consumidor_data(db, usuario.id, new_consumidor)
 
-@model_router.delete("/deletar/{id_consumidor}", summary="Deleta consumidor")
-async def delete_consumidor(db: AsyncDBDependency, id_consumidor: UUID):
+@model_router.put("/atualizar/{id_consumidor}", summary="Atualiza dados do consumidor pelo ID", response_model=schemas.ConsumidorSchema)
+async def update_consumidor_data_by_id(db: AsyncDBDependency, id_consumidor: UUID, new_consumidor: schemas.ConsumidorUpdate):
+    return await ConsumidorUseCase.update_consumidor_data(db, id_consumidor, new_consumidor)
+
+@model_router.delete("/deletar", summary="Deleta consumidor")
+async def delete_consumidor(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
+    return await ConsumidorUseCase.delete_consumidor(db, usuario.id)
+
+@model_router.delete("/deletar/{id_consumidor}", summary="Deleta consumidor pelo ID")
+async def delete_consumidor_by_id(db: AsyncDBDependency, id_consumidor: UUID):
     return await ConsumidorUseCase.delete_consumidor(db, id_consumidor)
 
 @model_router.post("/restaurar/{email}", summary="Restaura a conta do consumidor através do e-mail")

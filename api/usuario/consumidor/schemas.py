@@ -21,7 +21,6 @@ class ConsumidorSchema(ConsumidorBase):
     pass
 
 class ConsumidorUpdate(BaseModel):
-    id: uuid.UUID = Field(..., description="Identificador único do usuário")
     nome: Optional[str] = Field(default="", max_length=255, description="Nome do usuário")
     email: Optional[str] = Field(default="", description="E-mail do usuário")
     cep: Optional[str] = Field(default="", max_length=8, description="CEP")
