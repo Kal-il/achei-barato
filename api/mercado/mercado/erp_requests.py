@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import httpx
 from core.redis import redis
 from core.config import settings
@@ -52,7 +53,7 @@ class ErpRequest:
 
     async def sync_produtos_erp(page: int):
         token = await ErpRequest.verify_token_erp()
-        base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar?limit=1000&page={page}"
+        base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar?limit=1000&page=195"
         headers = {
             "Content-Type": "application/json",
             "empId": str(settings.emp_id),
@@ -80,17 +81,18 @@ class ErpRequest:
             response = await ErpRequest.sync_produtos_erp(page)
             if not response['docs']:
                 break
-        
             lista_response.extend([produto.get("proId") for produto in response['docs']])
             page += 1
+            break
             
         await ErpRequest.get_produtos_promocao_real(lista_response)
-        breakpoint()
+
             
         return f"deu certo {len(lista_response)}"
             
             
     async def get_produtos_promocao_real(lista_response: list):
+        
         token = await ErpRequest.verify_token_erp()
         dict_produtos_promo = []
         base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar"
@@ -108,24 +110,23 @@ class ErpRequest:
                     response.raise_for_status()
                     print(id_produto)
                     try:
-                        response_value = response.json()    
+                       
+                        response_value = json.loads(response.content.decode("utf-8"))
                     except Exception as err:
+                        print(f"Erro ao processar a resposta JSON: {err}")
+                    
                         response_value = response.__dict__
                         response_value = response_value.get('_content')
-                    
-                    if response_value['vlrPromocao'] and response_value['vlrPromocao'] > 0:
-                        dict_produtos_promo.append(response_value)
                 
-            breakpoint()        
+                    if response_value.get('vlrPromocao', 0) > 0:
+                        dict_produtos_promo.append(response_value)
+              
             print(dict_produtos_promo)  
         except Exception as err:
-            breakpoint()
             print(err)
-            breakpoint()
- 
+           
             
         
-    
-            
-     
+                
         
+            

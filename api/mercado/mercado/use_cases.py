@@ -176,6 +176,9 @@ class ProdutoUseCases:
 
         _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
         return _produtos
+    
+    async def sync_produtos_promocao_erp(self):
+        return await ErpRequest.get_produtos_promocao_erp()
 
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()

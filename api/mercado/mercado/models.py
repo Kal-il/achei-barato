@@ -220,7 +220,7 @@ class Produto(Base):
     preco: Mapped[float] = mapped_column(Float, nullable=True)
     preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)
     imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
-    codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
+    codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)   
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
     )
