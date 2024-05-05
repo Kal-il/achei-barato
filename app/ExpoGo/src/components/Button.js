@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 
 const {width, height} = Dimensions.get('window');
 
-const BlueButton = ({title}) => {
+const Button = ({title, ButtonColor}) => {
     return (
         <View
-            style={styles.button}
+            style={[styles.button, {backgroundColor: ButtonColor ? ButtonColor : '#659BFF'}]}
             onPress={() => {
                 // Lógica para salvar aqui
             }}
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#659BFF',
         borderRadius: 50,
-        width: width * 0.4,
+        width: width * 0.35,
         height: height * 0.06,
         justifyContent: 'center',
         alignItems: 'center',
@@ -33,4 +33,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default BlueButton;
+export default Button;

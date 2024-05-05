@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import ImagesPicker from "../components/ImagesPicker.js";
 import ImputContent from "../components/ImputComponent.js";
-import BlueButton from "../components/BlueButton.js";
+import Button from "../components/Button.js";
 import MapView from 'react-native-maps';
 
 
@@ -49,7 +49,7 @@ export default function EditarLocal() {
           </Link>
 
 
-          <TouchableOpacity style={{ alignItems: 'center' }} onPress={{/*ação do botão de salvar vem aqui vem aqui*/ }}><BlueButton title={"Salvar"} /></TouchableOpacity>
+          <TouchableOpacity style={{ alignItems: 'center' }} onPress={{/*ação do botão de salvar vem aqui vem aqui*/ }}><Button title={"Salvar"} /></TouchableOpacity>
 
         </View>
       </ScrollView >

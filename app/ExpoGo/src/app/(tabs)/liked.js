@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, StatusBar, Dimensions } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import GradientBackground from "../../components/gradient";
 
@@ -8,9 +9,17 @@ export default function Dashboard() {
   return (
     
     <View style={styles.container}>
-      <GradientBackground><View style={styles.statusBar}></View></GradientBackground>
+      <View style={{ position: 'absolute', left: 0, right: 0, top: 0, height: StatusBar.currentHeight+5 }}>
+          <GradientBackground/>
+      </View>
+      <StatusBar
+        translucent={true}
+        backgroundColor='transparent'
+        barStyle='light-content'
+      />
       <View style={styles.main}>
-        <Text style={styles.title}>Favoritos</Text>
+        <Text style={styles.title}>Itens Curtidos</Text>
+        <View style={styles.line}><GradientBackground /></View>
         <Link href={"/store-profile"}>perfil do mercado</Link>
         <Link href={"/promotion"}>Promoção</Link>
         <Link href={"/register-client/register-user-1"}>Trem</Link>
@@ -24,25 +33,27 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 24,
   },
   main: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    alignItems: "center",
     maxWidth: 960,
     marginHorizontal: "auto",
+    marginTop: '15%',
+  },
+  line: {
+    width: width * 0.95,
+    height: height * 0.004,
+    marginVertical: '5%',
   },
   title: {
-    fontSize: 64,
+    fontSize: 28,
     fontWeight: "bold",
+    color: "#CF5A7C",
   },
   subtitle: {
     fontSize: 36,
     color: "#38434D",
   },
-  statusBar: {
-    height: StatusBar.currentHeight,
-    width: width,
-  }
 });

@@ -22,9 +22,7 @@ export default function AppLayout() {
       }} />
       <Stack.Screen name="store-profile" options={{
         title: "perfil do mercado",
-        headerBackground: () => (
-          <GradientBackground ></GradientBackground>
-        ),
+        headerTransparent: true,
       }} />
       <Stack.Screen name="logout" options={{
         title: "logout",

@@ -14,7 +14,7 @@ import {
   TouchableOpacity
 } from "react-native";
 import { Link } from "expo-router";
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 import * as Location from 'expo-location';
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
@@ -30,20 +30,6 @@ export default function Dashboard() {
 
   const [data, setData] = useState([
     {
-      imageSource: require('../../assets/banana.png'),
-      MarketImageProfile: require('../../assets/supermercado.png'),
-      MarketName: "Atacado de Palmas",
-      OldPrice: "R$ 12,99",
-      Price: "R$ 07,49",
-      PromotionLink: '/promotion',
-      PromotionName: "Banana",
-      tag: "Mais Barato",
-      CommentsNumber: "10",
-      LikesNumber: 10,
-      MarketProfileLink: '/store-profile',
-      id: '1'
-    },
-    {
       imageSource: require('../../assets/apple.png'),
       MarketImageProfile: require('../../assets/supermercado.png'),
       MarketName: "Supermercado Central",
@@ -55,7 +41,7 @@ export default function Dashboard() {
       CommentsNumber: "20",
       LikesNumber: 15,
       MarketProfileLink: '/store-profile',
-      id: '2'
+      id: '1'
     },
   ]);
 
@@ -78,7 +64,6 @@ export default function Dashboard() {
   return (
 
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-
       <View style={styles.header}>
         <GradientBackground>
           <View style={styles.innerHeader}>
