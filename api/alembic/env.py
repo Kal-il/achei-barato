@@ -24,6 +24,8 @@ models = [
     "usuario.consumidor.models.Consumidor",
     "mercado.mercado.models.Mercado",
     "usuario.auth.models.UsuarioAuthGoogle",
+    "mercado.mercado.models.Produto",
+    "mercado.mercado.models.Promocao",
 ]
 
 for model in models:
