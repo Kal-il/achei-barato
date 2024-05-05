@@ -1,36 +1,58 @@
-// Página de detalhes da promoção RF05
-import { StyleSheet, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { Link } from 'expo-router';
+import React from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import { View, Image, Text, StyleSheet, ImageBackground, TouchableOpacity, Dimensions } from 'react-native';
+import FavoriteButton from '../components/favoriteButton';
+import BottomSheet from 'reanimated-bottom-sheet';
 
+const { height, width } = Dimensions.get('window');
 
-export default function Dashboard() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Detalhe das promoções</Text>
+export default function PromotionPage({
+  imageSource,
+  MarketImageProfile,
+  MarketName,
+  MarketProfileLink,
+  PromotionName,
+  OldPrice,
+  Price,
+  tag,
+  PromotionLink,
+  CommentsNumber,
+  LikesNumber }) {
+
+    const renderContent = () => (
+      <View style={styles.bottomSheetContent}>
+        {/* Aqui você pode colocar as informações do produto, como nome, mercado que postou, preço anterior, preço, e a aba de comentários */}
       </View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 24,
-  },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
-});
+    );
+  
+    const sheetRef = React.useRef(null);
+  
+    return (
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          {/* Aqui você pode colocar o ScrollView horizontal de imagens do produto */}
+        </View>
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={['50%', '100%']}
+          borderRadius={10}
+          renderContent={renderContent}
+        />
+      </View>
+    );
+  }
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    imageContainer: {
+      height: Dimensions.get('window').height * 0.5,
+    },
+    bottomSheetContent: {
+      backgroundColor: 'white',
+      padding: 16,
+      height: Dimensions.get('window').height * 0.5,
+    },
+  });

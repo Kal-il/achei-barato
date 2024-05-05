@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, StatusBar, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
+import { StyleSheet,
+  Text,
+  View, 
+  TextInput,
+  StatusBar,
+  TouchableOpacity,
+  FlatList, 
+  KeyboardAvoidingView, 
+  Platform,
+  Dimensions } from 'react-native';
 import { Link } from 'expo-router';
 import GradientBackground from '../../components/gradient.js';
 import ProductCategory from '../../components/ProductCategory.js';
@@ -68,17 +77,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputView: {
-    flex: 0.8,
-    marginHorizontal: 20,
+    flex: 0.95,
+    marginHorizontal: '2%',
     marginBottom: 20,
     paddingTop: StatusBar.currentHeight + 5, // Garante que o conteúdo não seja coberto pelo StatusBar
   },
   inputText: {
-    flex: 1,
+    height: height * 0.05,
     color: 'grey',
     paddingLeft: 20,
     backgroundColor: '#fff',
-    borderRadius: 24,
+    borderRadius: 16,
   },
   titleCover: {
     alignItems: 'center',

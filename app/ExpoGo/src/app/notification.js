@@ -1,15 +1,18 @@
 // Página de notificações
 import { StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
-import Notification from "../components/ListCard";
+import ListCard from "../components/ListCard";
 
 
 export default function Dashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Notification />
-        <Notification />
+        <ListCard 
+        NotificationImage = {require('../assets/food.png')}
+        Description = {"O produto X está em promoção no supermercado Y !!"}
+        NotificationLink={"/promotion"}
+        />
       </View>
     </View>
   );

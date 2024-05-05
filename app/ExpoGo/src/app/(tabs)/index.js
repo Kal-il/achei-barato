@@ -1,91 +1,158 @@
-import React from "react";
-import { StyleSheet, Text, View, ScrollView, TextInput, Image, Dimensions, StatusBar} from "react-native";
+import { React, useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  Image,
+  Dimensions,
+  StatusBar,
+  Platform,
+  KeyboardAvoidingView,
+  FlatList,
+  TouchableOpacity
+} from "react-native";
 import { Link } from "expo-router";
-import { MaterialIcons, MaterialCommunityIcons, Ionicons, Feather } from '@expo/vector-icons';
-import CardPromotion from "../../components/CardComponent";
+import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
+import * as Location from 'expo-location';
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import PromotionCard from "../../components/PromotionCard.js";
+import GradientBackground from "../../components/gradient.js";
 
 const windowDimensions = Dimensions.get('window');
 const windowWidth = windowDimensions.width;
+const { height, width } = Dimensions.get('window');
 const Height = '100%';
 
 export default function Dashboard() {
+
+  const [data, setData] = useState([
+    {
+      imageSource: require('../../assets/banana.png'),
+      MarketImageProfile: require('../../assets/supermercado.png'),
+      MarketName: "Atacado de Palmas",
+      OldPrice: "R$ 12,99",
+      Price: "R$ 07,49",
+      PromotionLink: '/promotion',
+      PromotionName: "Banana",
+      tag: "Mais Barato",
+      CommentsNumber: "10",
+      LikesNumber: 10,
+      MarketProfileLink: '/store-profile',
+      id: '1'
+    },
+    {
+      imageSource: require('../../assets/banana.png'),
+      MarketImageProfile: require('../../assets/supermercado.png'),
+      MarketName: "Supermercado Central",
+      OldPrice: "R$ 15,99",
+      Price: "R$ 10,49",
+      PromotionLink: '/promotion',
+      PromotionName: "Maçã",
+      tag: "Promoção",
+      CommentsNumber: "20",
+      LikesNumber: 15,
+      MarketProfileLink: '/store-profile',
+      id: '2'
+    },
+    {
+      imageSource: require('../../assets/banana.png'),
+      MarketImageProfile: require('../../assets/supermercado.png'),
+      MarketName: "Supermercado Central",
+      OldPrice: "R$ 15,99",
+      Price: "R$ 10,49",
+      PromotionLink: '/promotion',
+      PromotionName: "Maçã",
+      tag: "Promoção",
+      CommentsNumber: "20",
+      LikesNumber: 15,
+      MarketProfileLink: '/store-profile',
+      id: '3'
+    },
+
+  ]);
+
+  const renderCategory = ({ item }) => (
+    <PromotionCard
+      MarketImageProfile={item.MarketImageProfile}
+      imageSource={item.imageSource}
+      MarketName={item.MarketName}
+      OldPrice={item.OldPrice}
+      Price={item.Price}
+      PromotionLink={item.PromotionLink}
+      PromotionName={item.PromotionName}
+      tag={item.tag}
+      CommentsNumber={item.CommentsNumber}
+      LikesNumber={item.LikesNumber}
+      MarketProfileLink={item.MarketProfileLink} />
+  );
+
+
   return (
-   <>
-      <LinearGradient
-        colors={['#A9C6FC', '#F67235']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <View style={styles.innerHeader}>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.inputText}
-              placeholder="Pesquise no achei barato"
-              placeholderTextColor="grey"
-            />
+
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+
+      <View style={styles.header}>
+        <GradientBackground>
+          <View style={styles.innerHeader}>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Pesquise no achei barato"
+                placeholderTextColor="grey"
+              />
+            </View>
+
+            <View style={styles.notification}>
+              <Link href={"/notification"}>
+                <Feather style={styles.bell} name="bell" size={24} color="grey" />
+              </Link>
+            </View>
+
           </View>
-
-          <View style={styles.notification}>
-            <Link href={"/notification"}>
-              <Feather style={styles.bell} name="bell" size={24} color="grey" />
-            </Link>
-          </View>
-
-        </View>
-      </LinearGradient>
-
-      <ScrollView>
-        <ScrollView style={[styles.Scrolpromocoes, { height: 180 }]} horizontal={true}>
-          <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
-          <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
-          <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
-        </ScrollView>
+        </GradientBackground>
+      </View>
 
 
+      <FlatList
+        data={data}
+        renderItem={renderCategory}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          <ScrollView style={{ zIndex: 0 }}>
 
-        <ScrollView>
-          <View style={styles.viewLocalizacao}>
-            <Text style={styles.textLocalization}>Localização</Text>
-          </View>
-          <CardPromotion 
-          promotionName={"Banana madura"} 
-          promotionPrice={"R$ 05,00"} 
-          tag = {"Mais Barato"} 
-          imageSource={require('../../assets/banana.png')}
-          storeProfile={require('../../assets/supermercado.png')}
-          />
-          <CardPromotion 
-          promotionName={"Banana madura"} 
-          promotionPrice={"R$ 05,00"} 
-          tag = {"Mais Barato"} 
-          imageSource={require('../../assets/banana.png')}
-          storeProfile={require('../../assets/supermercado.png')}
-          />
-          <CardPromotion 
-          promotionName={"Banana madura"} 
-          promotionPrice={"R$ 05,00"} 
-          tag = {"Mais Barato"} 
-          imageSource={require('../../assets/banana.png')}
-          storeProfile={require('../../assets/supermercado.png')}
-          />
+            <ScrollView style={[styles.Scrolpromocoes, { height: 180 }]} horizontal={true}>
+              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
+              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
+              <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
+            </ScrollView>
+
+            <View style={styles.viewLocalizacao}>
+              <Text style={styles.textLocalization}>Localização</Text>
+            </View>
+
+            <View style={{ alignContent: 'center', alignItems: 'center' }}>
 
 
-          {/* <Link href="/promotion">Promoção</Link>
-        
-       
-        <Link href={"/StoreRegister/RegisterScreen"}>tela de registro de mercado</Link>
-        */}
-        </ScrollView>
-      </ScrollView>
-    </>
+
+            </View>
+
+
+
+          </ScrollView>
+        } />
+    </KeyboardAvoidingView>
+
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   header: {
-   // flexDirection: "row",
     height: '11%',
   },
   innerHeader: {
@@ -95,20 +162,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: "row",
     padding: '2%',
-   // flex: 1,
   },
   inputView: {
     flex: 0.95, //isso faz com que a barra de pesquisa se expanda verticalmente por 95% da header
   },
   inputText: {
-    flex: 0.8,
+    height: height * 0.05,
     color: 'grey',
     paddingLeft: 20,
     backgroundColor: '#fff',
     borderRadius: 16,
   },
   notification: {
-    height: '80%',
+    height: height * 0.05,
     aspectRatio: 1, // Mantém a proporção
     backgroundColor: '#fff',
     justifyContent: 'center',
