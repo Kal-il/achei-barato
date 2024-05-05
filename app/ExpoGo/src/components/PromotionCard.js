@@ -45,14 +45,14 @@ const PromotionCard = ({ imageSource, MarketImageProfile, MarketName, MarketProf
                 <Link href={PromotionLink} asChild>
                     <TouchableOpacity>
                         <View style={styles.button}>
-                            <MaterialIcons name="insert-comment" size={24} color="black" />
-                            <Text>{CommentsNumber}</Text>
+                            <MaterialIcons name="share" size={24} color="grey" />
+                            
                         </View>
                     </TouchableOpacity>
                 </Link>
 
                 <View style={styles.button}>
-                    <MaterialIcons name="expand-more" size={24} color="black" />
+                    <MaterialIcons name="expand-more" size={24} color="grey" />
                     <Link href={PromotionLink} asChild>
                         <TouchableOpacity>
                             <Text>Ver mais</Text>

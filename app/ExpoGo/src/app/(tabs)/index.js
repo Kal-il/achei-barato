@@ -44,7 +44,7 @@ export default function Dashboard() {
       id: '1'
     },
     {
-      imageSource: require('../../assets/banana.png'),
+      imageSource: require('../../assets/apple.png'),
       MarketImageProfile: require('../../assets/supermercado.png'),
       MarketName: "Supermercado Central",
       OldPrice: "R$ 15,99",
@@ -57,21 +57,6 @@ export default function Dashboard() {
       MarketProfileLink: '/store-profile',
       id: '2'
     },
-    {
-      imageSource: require('../../assets/banana.png'),
-      MarketImageProfile: require('../../assets/supermercado.png'),
-      MarketName: "Supermercado Central",
-      OldPrice: "R$ 15,99",
-      Price: "R$ 10,49",
-      PromotionLink: '/promotion',
-      PromotionName: "Maçã",
-      tag: "Promoção",
-      CommentsNumber: "20",
-      LikesNumber: 15,
-      MarketProfileLink: '/store-profile',
-      id: '3'
-    },
-
   ]);
 
   const renderCategory = ({ item }) => (
