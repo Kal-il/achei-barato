@@ -27,6 +27,7 @@ export default function Dashboard() {
         <Link href={"/logout"}>Login</Link>
         <Link push href={"/register-client"}>Cadastrar Mercado</Link>
         <Link href="/login">Login</Link>
+        <Link href="/ProductsAndPromotions">aaaaa</Link>
 
         
         
