@@ -84,6 +84,12 @@ export default function AppLayout() {
           title: "Localização",
           headerTransparent: true,
         }} />
+        <Stack.Screen
+        name="ProductsAndPromotions"
+        options={{
+          title: "Produtos",
+          headerTransparent: true,
+        }} />
     </Stack>
   );
 }
