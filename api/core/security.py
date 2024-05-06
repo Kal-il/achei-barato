@@ -64,7 +64,7 @@ def create_refresh_token(
 
 async def get_current_user(
     db: AsyncDBDependency, token: Annotated[str, Depends(oauth2_scheme)]
-):
+) -> Usuario:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Não foi possível validar as credenciais",

@@ -37,4 +37,5 @@ export default function AppLayout() {
       <Stack.Screen name="SuperMarkets/RegisterScreen" options={{}} />
       <Stack.Screen name="SuperMarkets/RegisterScreen2"  />
       <Stack.Screen name="SuperMarkets/RegisterScreen3"  />
+      <Stack.Screen name="SuperMarkets/ProductsAndPromotions"  />
     </Stack>);}

@@ -9,6 +9,7 @@ export default function Dashboard() {
         <Text style={styles.title}>Favoritos</Text>
         <Link href={"/store-profile"}>perfil do mercado</Link>
         <Link href={"/promotion"}>Promoção</Link>
+        <Link href={"/SuperMarkets/ProductsAndPromotions"}>aaaaaaaa</Link>
       </View>
     </View>
   );
