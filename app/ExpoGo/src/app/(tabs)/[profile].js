@@ -13,14 +13,14 @@ export default function Perfil() {
   const fetchConsumidorData = async () => {
     const api = new ApiClient();
     
-    let erros, treco;
+    let erros, consumidorData;
     try {
-      treco = await api.getConsumidorData()
+      consumidorData = await api.getConsumidorData()
     } catch (e) {
       erros = e
     }
 
-    setConsumidor(treco);
+    setConsumidor(consumidorData);
   }
 
   useEffect(() => {

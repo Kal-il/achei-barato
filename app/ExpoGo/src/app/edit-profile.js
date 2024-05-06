@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import ImagesPicker from "../components/ImagesPicker.js";
 import ImputContent from "../components/ImputComponent.js";
 import BlueButton from "../components/Button.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiClient } from "../api/ApiClient.js";
 
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
@@ -12,11 +12,13 @@ const { width, height } = Dimensions.get('window'); //essa função retorna o ta
 export default function EditarPerfil() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
 
   const updateConsumidorData = async () => {
     data = {
       nome: nome,
       email: email,
+      telefone: telefone,
     }
 
     const api = new ApiClient();
@@ -25,9 +27,30 @@ export default function EditarPerfil() {
     try{
       await api.updateConsumidorData(data);
     } catch (e) {
-      console.error(e);
+      console.error(e.response.data.detail);
     }
   }
+
+  const[consumidor, setConsumidor] = useState(null);
+  const[loading, setLoading] = useState(true);
+
+  const fetchConsumidorData = async () => {
+    const api = new ApiClient();
+    
+    let erros, consumidorData;
+    try {
+      consumidorData = await api.getConsumidorData()
+    } catch (e) {
+      erros = e
+    }
+
+    setConsumidor(consumidorData);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchConsumidorData();
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -46,24 +69,27 @@ export default function EditarPerfil() {
         <View style={styles.body}>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Nome</Text>
-            <ImputContent placeHolder={"Nome Atual"} onChangeText={(nome) => setNome(nome)}></ImputContent>
+            {loading && <ImputContent placeHolder={"..."} onChangeText={(text) => setNome(text)}></ImputContent>}
+            {consumidor && <ImputContent placeHolder={consumidor.nome} onChangeText={(text) => setNome(text)}></ImputContent>}
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Email</Text>
-            <ImputContent placeHolder={"Eḿail-atual@gmail.com"} onChangeText={(text) => setEmail(text)}></ImputContent>
+            {loading && <ImputContent placeHolder={"..."} onChangeText={(text) => setEmail(text)}></ImputContent>}
+            {consumidor && <ImputContent placeHolder={consumidor.email} onChangeText={(text) => setEmail(text)}></ImputContent>}
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Telefone</Text>
-            <ImputContent placeHolder={"Telefone Atual"}></ImputContent>
+            {loading && <ImputContent placeHolder={"..."} onChangeText={(text) => setTelefone(text)}></ImputContent>}
+            {consumidor && <ImputContent placeHolder={`${consumidor.telefone}`} onChangeText={(text) => setTelefone(text)}></ImputContent>}
           </View>
-          <View style={styles.field}>
+          {/* <View style={styles.field}>
             <Text style={styles.subtitle}>Senha</Text>
             <ImputContent placeHolder={"Senha Atual"} secureTextEntry={true}></ImputContent>
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Nova Senha</Text>
             <ImputContent placeHolder={"Nova Senha"} secureTextEntry={true}></ImputContent>
-          </View>
+          </View> */}
 
           <TouchableOpacity 
             style = {{alignItems: 'center'}} 
