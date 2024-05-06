@@ -55,7 +55,7 @@ class ConsumidorUpdate(BaseModel):
         return erros
 
     def _validar_telefone(self):
-        if self.telefone and len(str(self.telefone)) != 12:
+        if self.telefone and len(str(self.telefone)) != 11:
             return "Este número de telefone é inválido"
 
     def _validar_cep(self):

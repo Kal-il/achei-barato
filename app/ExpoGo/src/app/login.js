@@ -21,12 +21,6 @@ export default function Dashboard() {
     const [password, setPassword] = useState("");
   
   
-      // Botão auxiliar para deletar tokens
-      const handleDeleteTokens = () => {
-          deleteToken("access-token");
-          deleteToken("refresh-token");
-      }
-  
     const handleLogin = async () => {
       // lógica para autenticar o usuário aqui
       if ((username == "") & (password == "")) {

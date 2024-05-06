@@ -1,11 +1,33 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, Button} from "react-native";
 import { Link } from "expo-router";
 import ImagesPicker from "../../components/ImagesPicker.js";
 import ProfileScreenButton  from "../../components/ProfileSreenButton.js";
+import { ApiClient } from "../../api/ApiClient.js";
+import { useEffect, useState } from "react";
 
 const { width, height } = Dimensions.get('window');
 
 export default function Perfil() {
+  const[consumidor, setConsumidor] = useState(null);
+
+  const fetchConsumidorData = async () => {
+    const api = new ApiClient();
+    
+    let erros, consumidorData;
+    try {
+      consumidorData = await api.getConsumidorData()
+    } catch (e) {
+      erros = e
+    }
+
+    setConsumidor(consumidorData);
+  }
+
+  useEffect(() => {
+    fetchConsumidorData();
+  }, [])
+
+
   return (
 
     <View style={styles.container}>
@@ -16,7 +38,7 @@ export default function Perfil() {
           ImageHolder={require('../../assets/profile.png')}
           ImageBorderRadius={100}>
           </ImagesPicker>
-          <Text style={styles.title}>String da Silva</Text>
+          {consumidor && <Text style={styles.title}>{consumidor.nome}</Text>}
       </View>
      </View>
     <View style={{alignItems: 'center'}}>

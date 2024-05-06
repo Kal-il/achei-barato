@@ -5,11 +5,61 @@ import ImagesPicker from "../components/ImagesPicker.js";
 import ImputContent from "../components/ImputComponent.js";
 import Button from "../components/Button.js";
 import MapView from 'react-native-maps';
+import { useEffect, useState } from "react";
+import { ApiClient } from "../api/ApiClient.js";
 
 
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
 
 export default function EditarLocal() {
+  const [cep, setCep] = useState("");
+  const [estado, setEstado] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [complemento, setComplemento] = useState("");
+
+  const[consumidor, setConsumidor] = useState(null);
+  const[loading, setLoading] = useState(true);
+
+  const fetchConsumidorData = async () => {
+    const api = new ApiClient();
+    
+    let erros, consumidorData;
+    try {
+      consumidorData = await api.getConsumidorData()
+    } catch (e) {
+      erros = e
+    }
+
+    setConsumidor(consumidorData);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchConsumidorData();
+  }, [])
+
+  const updateConsumidorData = async () => {
+    data = {
+      cep: cep,
+      estado: estado,
+      cidade: cidade,
+      bairro: bairro,
+      endereco: endereco,
+      complemento: complemento,
+    }
+
+    const api = new ApiClient();
+
+    let erros;
+    try{
+      await api.updateConsumidorData(data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -26,30 +76,85 @@ export default function EditarLocal() {
         <View style={styles.body}>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Endereço</Text>
-            <ImputContent placeHolder={"Endereço atual"}></ImputContent>
+            {loading && <ImputContent 
+              placeHolder={"..."}
+              onChangeText={(text) => setEndereco(text)}
+            ></ImputContent>}
+            {consumidor && <ImputContent 
+              placeHolder={consumidor.endereco}
+              onChangeText={(text) => setEndereco(text)}
+            ></ImputContent>}
           </View>
+
           <View style={styles.field}>
             <Text style={styles.subtitle}>CEP</Text>
-            <ImputContent placeHolder={"CEP atual"}></ImputContent>
+            {loading && <ImputContent 
+              placeHolder={"..."}
+              onChangeText={(text) => setCep(text)}
+            ></ImputContent>}
+            {consumidor && <ImputContent 
+              placeHolder={consumidor.cep}
+              onChangeText={(text) => setCep(text)}
+            ></ImputContent>}
           </View>
+
           <View style={styles.field}>
             <Text style={styles.subtitle}>Bairro</Text>
-            <ImputContent placeHolder={"Bairro atual"}></ImputContent>
+            {loading && <ImputContent 
+              placeHolder={"..."}
+              onChangeText={(text) => setBairro(text)}
+            ></ImputContent>}
+            {consumidor && <ImputContent 
+              placeHolder={consumidor.bairro}
+              onChangeText={(text) => setBairro(text)}
+            ></ImputContent>}
           </View>
+
           <View style={styles.field}>
             <Text style={styles.subtitle}>Cidade</Text>
-            <ImputContent placeHolder={"Cidade atual"}></ImputContent>
+            {loading && <ImputContent 
+              placeHolder={"..."}
+              onChangeText={(text) => setCidade(text)}
+            ></ImputContent>}
+            {consumidor && <ImputContent 
+              placeHolder={consumidor.cidade}
+              onChangeText={(text) => setCidade(text)}
+            ></ImputContent>}
           </View>
-          <Link href={"/location"} style={styles.location} asChild>
+
+          <View style={styles.field}>
+            <Text style={styles.subtitle}>Estado</Text>
+            {loading && <ImputContent 
+              placeHolder={"..."}
+              onChangeText={(text) => setEstado(text)}
+            ></ImputContent>}
+            {consumidor && <ImputContent 
+              placeHolder={consumidor.estado}
+              onChangeText={(text) => setEstado(text)}
+            ></ImputContent>}
+          </View>
+
+          <View style={styles.field}>
+            <Text style={styles.subtitle}>Complemento</Text>
+            {loading && <ImputContent 
+              placeHolder={"..."}
+              onChangeText={(text) => setComplemento(text)}
+            ></ImputContent>}
+            {consumidor && <ImputContent 
+              placeHolder={consumidor.complemento}
+              onChangeText={(text) => setComplemento(text)}
+            ></ImputContent>}
+          </View>
+          {/* <Link href={"/location"} style={styles.location} asChild>
             <TouchableOpacity>
               <View>
                 <MapView style={styles.map} />
               </View>
             </TouchableOpacity>
-          </Link>
+          </Link> */}
 
 
-          <TouchableOpacity style={{ alignItems: 'center' }} onPress={{/*ação do botão de salvar vem aqui vem aqui*/ }}><Button title={"Salvar"} /></TouchableOpacity>
+          <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => updateConsumidorData()}><Button title={"Salvar"} /></TouchableOpacity>
 
         </View>
       </ScrollView >

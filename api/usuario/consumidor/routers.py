@@ -35,7 +35,7 @@ async def get_consumidor_data(db: AsyncDBDependency, usuario: Annotated[Usuario,
 async def get_consumidor_data_by_id(db: AsyncDBDependency, id_usuario: UUID):
     return await ConsumidorUseCase.get_consumidor_data(db, id_usuario)
 
-@model_router.put("/atualizar", summary="Atualiza dados do consumidor", response_model=schemas.ConsumidorSchema)
+@model_router.put("/atualizar", summary="Atualiza dados do consumidor")
 async def update_consumidor_data(db: AsyncDBDependency, new_consumidor: schemas.ConsumidorUpdate, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
     return await ConsumidorUseCase.update_consumidor_data(db, usuario.id, new_consumidor)
 
