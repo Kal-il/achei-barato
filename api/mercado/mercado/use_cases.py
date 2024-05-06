@@ -1,11 +1,17 @@
 from email.policy import HTTP
 from typing import List, Union
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from mercado.mercado.models import MercadoManager, ProdutoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
+
+from mercado.mercado.erp_requests import ErpRequest
+
+from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager
+from usuario.usuario.models import UsuarioManager
+from mercado.mercado.schemas import ProdutoPromocaoErp
 
 
 class MercadoUseCases:
@@ -71,7 +77,12 @@ class MercadoUseCases:
 
         return _mercados
 
-    async def cadastrar_mercado(self, db: AsyncSession, data: schemas.MercadoCreate):
+    async def cadastrar_mercado(
+        self,
+        db: AsyncSession,
+        data: schemas.MercadoCreate,
+        background_tasks: BackgroundTasks,
+    ):
         # Verifica se o usuário já é dono de mercado
         if data.usuario.dono_mercado:
             mercado_manager = MercadoManager(db=db)
@@ -130,14 +141,18 @@ class MercadoUseCases:
 
 
 class ProdutoUseCases:
-    async def sync_produtos(self, db: AsyncSession, produtos: List[schemas.ProdutoBase], usuario: Usuario):
+    async def sync_produtos(
+        self, db: AsyncSession, produtos: List[schemas.ProdutoBase], usuario: Usuario
+    ):
         # Método que sincroniza base de produtos do ERP com banco no Redis
         _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
 
         produto_manager = ProdutoManager(db=db)
         await produto_manager.sync_produtos(_cnpj, produtos)
 
-    async def get_produto_by_id(self, db: AsyncSession, id_produto: str, usuario: Usuario):
+    async def get_produto_by_id(
+        self, db: AsyncSession, id_produto: str, usuario: Usuario
+    ):
         # Método que obtém produto através de seu ID.
         _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
 
@@ -146,8 +161,7 @@ class ProdutoUseCases:
 
         if not _produto:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Produto não encontrado"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
         _produto = schemas.ProdutoBase(**_produto)
@@ -161,12 +175,59 @@ class ProdutoUseCases:
 
         if not _produtos:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Produto não encontrado"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
         _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
         return _produtos
+
+    async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):
+        try:
+            lista_produtos_promo = await ErpRequest.get_teste()
+
+            if not lista_produtos_promo:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Produtos não encontrados",
+                )
+
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
+
+            produtos = []
+            for produto_promo in lista_produtos_promo:
+                produto_promocao = ProdutoPromocaoErp(
+                    nome=produto_promo.get("descricao"),
+                    preco=produto_promo.get("valorVenda"),
+                    preco_promocional=produto_promo.get("vlrPromocao"),
+                    codigo_produto=str(produto_promo.get("codBarras")),
+                    ncm_produto=produto_promo.get("ncm"),
+                    id_produto_erp=str(produto_promo.get("proId")),
+                    marca=produto_promo.get("fabricante"),
+                )
+                
+                produtos.append(produto_promocao)
+
+            produto_manager = ProdutosPromocaoErpManager(db=db)
+            response = await produto_manager.save_produtos_erp(produtos, mercado)
+            if not response:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Erro ao salvar produtos",
+                )
+
+            return lista_produtos_promo
+
+        except Exception as err:
+            raise err
+
 
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()

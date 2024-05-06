@@ -32,6 +32,14 @@ class Settings(BaseSettings):
 
     redis_cache_url: str
 
+    # Configurações do ERP
+
+    url_erp: str
+    terminal: str
+    emp_id: int
+
+
+
     model_config = ConfigDict(env_file=".env")
 
 settings = Settings()

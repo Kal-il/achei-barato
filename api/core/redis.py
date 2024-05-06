@@ -10,8 +10,8 @@ REDIS_CACHE_URL = settings.redis_cache_url
 
 
 class RedisCache:
-    def __init__(self):
-        self.redis_conn = Redis.from_url(url=REDIS_CACHE_URL, decode_responses=True)
+    def __init__(self, db: int = None):
+        self.redis_conn = Redis.from_url(url=REDIS_CACHE_URL, decode_responses=True, db=db)
 
     def _get_cod_cnpj(self, cnpj: str):
         return cnpj[:8]
@@ -76,12 +76,31 @@ class RedisCache:
         except Exception as err:
             raise Exception(f"Erro ao obter produto do cache: {err}")
 
-
     async def flush(self):
         try:
             self.redis_conn.flushdb()
         except: 
             raise Exception("Erro ao limpar banco no redis.")
+        
+    async def save_string(self, key: str, value: dict | str):
+        try:
+            self.redis_conn.set(key, json.dumps(value))
+        except:
+            raise Exception("Erro ao salvar chave no redis.")
 
+    async def get_string(self, key: str):   
+        try:
+            if self.redis_conn.exists(key):
+                return json.loads(self.redis_conn.get(key))
+            return None
+        except:
+            raise Exception("Erro ao obter chave no redis.")
+        
+    async def save_id_produto(self, cnpj: str, id_produtos: list|str):
+        try:
+            self.redis_conn.set(cnpj, json.dumps(id_produtos))
+        except:
+            raise Exception("Erro ao salvar id dos produtos no redis.")
 
 redis = RedisCache()
+redis_1 = RedisCache(db=1)
