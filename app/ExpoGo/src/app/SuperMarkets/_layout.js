@@ -3,7 +3,7 @@ import GradientBackground from '../../components/gradient';
 
 
 export default function StackLayout() {
-    <Stack screenOptions={{
+    return (<Stack screenOptions={{
         headerTintColor: '#fff', //  isso define a cor do botão de voltar e do título para branco
         headerShadowVisible: false,
       }}>
@@ -12,5 +12,5 @@ export default function StackLayout() {
         <Stack.Screen name = "ReisterScreen2" options={{ headerTransparent: true, title: "" }} />
 
         <Stack.Screen name = "ReisterScreen3" options={{ headerTransparent: true, title: "" }} />
-      </Stack>
+      </Stack>)
 }
