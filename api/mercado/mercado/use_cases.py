@@ -178,7 +178,19 @@ class ProdutoUseCases:
         return _produtos
     
     async def sync_produtos_promocao_erp(self):
-        return await ErpRequest.get_produtos_promocao_erp()
+
+        try:
+            
+            lista_produtos_promo = await ErpRequest.get_teste()
+            # aqui eu preciso receber esses produtos vincular
+            # criar schema
+            #  salvar produto
+            # vincular na tabela do promocao
+            
+            return lista_produtos_promo
+
+        except Exception as err:
+            raise HTTPException(detail=err, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()
