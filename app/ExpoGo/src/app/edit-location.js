@@ -5,11 +5,40 @@ import ImagesPicker from "../components/ImagesPicker.js";
 import ImputContent from "../components/ImputComponent.js";
 import Button from "../components/Button.js";
 import MapView from 'react-native-maps';
+import { useState } from "react";
+import { ApiClient } from "../api/ApiClient.js";
 
 
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
 
 export default function EditarLocal() {
+  const [cep, setCep] = useState("");
+  const [estado, setEstado] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [complemento, setComplemento] = useState("");
+
+  const updateConsumidorData = async () => {
+    data = {
+      cep: cep,
+      estado: estado,
+      cidade: cidade,
+      bairro: bairro,
+      endereco: endereco,
+      complemento: complemento,
+    }
+
+    const api = new ApiClient();
+
+    let erros;
+    try{
+      await api.updateConsumidorData(data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -26,30 +55,47 @@ export default function EditarLocal() {
         <View style={styles.body}>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Endereço</Text>
-            <ImputContent placeHolder={"Endereço atual"}></ImputContent>
+            <ImputContent 
+              placeHolder={"Endereço atual"}
+              onChangeText={(text) => setEndereco(text)}
+            ></ImputContent>
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>CEP</Text>
-            <ImputContent placeHolder={"CEP atual"}></ImputContent>
+            <ImputContent 
+              placeHolder={"CEP atual"}
+              onChangeText={(text) => setCep(text)}
+            >
+            </ImputContent>
           </View>
           <View style={styles.field}>
-            <Text style={styles.subtitle}>Bairro</Text>
-            <ImputContent placeHolder={"Bairro atual"}></ImputContent>
+            <Text style={styles.subtitle}
+            >Bairro</Text>
+            <ImputContent placeHolder={"Bairro atual"}onChangeText={(text) => setBairro(text)}></ImputContent>
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Cidade</Text>
-            <ImputContent placeHolder={"Cidade atual"}></ImputContent>
+            <ImputContent placeHolder={"Cidade atual"}
+            onChangeText={(text) => setCidade(text)}></ImputContent>
           </View>
-          <Link href={"/location"} style={styles.location} asChild>
+          <View style={styles.field}>
+            <Text style={styles.subtitle}>Estado</Text>
+            <ImputContent placeHolder={"Estado atual"}onChangeText={(text) => setEstado(text)}></ImputContent>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.subtitle}>Complemento</Text>
+            <ImputContent placeHolder={"Complemento atual"}onChangeText={(text) => setComplemento(text)}></ImputContent>
+          </View>
+          {/* <Link href={"/location"} style={styles.location} asChild>
             <TouchableOpacity>
               <View>
                 <MapView style={styles.map} />
               </View>
             </TouchableOpacity>
-          </Link>
+          </Link> */}
 
 
-          <TouchableOpacity style={{ alignItems: 'center' }} onPress={{/*ação do botão de salvar vem aqui vem aqui*/ }}><Button title={"Salvar"} /></TouchableOpacity>
+          <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => updateConsumidorData()}><Button title={"Salvar"} /></TouchableOpacity>
 
         </View>
       </ScrollView >

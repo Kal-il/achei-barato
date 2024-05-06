@@ -32,6 +32,14 @@ export class ApiClient {
 		return await this._authenticator.createCostumer(formData);
 	}
 
+	async getConsumidorData() {
+		return await this._callApi("api/v1/usuario/consumidor/consultar", "GET", null);
+	}
+
+	async updateConsumidorData(userData) {
+		return await this._callApi("api/v1/usuario/consumidor/atualizar", "PUT", userData);
+	}
+
     async _callApi(path, method, data) {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;

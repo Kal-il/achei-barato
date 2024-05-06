@@ -4,10 +4,31 @@ import { Link } from "expo-router";
 import ImagesPicker from "../components/ImagesPicker.js";
 import ImputContent from "../components/ImputComponent.js";
 import BlueButton from "../components/Button.js";
+import { useState } from "react";
+import { ApiClient } from "../api/ApiClient.js";
 
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
 
 export default function EditarPerfil() {
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+
+  const updateConsumidorData = async () => {
+    data = {
+      nome: nome,
+      email: email,
+    }
+
+    const api = new ApiClient();
+
+    let erros;
+    try{
+      await api.updateConsumidorData(data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <View style={styles.container}>
      <View style={styles.header}>
@@ -25,11 +46,11 @@ export default function EditarPerfil() {
         <View style={styles.body}>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Nome</Text>
-            <ImputContent placeHolder={"Nome Atual"}></ImputContent>
+            <ImputContent placeHolder={"Nome Atual"} onChangeText={(nome) => setNome(nome)}></ImputContent>
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Email</Text>
-            <ImputContent placeHolder={"Eḿail-atual@gmail.com"}></ImputContent>
+            <ImputContent placeHolder={"Eḿail-atual@gmail.com"} onChangeText={(text) => setEmail(text)}></ImputContent>
           </View>
           <View style={styles.field}>
             <Text style={styles.subtitle}>Telefone</Text>
@@ -44,7 +65,11 @@ export default function EditarPerfil() {
             <ImputContent placeHolder={"Nova Senha"} secureTextEntry={true}></ImputContent>
           </View>
 
-          <TouchableOpacity style = {{alignItems: 'center'}} onPress={{/*ação do botão de salvar vem aqui vem aqui*/}}><BlueButton title={"Salvar"} /></TouchableOpacity>
+          <TouchableOpacity 
+            style = {{alignItems: 'center'}} 
+            onPress={() => updateConsumidorData()}>
+            <BlueButton title={"Salvar"} />
+          </TouchableOpacity>
 
         </View>
       </ScrollView >
