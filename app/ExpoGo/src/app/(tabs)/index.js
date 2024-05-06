@@ -11,15 +11,12 @@ import {
   Platform,
   KeyboardAvoidingView,
   FlatList,
-  TouchableOpacity
 } from "react-native";
 import { Link } from "expo-router";
 import { Feather, FontAwesome } from '@expo/vector-icons';
-import { LinearGradient } from "expo-linear-gradient";
-import * as Location from 'expo-location';
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import PromotionCard from "../../components/PromotionCard.js";
 import GradientBackground from "../../components/gradient.js";
+import { Authenticator } from "../../api/Authenticator.js";
 
 const windowDimensions = Dimensions.get('window');
 const windowWidth = windowDimensions.width;
@@ -27,6 +24,11 @@ const { height, width } = Dimensions.get('window');
 const Height = '100%';
 
 export default function Dashboard() {
+
+  const auth = new Authenticator();
+  if (!auth.validateToken()) {
+    // Lógica para redirecionar para tela de login
+  }
 
   const [data, setData] = useState([
     {
