@@ -29,11 +29,11 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 
 ---
 ## Relatórios de gestão
-- **Sprint 1 - [Relatório 1](https://docs.google.com/spreadsheets/d/1JYtBeIh1ozdBSjyhj6umkUPKthkBhvYNAX-quXvdXMw/edit?usp=sharing)
-- **Sprint 2 - [Relatório 2](https://docs.google.com/spreadsheets/d/1RNmKx5fS-MpNN2gncAuM-W69uN_GUAbJRsWX5HXrOY8/edit?usp=sharing)
-- **Sprint 3 -
-- **Sprint 4 -
-- **Sprint 5 -
+- Sprint 1 - [Relatório 1](https://docs.google.com/spreadsheets/d/1JYtBeIh1ozdBSjyhj6umkUPKthkBhvYNAX-quXvdXMw/edit?usp=sharing)
+- Sprint 2 - [Relatório 2](https://docs.google.com/spreadsheets/d/1RNmKx5fS-MpNN2gncAuM-W69uN_GUAbJRsWX5HXrOY8/edit?usp=sharing)
+- Sprint 3 - [Relatório 3](https://docs.google.com/spreadsheets/d/1qY3JrJFQOwig6BxTNHlMP7zT2hDEpxNkRZ_HG4jiveU/edit?usp=sharing)
+- Sprint 4 -
+- Sprint 5 -
 
 ---
 ## Definindo os requisitos funcionais do projeto

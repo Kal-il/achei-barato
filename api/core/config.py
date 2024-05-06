@@ -28,9 +28,17 @@ class Settings(BaseSettings):
     secret_key: str = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
     algorithm: str = "HS256"
 
-    ip_host: str = "127.0.0.1"
-    
     google_client_id: str
+
+    redis_cache_url: str
+
+    # Configurações do ERP
+
+    url_erp: str
+    terminal: str
+    emp_id: int
+
+
 
     model_config = ConfigDict(env_file=".env")
 

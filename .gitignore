@@ -11,4 +11,4 @@ api/venv
 node_modules
 .vscode
 venv
-api/
+api/lib

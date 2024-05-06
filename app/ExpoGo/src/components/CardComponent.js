@@ -27,14 +27,12 @@ const CardPromotion = ({ imageSource, storeProfile, promotionName, promotionPric
           </View>
 
           <View style={styles.innerCardPromotion}>
-
-
-
+            
             <View style={styles.Nametag}>
-              <Text style={styles.productName}>{promotionName}</Text>
+              <Text style={styles.productName} numberOfLines={1}>{promotionName}</Text>
             </View>
             <View style={styles.Pricetag}>
-              <Text style={styles.productPrice}>{promotionPrice}</Text>
+              <Text style={styles.productPrice} numberOfLines={1}>{promotionPrice}</Text>
             </View>
             <FavoriteButton></FavoriteButton>
           </View>
@@ -48,7 +46,7 @@ const CardPromotion = ({ imageSource, storeProfile, promotionName, promotionPric
 
 const styles = StyleSheet.create({
   cardPromotion: {
-    height: 200,
+    height: '45%',
     margin: 10,
     borderRadius: 16,
     overflow: 'hidden',
@@ -69,6 +67,7 @@ const styles = StyleSheet.create({
   },
   innerCardPromotion: {
     padding: '3%',
+    height: '30%',
     backgroundColor: '#000000a0',
     flexDirection: 'row',
     borderBottomLeftRadius: 16,
