@@ -123,9 +123,7 @@ class MercadoUpdate(MercadoBase):
 class ProdutoBase(BaseModel):
     nome: Optional[str] = Field(..., max_length=255, description="Nome")
     marca: Optional[str] = Field(..., max_length=255, description="Marca")
-    data_validade: Optional[str] = Field(
-        ..., description="Data de validade"
-    )
+    data_validade: Optional[str] = Field(..., description="Data de validade")
     ncm_produto: Optional[str] = Field(..., max_length=10, description="NCM do produto")
     gtin_produto: Optional[str] = Field(
         ..., max_length=14, description="GTIN do produto"
@@ -141,10 +139,11 @@ class ProdutoBase(BaseModel):
     codigo_produto: Optional[str] = Field(
         ..., max_length=30, description="Código do produto"
     )
-    
+
+
 class ProdutoPromocaoErp(BaseModel):
     #  promocao de produtos de erp
-    
+
     nome: Optional[str] = Field(..., max_length=255, description="Nome")
     preco: Optional[float] = Field(..., description="Preço")
     preco_promocional: Optional[float] = Field(..., description="Preço promocional")
@@ -152,9 +151,7 @@ class ProdutoPromocaoErp(BaseModel):
         ..., max_length=30, description="Código do produto"
     )
     ncm_produto: Optional[str] = Field(..., max_length=10, description="NCM do produto")
-    id_produto_erp: Optional[str] = Field(..., description="ID do produto no ERP de origem")
+    id_produto_erp: Optional[str] = Field(
+        ..., description="ID do produto no ERP de origem"
+    )
     marca: Optional[str] = Field(..., max_length=255, description="Marca")
-       
-    
-        
-    

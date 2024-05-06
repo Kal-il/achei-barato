@@ -181,7 +181,7 @@ class ProdutoUseCases:
         _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
         return _produtos
 
-    async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):   
+    async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):
         try:
             lista_produtos_promo = await ErpRequest.get_teste()
 
@@ -192,7 +192,9 @@ class ProdutoUseCases:
                 )
 
             mercado_manager = MercadoManager(db=db)
-            mercado = await mercado_manager.get_mercado_by_usuario(id_usuario=usuario.id)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
             if not mercado:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -210,10 +212,10 @@ class ProdutoUseCases:
                     id_produto_erp=str(produto_promo.get("proId")),
                     marca=produto_promo.get("fabricante"),
                 )
-
-                produtos.append(produto_promocao)
                 
-            produto_manager = ProdutosPromocaoErpManager(db=db) 
+                produtos.append(produto_promocao)
+
+            produto_manager = ProdutosPromocaoErpManager(db=db)
             response = await produto_manager.save_produtos_erp(produtos, mercado)
             if not response:
                 raise HTTPException(

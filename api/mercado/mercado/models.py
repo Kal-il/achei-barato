@@ -282,14 +282,16 @@ class ProdutosPromocaoErp(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
-    mercado = relationship(Mercado, backref=backref("produtospromocaoerp", uselist=False))
+    mercado = relationship(
+        Mercado, backref=backref("produtospromocaoerp", uselist=False)
+    )
     nome = mapped_column(String(255), nullable=True)
     preco = mapped_column(Float, nullable=True)
     preco_promocional = mapped_column(Float, nullable=True)
     codigo_produto = mapped_column(String(30), nullable=True)
     ncm_produto = mapped_column(String(10), nullable=True)
     id_produto_erp = mapped_column(String(), nullable=True)
-    marca = mapped_column(String(255), nullable=True)  
+    marca = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
     )
@@ -307,9 +309,8 @@ class ProdutosPromocaoErpManager:
     async def save_produtos_erp(
         self, produtos: List[ProdutoPromocaoErp], mercado: Mercado
     ):
-        breakpoint()
         for produto in produtos:
-            
+
             _produto = ProdutosPromocaoErp(
                 mercado_id=mercado.id,
                 nome=produto.nome,

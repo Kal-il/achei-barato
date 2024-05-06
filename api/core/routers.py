@@ -5,4 +5,4 @@ from .config import settings
 
 api_router = APIRouter(prefix=settings.api_str)
 api_router.include_router(usuario_router, prefix="/usuario")
-api_router.include_router(mercado_router, prefix="")
+api_router.include_router(mercado_router, prefix="/mercado")
