@@ -20,17 +20,6 @@ export default function Dashboard() {
       <View style={styles.main}>
         <Text style={styles.title}>Itens Curtidos</Text>
         <View style={styles.line}><GradientBackground /></View>
-        <Link href={"/store-profile"}>perfil do mercado</Link>
-        <Link href={"/(tabs)"}>Editar perfil</Link>
-        <Link href={"/promotion"}>Promoção</Link>
-        <Link href={"/register-client/register-user-1"}>Trem</Link>
-        <Link href={"/logout"}>Login</Link>
-        <Link push href={"/register-client"}>Cadastrar Mercado</Link>
-        <Link href="/login">Login</Link>
-        <Link href="/ProductsAndPromotions">aaaaa</Link>
-
-        
-        
       </View>
     </View>
   );
