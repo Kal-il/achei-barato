@@ -1,5 +1,4 @@
 import { ImageBackground, StyleSheet, Text, View, Dimensions, StatusBar, TouchableOpacity, TextInput } from "react-native";
-import { Link } from "expo-router";
 import ImagesPicker from "../components/ImagesPicker.js";
 import Button from "../components/Button.js";
 import React, { useState } from "react";

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Link } from "expo-router";
 import SignOutButton from "../components/SignOut.js";
 
-export default function Dashboard() {
+export default function logout() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>

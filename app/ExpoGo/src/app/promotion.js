@@ -1,7 +1,5 @@
 import React from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
 import { View, Image, Text, StyleSheet, ImageBackground, TouchableOpacity, Dimensions } from 'react-native';
-import FavoriteButton from '../components/favoriteButton';
 import { GestureHandlerRootView, ScrollView, TextInput } from 'react-native-gesture-handler';
 import BotomSheet from '@gorhom/bottom-sheet';
 import { Link } from 'expo-router';

@@ -8,6 +8,10 @@ export default function AppLayout() {
       headerShadowVisible: false,
     }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(register-client)" options={{ headerShown: false }} />
+      <Stack.Screen name="(SuperMarkets)" options={{headerShown: false}} />
+      <Stack.Screen name="login" options={{headerShown: false}} />
+
       <Stack.Screen name="promotion" options={{
         title: "promoção",
         headerBackground: () => (
@@ -23,26 +27,19 @@ export default function AppLayout() {
       <Stack.Screen name="store-profile" options={{
         title: "perfil do mercado",
         headerTransparent: true,
-      }} />
-      <Stack.Screen name="logout" options={{
-        title: "logout",
-        headerBackground: () => (
-          <GradientBackground ></GradientBackground>
-        ),
-      }} />
-      <Stack.Screen name="login" options={{ title: "login", headerShown: false }} />
+      }} />    
       <Stack.Screen
-       name="edit-location"
-       options={{
-        elevation: 0,
-        title: "Editar Localização",
-        headerStyle: {
-          backgroundColor: '#ABC6FD', // Defina a cor que você deseja aqui
-          // Remova a sombra no Android
-          shadowOpacity: 0, // Remova a sombra no iOS
+        name="edit-location"
+        options={{
+          elevation: 0,
+          title: "Editar Localização",
+          headerStyle: {
+            backgroundColor: '#ABC6FD', // Defina a cor que você deseja aqui
+            // Remova a sombra no Android
+            shadowOpacity: 0, // Remova a sombra no iOS
 
-        },
-      }}/>
+          },
+        }} />
       <Stack.Screen
         name="edit-profile"
         options={{
@@ -56,42 +53,37 @@ export default function AppLayout() {
           },
         }}
       />
-      <Stack.Screen 
-        name="configuration" 
-        options={{ 
-          title: "configurações", 
-          headerTransparent: true, // Torna o cabeçalho transparente
-        }} 
-      />    
       <Stack.Screen
-       name="about-us"
+        name="configuration"
         options={{
-           title: "Sobre o achei barato",
-           headerTransparent: true, // Torna o cabeçalho transparente
-           }} />
+          title: "configurações",
+          headerTransparent: true, // Torna o cabeçalho transparente
+        }}
+      />
       <Stack.Screen
-       name="acount"
-        options={{ 
+        name="about-us"
+        options={{
+          title: "Sobre o achei barato",
+          headerTransparent: true, // Torna o cabeçalho transparente
+        }} />
+      <Stack.Screen
+        name="acount"
+        options={{
           title: "conta",
           headerTransparent: true, // Torna o cabeçalho transparente
-         }} />
+        }} />
       <Stack.Screen
-       name="notificationsConfig"
+        name="notificationsConfig"
         options={{
-           title: "notificações",
-           headerTransparent: true, // Torna o cabeçalho transparente
-           }} />
-      <Stack.Screen name="register-client/register-user-1" options={{ title: "registrar consumidor" }} />
-      <Stack.Screen name="register-client/register-user-2" options={{ title: "registrar consumidor - segunda etapa" }} />
-      
-      <Stack.Screen name="SuperMarkets/RegisterScreen" options={{}} />
-      <Stack.Screen name="SuperMarkets/RegisterScreen2" />
-      <Stack.Screen name="SuperMarkets/RegisterScreen3" />
+          title: "notificações",
+          headerTransparent: true, // Torna o cabeçalho transparente
+        }} />
       <Stack.Screen
-       name="location"
+        name="location"
         options={{
-           title: "Localização",
-           headerTransparent: true,
-           }} />
-    </Stack>);
+          title: "Localização",
+          headerTransparent: true,
+        }} />
+    </Stack>
+  );
 }

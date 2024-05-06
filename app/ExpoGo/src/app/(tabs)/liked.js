@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, StatusBar, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import GradientBackground from "../../components/gradient";
 
 const { width, height } = Dimensions.get("window");
@@ -21,10 +21,15 @@ export default function Dashboard() {
         <Text style={styles.title}>Itens Curtidos</Text>
         <View style={styles.line}><GradientBackground /></View>
         <Link href={"/store-profile"}>perfil do mercado</Link>
+        <Link href={"/(tabs)"}>Editar perfil</Link>
         <Link href={"/promotion"}>Promoção</Link>
         <Link href={"/register-client/register-user-1"}>Trem</Link>
-        <Link href={"/login"}>Login</Link>
-        <Link href={"SuperMarkets/RegisterScreen"}>Cadastrar Mercado</Link>
+        <Link href={"/logout"}>Login</Link>
+        <Link push href={"/register-client"}>Cadastrar Mercado</Link>
+        <Link href="/login">Login</Link>
+
+        
+        
       </View>
     </View>
   );

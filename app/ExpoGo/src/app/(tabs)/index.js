@@ -99,6 +99,8 @@ export default function Dashboard() {
               <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
             </ScrollView>
 
+            <Link href="/login">Login</Link>
+
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
             </View>
