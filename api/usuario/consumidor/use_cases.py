@@ -130,6 +130,15 @@ class ConsumidorUseCase:
 
     @staticmethod
     async def update_consumidor_data(db: AsyncSession, id_consumidor: UUID, new_consumidor: ConsumidorUpdate):
+        update_fields = {}
+        for campo in new_consumidor:
+            if campo[1]:
+                update_fields[campo[0]] = campo[1]
+
+        breakpoint()
+        if not update_fields:
+            return
+
         consumidor_manager = ConsumidorManager(db=db)
         _consumidor_exists = await consumidor_manager.get_consumidor_by_id(id_consumidor)
         if not _consumidor_exists:
@@ -144,11 +153,6 @@ class ConsumidorUseCase:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=erros
             )
-
-        update_fields = {}
-        for campo in new_consumidor:
-            if campo[1]:
-                update_fields[campo[0]] = campo[1]
 
         await consumidor_manager.update_consumidor(id_consumidor, update_fields)
         _consumidor = await consumidor_manager.get_consumidor_by_id(id_consumidor)
