@@ -1,72 +1,122 @@
-import React from "react";
-import { StyleSheet, Text, View, ScrollView, TextInput, Image, Dimensions, ImageBackground, TouchableOpacity } from "react-native";
+import { React, useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  Image,
+  Dimensions,
+  StatusBar,
+  Platform,
+  KeyboardAvoidingView,
+  FlatList,
+  TouchableOpacity
+} from "react-native";
 import { Link } from "expo-router";
-import { MaterialIcons, MaterialCommunityIcons, Ionicons, Feather } from '@expo/vector-icons';
-import FavoriteButton from "../../components/favoriteButton";
-import CardPromotion from "../../components/CardComponent";
-
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
+import * as Location from 'expo-location';
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import PromotionCard from "../../components/PromotionCard.js";
+import GradientBackground from "../../components/gradient.js";
 
 const windowDimensions = Dimensions.get('window');
 const windowWidth = windowDimensions.width;
+const { height, width } = Dimensions.get('window');
 const Height = '100%';
 
 export default function Dashboard() {
+
+  const [data, setData] = useState([
+    {
+      imageSource: require('../../assets/apple.png'),
+      MarketImageProfile: require('../../assets/supermercado.png'),
+      MarketName: "Supermercado Central",
+      OldPrice: "R$ 15,99",
+      Price: "R$ 10,49",
+      PromotionLink: '/promotion',
+      PromotionName: "Maçã",
+      tag: "Promoção",
+      CommentsNumber: "20",
+      LikesNumber: 15,
+      MarketProfileLink: '/store-profile',
+      id: '1'
+    },
+  ]);
+
+  const renderCategory = ({ item }) => (
+    <PromotionCard
+      MarketImageProfile={item.MarketImageProfile}
+      imageSource={item.imageSource}
+      MarketName={item.MarketName}
+      OldPrice={item.OldPrice}
+      Price={item.Price}
+      PromotionLink={item.PromotionLink}
+      PromotionName={item.PromotionName}
+      tag={item.tag}
+      CommentsNumber={item.CommentsNumber}
+      LikesNumber={item.LikesNumber}
+      MarketProfileLink={item.MarketProfileLink} />
+  );
+
+
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={['#A9C6FC', '#F67235']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <View style={styles.innerHeader}>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.inputText}
-              placeholder="Pesquise no achei barato"
-              placeholderTextColor="grey"
-            />
+
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <View style={styles.header}>
+        <GradientBackground>
+          <View style={styles.innerHeader}>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Pesquise no achei barato"
+                placeholderTextColor="grey"
+              />
+            </View>
+
+            <View style={styles.notification}>
+              <Link href={"/notification"}>
+                <Feather style={styles.bell} name="bell" size={24} color="grey" />
+              </Link>
+            </View>
+
           </View>
-
-          <View style={styles.notification}>
-            <Link href={"/notification"}>
-              <Feather style={styles.bell} name="bell" size={24} color="grey" />
-            </Link>
-          </View>
-
-        </View>
-      </LinearGradient>
-
-      <ScrollView>
-        <ScrollView style={[styles.Scrolpromocoes, { height: 180 }]} horizontal={true}>
-          <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
-          <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
-          <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
-        </ScrollView>
+        </GradientBackground>
+      </View>
 
 
+      <FlatList
+        data={data}
+        renderItem={renderCategory}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          <ScrollView style={{ zIndex: 0 }}>
 
-        <ScrollView>
-          <View style={styles.viewLocalizacao}>
-            <Text style={styles.textLocalization}>Localização</Text>
-          </View>
-          <CardPromotion 
-          promotionName={"Batata"} 
-          promotionPrice={"R$ 05,00"} 
-          tag = {"Mais Barato"} 
-          imageSource={require('../../assets/banana.png')}
-          storeProfile={require('../../assets/supermercado.png')}
-          />
+            <ScrollView style={[styles.Scrolpromocoes, { height: 180 }]} horizontal={true}>
+              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
+              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
+              <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
+            </ScrollView>
 
-          {/* <Link href="/promotion">Promoção</Link>
-        
-        <Link href={"/login"}>login</Link>
-        <Link href={"/StoreRegister/RegisterScreen"}>tela de registro de mercado</Link>
-        */}
-        </ScrollView>
-      </ScrollView>
-    </View>
+            <Link href="/login">Login</Link>
+
+            <View style={styles.viewLocalizacao}>
+              <Text style={styles.textLocalization}>Localização</Text>
+            </View>
+
+            <View style={{ alignContent: 'center', alignItems: 'center' }}>
+
+
+
+            </View>
+
+
+
+          </ScrollView>
+        } />
+    </KeyboardAvoidingView>
+
   );
 }
 
@@ -75,31 +125,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: "row",
+    height: '11%',
   },
   innerHeader: {
-    alignItems: 'center',
+    paddingTop: StatusBar.currentHeight + 5, // milagre do frontend
+    alignItems: 'flex-end',
+    alignContent: 'center',
     justifyContent: 'space-between',
     flexDirection: "row",
-    padding: '4%',
-    marginTop: '6%',
-    flex: 1,
+    padding: '2%',
   },
   inputView: {
-    flex: 1,
-    marginRight: '5%',
+    flex: 0.95, //isso faz com que a barra de pesquisa se expanda verticalmente por 95% da header
   },
   inputText: {
-    flex: 1,
+    height: height * 0.05,
     color: 'grey',
     paddingLeft: 20,
     backgroundColor: '#fff',
-    borderRadius: 24,
+    borderRadius: 16,
   },
   notification: {
+    height: height * 0.05,
     aspectRatio: 1, // Mantém a proporção
     backgroundColor: '#fff',
-    padding: '3%',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 100,//é um circulo
   },
   Scrolpromocoes: {
