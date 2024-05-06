@@ -33,6 +33,7 @@
       "typeRoutes": true
     },
     "plugins": [
+      "expo-image-picker",
       "expo-secure-store",
       "expo-router",
       "@react-native-google-signin/google-signin"

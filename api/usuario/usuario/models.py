@@ -1,9 +1,8 @@
 from typing import Optional
 from fastapi import HTTPException, status
-from pydantic import ConfigDict
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import Base
-from sqlalchemy import UUID, Boolean, DateTime, String, select, update
+from sqlalchemy import UUID, Boolean, DateTime, Index, String, UniqueConstraint, select, update
 from sqlalchemy.orm import mapped_column, Mapped
 import uuid
 import datetime
@@ -19,7 +18,7 @@ class Usuario(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     nome: Mapped[str] = mapped_column(String(255), nullable=False)
-    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    email: Mapped[str] = mapped_column(String(255), nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[str] = mapped_column(Boolean, default=True)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -28,6 +27,12 @@ class Usuario(Base):
     updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now())
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)   
 
+    __table_args__ = (
+        Index('_email_deleted_unique', email, deleted, 
+              unique=True, 
+              postgresql_where=(~deleted)
+        ),
+    )
 
 
 class UsuarioManager:
@@ -48,7 +53,7 @@ class UsuarioManager:
 
     async def get_usuario_by_email(self, email: str) -> Optional[Usuario]:
         try:
-            _query = select(Usuario).where(Usuario.email == email)
+            _query = select(Usuario).where(Usuario.email == email, Usuario.deleted == False)
             _usuario = await self.db.execute(_query)
             _usuario = _usuario.scalar()
 
