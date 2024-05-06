@@ -135,7 +135,6 @@ class ConsumidorUseCase:
             if campo[1]:
                 update_fields[campo[0]] = campo[1]
 
-        breakpoint()
         if not update_fields:
             return
 
