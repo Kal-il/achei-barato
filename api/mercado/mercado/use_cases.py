@@ -9,6 +9,10 @@ from usuario.usuario.models import Usuario, UsuarioManager
 
 from mercado.mercado.erp_requests import ErpRequest
 
+from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager
+from usuario.usuario.models import UsuarioManager
+from mercado.mercado.schemas import ProdutoPromocaoErp
+
 
 class MercadoUseCases:
     async def restore_mercado(self, db: AsyncSession, usuario: Usuario):
@@ -176,21 +180,52 @@ class ProdutoUseCases:
 
         _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
         return _produtos
-    
-    async def sync_produtos_promocao_erp(self):
 
+    async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):   
         try:
-            
             lista_produtos_promo = await ErpRequest.get_teste()
-            # aqui eu preciso receber esses produtos vincular
-            # criar schema
-            #  salvar produto
-            # vincular na tabela do promocao
-            
+
+            if not lista_produtos_promo:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Produtos não encontrados",
+                )
+
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(id_usuario=usuario.id)
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
+
+            produtos = []
+            for produto_promo in lista_produtos_promo:
+                produto_promocao = ProdutoPromocaoErp(
+                    nome=produto_promo.get("descricao"),
+                    preco=produto_promo.get("valorVenda"),
+                    preco_promocional=produto_promo.get("vlrPromocao"),
+                    codigo_produto=str(produto_promo.get("codBarras")),
+                    ncm_produto=produto_promo.get("ncm"),
+                    id_produto_erp=str(produto_promo.get("proId")),
+                    marca=produto_promo.get("fabricante"),
+                )
+
+                produtos.append(produto_promocao)
+                
+            produto_manager = ProdutosPromocaoErpManager(db=db) 
+            response = await produto_manager.save_produtos_erp(produtos, mercado)
+            if not response:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Erro ao salvar produtos",
+                )
+
             return lista_produtos_promo
 
         except Exception as err:
-            raise HTTPException(detail=err, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            raise err
+
 
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()

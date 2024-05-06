@@ -134,7 +134,7 @@ async def sync_produtos(
     )
 
 @model_router.get("/sync/promocao/erp", summary="Sincroniza produtos em promoção do ERP")
-async def teste_auth_erp():
-    return await produto_usecases.sync_produtos_promocao_erp()
+async def teste_auth_erp(usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency):
+    return await produto_usecases.sync_produtos_promocao_erp(usuario=usuario, db=db)
 
 router.include_router(model_router)

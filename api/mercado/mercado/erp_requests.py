@@ -126,13 +126,13 @@ class ErpRequest:
         # esses sao os ids especificos que o foi disponibilzado para teste
         id_produtos_promo = ["30", "9103", "5260"]
         produtos_promocao = []
-
+    
         token = await ErpRequest.verify_token_erp()
         headers = {
             "Content-Type": "application/json",
             "empId": str(settings.emp_id),
             "Authorization": f"Bearer {token.get('token')}",
-        }
+        }    
 
         for id_produto in id_produtos_promo:
             url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar/{id_produto}"  
@@ -140,7 +140,6 @@ class ErpRequest:
                 async with httpx.AsyncClient() as client:
                         response = await client.get(url=url, headers=headers)
                         response.raise_for_status()
-    
                 response_produto = response.json()
             
             except UnicodeDecodeError:
