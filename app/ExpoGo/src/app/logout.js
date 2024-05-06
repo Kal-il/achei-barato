@@ -6,7 +6,7 @@ export default function Dashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Text style={styles.title}>Logout</Text>
+        
       </View>
     </View>
   );
