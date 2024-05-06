@@ -91,6 +91,5 @@ export default function AppLayout() {
           headerTransparent: true,
         }} />
     </Stack>
-    
   );
 }
