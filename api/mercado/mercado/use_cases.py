@@ -34,10 +34,19 @@ class MercadoUseCases:
                 detail="Este usuário não é dono de mercado.",
             )
 
+        update_fields = {}
+        for campo in novo_mercado:
+            if campo[1]:
+                update_fields[campo[0]] = campo[1]
+
+        if not update_fields:
+            return 
+
         await self._validar_cadastro(db=db, data=novo_mercado)
 
         mercado_manager = MercadoManager(db=db)
-        await mercado_manager.update_mercado(usuario.id, mercado=novo_mercado)
+        await mercado_manager.update_mercado(usuario.id, dados_mercado=update_fields)
+
 
     async def delete_mercado(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
