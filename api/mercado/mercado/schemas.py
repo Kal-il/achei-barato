@@ -166,7 +166,7 @@ class ApiMercados(BaseModel):
 
 
     def validar_campos(self):
-        erros = []
+        erros = {}
 
         if erro := self._validar_porta():
             erros["porta"] = erro

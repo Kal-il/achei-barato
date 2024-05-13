@@ -233,12 +233,11 @@ class ApiMercadosUseCases:
     async def save_dados_conexao(self, db: AsyncSession, api_mercado: ApiMercados, usuario: Usuario):
 
         try:
-            # if not api_mercado.validar_campos():
-            #     raise HTTPException(
-            #         status_code=status.HTTP_400_BAD_REQUEST,
-            #         detail="Campos inválidos",
-            #     )
-            
+            if not api_mercado.validar_campos():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Campos inválidos",
+                )
             mercado_manager = MercadoManager(db=db)
             mercado = await mercado_manager.get_mercado_by_usuario(
                 id_usuario=usuario.id
