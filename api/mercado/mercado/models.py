@@ -32,11 +32,14 @@ from usuario.usuario.models import Usuario
 from sqlalchemy.dialects.postgresql import JSONB
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
-
+from mercado.mercado.enums import TipoEmpresaERP
 from core.redis import redis
+import sqlalchemy
 
 
 class Mercado(Base):
+    """Models responsável por registrar os dados do mercado"""
+
     __tablename__ = "mercado_mercado"
 
     id: Mapped[str] = mapped_column(
@@ -198,6 +201,8 @@ storage = FileSystemStorage(path="./media")
 
 
 class Produto(Base):
+    """Models responsável por registrar os produtos do mercado"""
+
     __tablename__ = "mercado_produto"
 
     id: Mapped[str] = mapped_column(
@@ -247,6 +252,8 @@ class ProdutoManager:
 
 
 class Promocao(Base):
+    """Models responsável por registrar as promoções de produtos no mercado"""
+
     __tablename__ = "mercado_promocao"
 
     id: Mapped[str] = mapped_column(
@@ -266,6 +273,7 @@ class Promocao(Base):
 
 
 class ProdutosPromocaoErp(Base):
+    """Models responsável por registrar os produtos em promoção no ERP"""
 
     __tablename__ = "mercado_produto_promocao_erp"
 
@@ -317,3 +325,49 @@ class ProdutosPromocaoErpManager:
             await self.db.commit()
 
         return produtos
+
+
+class ApiMercados(Base):
+    """Models responsável por registrar os dados de conexão da API do ERP"""
+    
+    __tablename__ = "api_mercados"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
+    mercado = relationship(
+        Mercado, backref=backref("api_mercados", uselist=False)
+    )
+    url_base: Mapped[str] = mapped_column(String(255), nullable=True)
+    porta: Mapped[int] = mapped_column(Integer, nullable=True)
+    empresa_erp: Mapped[TipoEmpresaERP] = mapped_column(sqlalchemy.Enum(TipoEmpresaERP), nullable=True)
+    terminal: Mapped[str] = mapped_column(String(255), nullable=True)
+    emp_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ApiMercadosManager:
+
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def save_api_mercados(self, api_mercado: ApiMercados, mercado: Mercado):
+        api_mercado_data = ApiMercados(
+            mercado_id=mercado.id,
+            url_base=api_mercado.url_base,
+            porta=api_mercado.porta,
+            empresa_erp=api_mercado.empresa_erp,
+            terminal=api_mercado.terminal,
+            emp_id=api_mercado.emp_id,
+        )
+        self.db.add(api_mercado_data)
+        await self.db.commit()
+
+        return api_mercado
