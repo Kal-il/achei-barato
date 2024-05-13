@@ -1,5 +1,9 @@
+import hashlib
+import os
 from uuid import UUID
 
+import aiofiles
+from fastapi.responses import FileResponse
 from sqlalchemy.exc import IntegrityError
 from pydantic import EmailStr
 from usuario.usuario.models import Usuario
@@ -13,7 +17,7 @@ from usuario.consumidor.schemas import (
 from usuario.consumidor.models import Consumidor, ConsumidorManager
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 from core.security import verify_token_google
 from core.security import get_hashed_password
 
@@ -211,3 +215,14 @@ class ConsumidorUseCase:
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Existe um usuário ativo com este e-mail",
             )
+
+    async def upload_photo(db: AsyncSession, foto: UploadFile):
+        md5 = hashlib.md5(await foto.read()).hexdigest()
+        store_name = md5 + os.path.splitext(foto.filename)[-1]
+        async with aiofiles.open(f"media/{foto.filename}{store_name}", "wb") as file:
+            content = await foto.read()
+            await file.write(content)
+            
+
+    async def get_foto_consumidor(db: AsyncSession):
+        return FileResponse("media/foto.jpg")

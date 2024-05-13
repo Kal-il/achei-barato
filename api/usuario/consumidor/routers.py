@@ -5,7 +5,7 @@ from uuid import UUID
 from pydantic import EmailStr
 from core.security import get_current_active_user
 from usuario.usuario.models import Usuario
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from core.database import AsyncDBDependency
 from usuario.consumidor import schemas
 from usuario.consumidor.use_cases import ConsumidorUseCase
@@ -54,6 +54,15 @@ async def delete_consumidor_by_id(db: AsyncDBDependency, id_consumidor: UUID):
 @model_router.post("/restaurar/{email}", summary="Restaura a conta do consumidor através do e-mail")
 async def restore_consumidor(db: AsyncDBDependency, email: EmailStr):
     return await ConsumidorUseCase.restore_consumidor_by_email(db, email)
+
+@model_router.get("/foto")
+async def get_foto_consumidor(db: AsyncDBDependency):
+    return await ConsumidorUseCase.get_foto_consumidor(db)
     
+@model_router.post("/foto")
+async def upload_foto_consumidor(db: AsyncDBDependency, foto: UploadFile = File(...)):
+    return await ConsumidorUseCase.upload_photo(db, foto)
+    
+
 
 router.include_router(model_router)
