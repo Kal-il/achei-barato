@@ -32,7 +32,7 @@ from usuario.usuario.models import Usuario
 from sqlalchemy.dialects.postgresql import JSONB
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
-from enum import Enum, IntEnum
+from mercado.mercado.enums import TipoEmpresaERP
 from core.redis import redis
 import sqlalchemy
 
@@ -334,12 +334,6 @@ class ProdutosPromocaoErpManager:
             await self.db.commit()
 
         return produtos
- 
- 
-class TipoEmpresaERP(IntEnum):
-    """Enum responsável por registrar as empresas de ERP disponíveis para conexão"""
-
-    MAXDATA = 1
 
 
 class ApiMercados(Base):
@@ -366,3 +360,23 @@ class ApiMercados(Base):
         DateTime, default=datetime.datetime.now()
     )
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ApiMercadosManager:
+
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def save_api_mercados(self, api_mercado: ApiMercados, mercado: Mercado):
+        api_mercado_data = ApiMercados(
+            mercado_id=mercado.id,
+            url_base=api_mercado.url_base,
+            porta=api_mercado.porta,
+            empresa_erp=api_mercado.empresa_erp,
+            terminal=api_mercado.terminal,
+            emp_id=api_mercado.emp_id,
+        )
+        self.db.add(api_mercado_data)
+        await self.db.commit()
+
+        return api_mercado
