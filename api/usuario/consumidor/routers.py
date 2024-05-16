@@ -19,8 +19,8 @@ model_router = APIRouter(
 )
 
 @model_router.post("/create", summary=f"Criar Consumidor", response_model=schemas.ConsumidorBase)
-async def create_user(db: AsyncDBDependency, data: schemas.ConsumidorAuth):
-    return await ConsumidorUseCase.create_consumidor(db, data)
+async def create_user(db: AsyncDBDependency, data: schemas.ConsumidorAuth, foto: UploadFile = File(...)):
+    return await ConsumidorUseCase.create_consumidor(db, data, foto)
 
 
 @model_router.post("/create/google", summary=f"Criar Consumidor com Google", response_model=schemas.ConsumidorBase)
