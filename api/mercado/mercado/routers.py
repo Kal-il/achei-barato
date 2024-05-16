@@ -154,7 +154,6 @@ async def teste_auth_erp(
 
 # Routers Modelo ApiMercados
 
-
 @model_router.post("/erp/conexao", summary="Endpoint para dados de conexão com ERP")
 async def post_erp_conexao(
     db: AsyncDBDependency,
@@ -162,5 +161,28 @@ async def post_erp_conexao(
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
     return await api_mercados_usecases.save_dados_conexao(db=db, api_mercado=api_mercado, usuario=usuario)
+
+
+@model_router.get("/erp/conexao", summary="Endpoint para pegar os dados de conexão com ERP")
+async def get_erp_conexao(
+    db: AsyncDBDependency,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await api_mercados_usecases.get_dados_conexao(db=db, usuario=usuario)
+
+@model_router.delete("/erp/conexao", summary="Endpoint para deletar os dados de conexão com ERP")
+async def delete_erp_conexao(
+    db: AsyncDBDependency,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await api_mercados_usecases.delete_dados_conexao(db=db, usuario=usuario)
+
+@model_router.put("/erp/conexao", summary="Endpoint para atualizar os dados de conexão com ERP")
+async def put_erp_conexao(
+    db: AsyncDBDependency,
+    api_mercado: schemas.ApiMercados,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await api_mercados_usecases.update_dados_conexao(db=db, api_mercado=api_mercado, usuario=usuario)
 
 router.include_router(model_router)

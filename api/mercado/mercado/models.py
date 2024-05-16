@@ -368,15 +368,71 @@ class ApiMercadosManager:
         self.db = db
 
     async def save_api_mercados(self, api_mercado: ApiMercados, mercado: Mercado):
-        api_mercado_data = ApiMercados(
-            mercado_id=mercado.id,
-            url_base=api_mercado.url_base,
-            porta=api_mercado.porta,
-            empresa_erp=api_mercado.empresa_erp,
-            terminal=api_mercado.terminal,
-            emp_id=api_mercado.emp_id,
-        )
-        self.db.add(api_mercado_data)
-        await self.db.commit()
+        try:
+            api_mercado_data = ApiMercados(
+                mercado_id=mercado.id,
+                url_base=api_mercado.url_base,
+                porta=api_mercado.porta,
+                empresa_erp=api_mercado.empresa_erp,
+                terminal=api_mercado.terminal,
+                emp_id=api_mercado.emp_id,
+            )
+            self.db.add(api_mercado_data)
+            await self.db.commit()
 
-        return api_mercado
+            return api_mercado
+        
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao salvar dados de conexão com ERP: {err}",
+            )
+    
+    async def get_api_mercados(self, mercado: Mercado):  
+        try:
+            _query = select(ApiMercados).where(ApiMercados.mercado_id == mercado.id)
+            _api_mercado = await self.db.execute(_query)
+            _api_mercado = _api_mercado.scalar()
+
+            return _api_mercado
+        
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar dados de conexão com ERP: {err}",
+            )
+    
+    async def delete_api_mercados(self, mercado_id: str):
+        try:
+            _query = delete(ApiMercados).where(ApiMercados.mercado_id == mercado_id.id)
+            await self.db.execute(_query)
+            await self.db.commit()
+            
+            return True 
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar dados de conexão com ERP: {err}",
+            )
+    async def update_api_mercados(self, mercado_atualizado: Mercado, api_mercado: ApiMercados):
+        try:
+            _query = update(ApiMercados).where(ApiMercados.mercado_id == api_mercado.id).values(
+                url_base=mercado_atualizado.url_base,
+                porta=mercado_atualizado.porta,
+                empresa_erp=mercado_atualizado.empresa_erp,
+                terminal=mercado_atualizado.terminal,
+                emp_id=mercado_atualizado.emp_id,
+            )
+            
+            await self.db.execute(_query)
+            await self.db.commit()
+
+            return True
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao atualizar dados de conexão com ERP: {err}",
+            )
+    
+    
+    

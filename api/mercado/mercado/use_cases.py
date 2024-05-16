@@ -263,10 +263,81 @@ class ApiMercadosUseCases:
                     detail="Erro ao salvar dados de conexão",
                 )
             return response
+        except Exception as err:
+            raise err
+        
+    async def get_dados_conexao(self, db: AsyncSession, usuario: Usuario):
+        try:
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
 
+            api_mercados_manager = ApiMercadosManager(db=db)
+            api_mercado = await api_mercados_manager.get_api_mercados(mercado)
+            if not api_mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Dados de conexão não encontrados",
+                )
+            return api_mercado
+        except Exception as err:
+            raise err
+        
+    async def delete_dados_conexao(self, db: AsyncSession, usuario: Usuario):
+        try:
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
 
-            
+            api_mercados_manager = ApiMercadosManager(db=db)
+            response = await api_mercados_manager.delete_api_mercados(mercado)
+            if response:
+                raise HTTPException(
+                    status_code=status.HTTP_200_OK,
+                    detail="Dados de conexão deletados com sucesso.",
+                )
+            return response
+        except Exception as err:
+            raise err
+        
+    async def update_dados_conexao(self, db: AsyncSession, api_mercado: ApiMercados, usuario: Usuario):
+        try:
+            if not api_mercado.validar_campos():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Campos inválidos",
+                )
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
 
+            api_mercados_manager = ApiMercadosManager(db=db)
+            response = await api_mercados_manager.update_api_mercados(api_mercado, mercado)
+
+            if response:
+                raise HTTPException(
+                    status_code=status.HTTP_200_OK,
+                    detail="Dados de conexão atualizados com sucesso.",
+                )
+           
         except Exception as err:
             raise err
 
