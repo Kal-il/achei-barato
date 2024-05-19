@@ -12,4 +12,8 @@ node_modules
 .vscode
 venv
 api/lib
+<<<<<<< HEAD
 api/media
+=======
+api/media
+>>>>>>> bd84469 (feat: integra edicao de foto de consumidor no front com o backend)

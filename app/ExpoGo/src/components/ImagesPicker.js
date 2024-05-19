@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Image, View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Link from 'expo-router';
+import { ApiClient } from '../api/ApiClient';
  
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
 
@@ -21,7 +22,23 @@ const ImagesPicker = ({imageSize, ImageHolder, ImageBorderRadius, Condition}) =>
       quality: 1,
     });
 
-    console.log(result);
+    console.log(result.assets[0].uri);
+	
+	const data = new FormData();
+	data.append('foto', {
+			uri: result.assets[0].uri,
+			name: 'teste.jpg',
+			type: 'image/jpeg',
+		})
+
+	const api = new ApiClient();
+
+    let erros;
+    try{
+      await api.updateConsumidorData(data, null, true);
+    } catch (e) {
+      console.error(e);
+    }
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);

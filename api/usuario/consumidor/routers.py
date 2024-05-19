@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from urllib import response
 from uuid import UUID
 
@@ -36,12 +36,12 @@ async def get_consumidor_data_by_id(db: AsyncDBDependency, id_usuario: UUID):
     return await ConsumidorUseCase.get_consumidor_data(db, id_usuario)
 
 @model_router.put("/atualizar", summary="Atualiza dados do consumidor")
-async def update_consumidor_data(db: AsyncDBDependency, new_consumidor: schemas.ConsumidorUpdate, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
-    return await ConsumidorUseCase.update_consumidor_data(db, usuario.id, new_consumidor)
+async def update_consumidor_data(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)], new_consumidor: schemas.ConsumidorUpdate = Depends(), foto: UploadFile = File(None)):
+    return await ConsumidorUseCase.update_consumidor_data(db, usuario.id, new_consumidor, foto)
 
 @model_router.put("/atualizar/{id_consumidor}", summary="Atualiza dados do consumidor pelo ID", response_model=schemas.ConsumidorSchema)
-async def update_consumidor_data_by_id(db: AsyncDBDependency, id_consumidor: UUID, new_consumidor: schemas.ConsumidorUpdate):
-    return await ConsumidorUseCase.update_consumidor_data(db, id_consumidor, new_consumidor)
+async def update_consumidor_data_by_id(db: AsyncDBDependency, id_consumidor: UUID, new_consumidor: schemas.ConsumidorUpdate = Depends(), foto: Optional[UploadFile] = File(None)):
+    return await ConsumidorUseCase.update_consumidor_data(db, id_consumidor, new_consumidor, foto)
 
 @model_router.delete("/deletar", summary="Deleta consumidor")
 async def delete_consumidor(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):

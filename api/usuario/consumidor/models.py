@@ -1,10 +1,28 @@
 import datetime
-from fastapi import HTTPException, status
+import hashlib
+import aiofiles
+import base64
+from fastapi import HTTPException, UploadFile, status
 from pydantic import EmailStr
 from usuario.usuario.models import Usuario
 from sqlalchemy import UUID, BigInteger, ForeignKey, String, Integer, exists, select, update
 from sqlalchemy.orm import mapped_column, Mapped
 from core.security import get_hashed_password
+
+
+async def upload_foto_consumidor(foto: UploadFile):
+    conteudo = await foto.read()
+    md5 = hashlib.md5(await foto.read()).hexdigest()
+    store_name = f"media/{md5 + str(foto.filename)}"
+    async with aiofiles.open(store_name, "wb") as nova_foto:
+        await nova_foto.write(conteudo)
+        return store_name
+
+async def get_foto_consumidor(url_foto: str):
+    async with aiofiles.open(url_foto, "rb") as foto:
+        foto_consumidor = await foto.read()
+        foto_consumidor = base64.b64encode(foto_consumidor)
+        return foto_consumidor
 
 
 class Consumidor(Usuario):

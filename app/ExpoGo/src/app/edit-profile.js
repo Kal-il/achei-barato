@@ -15,17 +15,20 @@ export default function EditarPerfil() {
   const [telefone, setTelefone] = useState("");
 
   const updateConsumidorData = async () => {
-    data = {
-      nome: nome,
-      email: email,
-      telefone: telefone,
-    }
+	params = {}
+	
+	const variables = {nome: nome, email: email, telefone: telefone}
 
+	for (const [key, value] of Object.entries(variables)){
+		if (value) {
+			params[key] = value;
+		}
+	}
     const api = new ApiClient();
 
     let erros;
     try{
-      await api.updateConsumidorData(data);
+      await api.updateConsumidorData(null, params, false);
     } catch (e) {
       console.error(e.response.data.detail);
     }
@@ -33,17 +36,20 @@ export default function EditarPerfil() {
 
   const[consumidor, setConsumidor] = useState(null);
   const[loading, setLoading] = useState(true);
+  const[fotoPerfil, setFotoPerfil] = useState('');
 
   const fetchConsumidorData = async () => {
     const api = new ApiClient();
     
     let erros, consumidorData;
     try {
-      consumidorData = await api.getConsumidorData()
+      consumidorData = await api.getConsumidorData();
     } catch (e) {
       erros = e
     }
-
+	let foto;
+    foto = `data:image/jpg;base64,${consumidorData.foto}`
+	setFotoPerfil(foto);
     setConsumidor(consumidorData);
     setLoading(false);
   }
@@ -56,12 +62,18 @@ export default function EditarPerfil() {
     <View style={styles.container}>
      <View style={styles.header}>
      <View style={styles.ProfileImage}>
-          <ImagesPicker 
+		  {loading && <ImagesPicker 
           imageSize={0.16}
           ImageHolder={require('../assets/profile.png')}
           ImageBorderRadius={100}
           Condition={true}/* Essa condição diz se o usuário vai ou não poder mudar a imagem*/>
-          </ImagesPicker>
+          </ImagesPicker>}
+	      {fotoPerfil && <ImagesPicker 
+          imageSize={0.16}
+		  ImageHolder={{uri: fotoPerfil}}
+          ImageBorderRadius={100}
+          Condition={true}/* Essa condição diz se o usuário vai ou não poder mudar a imagem*/>
+          </ImagesPicker>}
           <Text style={styles.title}>Editar Perfil</Text>
       </View>
      </View>
