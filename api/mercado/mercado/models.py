@@ -478,7 +478,7 @@ class Curtidas(Base):
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     produto_id = mapped_column(UUID, ForeignKey("mercado_produto.id"))
-    produto = relationship(Produto, backref=backref("curtida", uselist=False))
+    produto = relationship(Produto, backref=backref("mercado_curtida", uselist=False))
     usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
     usuario = relationship(Usuario, backref=backref("curtida", uselist=False))
     created_at: Mapped[datetime.datetime] = mapped_column(
@@ -539,3 +539,30 @@ class CurtidasManager:
             )
     
     
+class SeguirMercado(Base):
+    __tablename__ = "mercado_seguir"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
+    mercado = relationship(Mercado, backref=backref("mercado_seguir", uselist=False))
+    usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
+    usuario = relationship(Usuario, backref=backref("mercado_seguir", uselist=False))
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+
+
+
+
+
+
+
+
