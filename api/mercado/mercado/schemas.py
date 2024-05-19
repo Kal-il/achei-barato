@@ -123,7 +123,7 @@ class MercadoUpdate(MercadoBase):
 class ProdutoBase(BaseModel):
     nome: Optional[str] = Field(..., max_length=255, description="Nome")
     marca: Optional[str] = Field(..., max_length=255, description="Marca")
-    data_validade: Optional[str] = Field(..., description="Data de validade")
+    data_validade: Optional[datetime.datetime] = Field(..., description="Data de validade")
     ncm_produto: Optional[str] = Field(..., max_length=10, description="NCM do produto")
     gtin_produto: Optional[str] = Field(
         ..., max_length=14, description="GTIN do produto"

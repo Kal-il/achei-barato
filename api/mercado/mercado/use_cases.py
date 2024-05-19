@@ -227,6 +227,29 @@ class ProdutoUseCases:
 
         except Exception as err:
             raise err
+        
+    async def cadastrar_produto(self, db: AsyncSession, produto: schemas.ProdutoBase, usuario: Usuario):    
+        try:
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
+
+            produto_manager = ProdutoManager(db=db)
+            response = await produto_manager.save_produto(produto, mercado)
+            if not response:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Erro ao salvar produto",
+                )
+            return response
+        except Exception as err:
+            raise err
 
 class ApiMercadosUseCases:
 
@@ -346,7 +369,7 @@ class CurtidasUseCases:
     async def save_curtidas(self, db: AsyncSession, usuario: Usuario, id_produto: str):
         try:
             _produto_manager = ProdutoManager(db=db)
-            produto = await _produto_manager.get_produto_by_id(id_produto)
+            produto = await _produto_manager.get_produto_id(id_produto)
             if not produto:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -354,8 +377,8 @@ class CurtidasUseCases:
                 )
 
             _curtida_manager = CurtidasManager(db=db)
-            curtidas = await _curtida_manager.save_curtidas(usuario, produto)
-            
+            curtidas = await _curtida_manager.save_curtida(produto=produto, usuario=usuario)
+            breakpoint()
             if curtidas:
                 raise HTTPException(
                     status_code=status.HTTP_200_OK,
@@ -382,7 +405,7 @@ class CurtidasUseCases:
     async def delete_curtidas(self, db: AsyncSession, usuario: Usuario, id_produto: str):
         try:
             _produto_manager = ProdutoManager(db=db)
-            produto = await _produto_manager.get_produto_by_id(id_produto)
+            produto = await _produto_manager.get_produto_id(id_produto)
             if not produto:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -390,7 +413,7 @@ class CurtidasUseCases:
                 )
 
             _curtida_manager = CurtidasManager(db=db)
-            response = await _curtida_manager.delete_curtidas(usuario, produto)
+            response = await _curtida_manager.delete_curtidas(usuario=usuario, produto=produto)
             if response:
                 raise HTTPException(
                     status_code=status.HTTP_200_OK,
@@ -400,8 +423,7 @@ class CurtidasUseCases:
             raise err
         
         
-
-
 api_mercados_usecases = ApiMercadosUseCases()
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()
+curtidas_usecases = CurtidasUseCases()

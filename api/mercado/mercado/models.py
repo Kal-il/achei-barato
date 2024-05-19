@@ -259,6 +259,40 @@ class ProdutoManager:
     async def sync_produtos(self, cnpj: str, produtos: List[ProdutoBase]):
         await redis.store_produtos_hash(cnpj=cnpj, produtos=produtos)
 
+    async def save_produto(self, produto: ProdutoBase, mercado: Mercado):
+        try:
+            _produto = Produto(
+                mercado_id=mercado.id,
+                nome=produto.nome,
+                marca=produto.marca,
+                data_validade=produto.data_validade,
+                ncm_produto=produto.ncm_produto,
+                gtin_produto=produto.gtin_produto,
+                mpn_produto=produto.mpn_produto,
+                id_produto_erp=produto.id_produto_erp,
+                descricao=produto.descricao,
+                preco=produto.preco,
+                preco_promocional=produto.preco_promocional,
+                codigo_produto=produto.codigo_produto,
+            )
+
+            self.db.add(_produto)
+            await self.db.commit()
+
+            return _produto
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao salvar produto: {err}",
+            )
+        
+    async def get_produto_id(self, id_produto: str):
+        _query = select(Produto).where(Produto.id == id_produto)
+        _produto = await self.db.execute(_query)
+        _produto = _produto.scalar()
+
+        return _produto
+
 
 class Promocao(Base):
     """Models responsável por registrar as promoções de produtos no mercado"""
@@ -461,11 +495,11 @@ class CurtidasManager:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def save_curtida(self, produto_id: str, usuario_id: str):
+    async def save_curtida(self, produto: Produto, usuario: Usuario):
         try:
             _curtida = Curtidas(
-                produto_id=produto_id,
-                usuario_id=usuario_id,
+                produto_id=produto.id,
+                usuario_id=usuario.id,
             )
             self.db.add(_curtida)
             await self.db.commit()
@@ -476,9 +510,9 @@ class CurtidasManager:
                 detail=f"Erro ao salvar curtida: {err}",
             )
         
-    async def get_curtida(self, produto_id: str, usuario_id: str):
+    async def get_curtidas(self, usuario: Usuario):
         try:
-            _query = select(Curtidas).where(Curtidas.produto_id == produto_id, Curtidas.usuario_id == usuario_id)
+            _query = select(Curtidas).where(Curtidas.usuario_id == usuario.id)
             _curtida = await self.db.execute(_query)
             _curtida = _curtida.scalar()
 
@@ -490,9 +524,9 @@ class CurtidasManager:
                 detail=f"Erro ao buscar curtida: {err}",
             )
 
-    async def delete_curtida(self, produto_id: str, usuario_id: str):
+    async def delete_curtidas(self, produto: Produto, usuario: Usuario):
         try:
-            _query = delete(Curtidas).where(Curtidas.produto_id == produto_id, Curtidas.usuario_id == usuario_id)
+            _query = delete(Curtidas).where(Curtidas.produto_id == produto.id, Curtidas.usuario_id == usuario.id)
             await self.db.execute(_query)
             await self.db.commit()
 

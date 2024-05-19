@@ -7,7 +7,7 @@ from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
 from mercado.mercado import schemas
-from mercado.mercado.use_cases import mercado_usecases, produto_usecases, api_mercados_usecases
+from mercado.mercado.use_cases import mercado_usecases, produto_usecases, api_mercados_usecases, curtidas_usecases
 from usuario.usuario.models import Usuario
 from mercado.mercado.erp_requests import ErpRequest
 
@@ -121,6 +121,15 @@ async def sync_produtos(
     return await produto_usecases.sync_produtos(db, produtos, usuario)
 
 
+@model_router.post("/cadastrar/produto", summary="Cadastrar produto")
+async def cadastrar_produto(
+    db: AsyncDBDependency,
+    produto: schemas.ProdutoBase,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await produto_usecases.cadastrar_produto(db=db, produto=produto, usuario=usuario)
+
+
 @model_router.get("/produtos", summary="Obtém todos os produtos do mercado")
 async def get_produtos(
     db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
@@ -194,14 +203,14 @@ async def post_curtir(
     id_produto: str,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
-    return await produto_usecases.curtir_produto(db=db, id_produto=id_produto, usuario=usuario)
+    return await curtidas_usecases.save_curtidas(db=db, id_produto=id_produto, usuario=usuario)
 
 @model_router.get("/curtidas", summary="Endpoint para pegar todos os produtos curtidos")
 async def get_curtidas(
     db: AsyncDBDependency,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
-    return await produto_usecases.get_produtos_curtidos(db=db, usuario=usuario)
+    return await curtidas_usecases.get_curtidas(db=db, usuario=usuario)
 
 @model_router.delete("/descurtir", summary="Endpoint para descurtir um produto")
 async def delete_descurtir(
@@ -209,5 +218,6 @@ async def delete_descurtir(
     id_produto: str,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
-    return await produto_usecases.descurtir_produto(db=db, id_produto=id_produto, usuario=usuario)
+    return await curtidas_usecases.delete_curtidas(db=db, id_produto=id_produto, usuario=usuario)
+
 router.include_router(model_router)
