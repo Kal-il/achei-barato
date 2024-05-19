@@ -27,9 +27,7 @@ async def get_foto_consumidor(url_foto: str):
 
 class Consumidor(Usuario):
     __tablename__ = "usuario_consumidor"
-    # id: Mapped[str] = mapped_column(
-    #     UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    # )
+
     id: Mapped[str] = mapped_column(UUID, ForeignKey("usuario_usuario.id"), primary_key=True)
     cep: Mapped[str] = mapped_column(String(8), nullable=False)
     estado: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -39,7 +37,7 @@ class Consumidor(Usuario):
     numero_endereco: Mapped[int] = mapped_column(Integer, nullable=False)
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
     telefone: Mapped[int] = mapped_column(BigInteger, nullable=False)
-
+    url_foto: Mapped[str] = mapped_column(String(255), nullable=True)
     __mapper_args__ = {
         "inherit_condition": (id == Usuario.id),
     }
