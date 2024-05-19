@@ -185,4 +185,5 @@ async def put_erp_conexao(
 ):
     return await api_mercados_usecases.update_dados_conexao(db=db, api_mercado=api_mercado, usuario=usuario)
 
+
 router.include_router(model_router)
