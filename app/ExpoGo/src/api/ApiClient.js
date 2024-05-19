@@ -33,7 +33,6 @@ export class ApiClient {
 	}
 
 	async getConsumidorData() {
-		console.log(this._apiBaseUrl)
 		return await this._callApi("api/v1/usuario/consumidor/consultar", "GET", null, false);
 	}
 
@@ -45,7 +44,6 @@ export class ApiClient {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;
         let token = this._authenticator.fetchAccessToken();
-
         
 		try {
 			var response = await this._callApiWithToken(url, method, data, params, token, multipart);
@@ -79,7 +77,7 @@ export class ApiClient {
 		if (multipart) {
 			headers = {
 					"Authorization": `Bearer ${token}`,
-					"Content-Type":"multipart/form-data"
+					"Content-Type": "multipart/form-data",
 				}
 		} else {
 			headers = {
@@ -93,11 +91,10 @@ export class ApiClient {
 				data: data,
 				params: params,
 				headers: headers,
-			})
+				})
 
 			return response.data;
 		} catch (err) {
-			console.log(JSON.stringify(err))
 			throw err
 		}
     }

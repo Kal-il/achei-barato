@@ -20,6 +20,7 @@ export default function EditarLocal() {
   const [complemento, setComplemento] = useState("");
 
   const[consumidor, setConsumidor] = useState(null);
+  const[fotoPerfil, setFotoPerfil] = useState('');
   const[loading, setLoading] = useState(true);
 
   const fetchConsumidorData = async () => {
@@ -34,6 +35,9 @@ export default function EditarLocal() {
 
     setConsumidor(consumidorData);
     setLoading(false);
+
+    foto = `data:image/jpg;base64,${consumidorData.foto}`
+	setFotoPerfil(foto);
   }
 
   useEffect(() => {
@@ -50,11 +54,19 @@ export default function EditarLocal() {
       complemento: complemento,
     }
 
+	params = {}
+
+    for (const[key, value] of Object.entries(data)) {
+		if (value) {
+			params[key] = value;
+		}
+	}
+
     const api = new ApiClient();
 
     let erros;
     try{
-      await api.updateConsumidorData(data);
+      await api.updateConsumidorData(null, params);
     } catch (e) {
       console.error(e);
     }
@@ -64,11 +76,15 @@ export default function EditarLocal() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.ProfileImage}>
-          <ImagesPicker
+			{loading && <ImagesPicker
             imageSize={0.16}
             ImageHolder={require('../assets/profile.png')}
             ImageBorderRadius={100}>
-          </ImagesPicker>
+          </ImagesPicker>}
+	      {fotoPerfil && <ImagesPicker 
+          imageSize={0.16}
+		  ImageHolder={{uri: fotoPerfil}}
+          ImageBorderRadius={100}></ImagesPicker>}
           <Text style={styles.title}>Editar Localização</Text>
         </View>
       </View>

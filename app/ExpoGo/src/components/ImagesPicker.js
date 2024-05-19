@@ -22,14 +22,12 @@ const ImagesPicker = ({imageSize, ImageHolder, ImageBorderRadius, Condition}) =>
       quality: 1,
     });
 
-    console.log(result.assets[0].uri);
-	
 	const data = new FormData();
 	data.append('foto', {
-			uri: result.assets[0].uri,
-			name: 'teste.jpg',
-			type: 'image/jpeg',
-		})
+		uri: result.assets[0].uri,
+		name: 'teste.jpg',
+		type: 'image/jpeg',
+	})
 
 	const api = new ApiClient();
 
