@@ -28,6 +28,7 @@ models = [
     "mercado.mercado.models.Promocao",
     "mercado.mercado.models.ProdutosPromocaoErp",
     "mercado.mercado.models.ApiMercados",
+    "mercado.mercado.models.Curtidas"
 ]
 
 for model in models:

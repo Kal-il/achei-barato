@@ -433,6 +433,75 @@ class ApiMercadosManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao atualizar dados de conexão com ERP: {err}",
             )
-    
+        
+
+class Curtidas(Base):
+    """Models responsável por registrar as curtidas de produtos no mercado"""
+
+    __tablename__ = "mercado_curtida"
+
+    id: Mapped[str] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    produto_id = mapped_column(UUID, ForeignKey("mercado_produto.id"))
+    produto = relationship(Produto, backref=backref("curtida", uselist=False))
+    usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
+    usuario = relationship(Usuario, backref=backref("curtida", uselist=False))
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
+    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class CurtidasManager:
+
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def save_curtida(self, produto_id: str, usuario_id: str):
+        try:
+            _curtida = Curtidas(
+                produto_id=produto_id,
+                usuario_id=usuario_id,
+            )
+            self.db.add(_curtida)
+            await self.db.commit()
+
+        except Exception as err:    
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao salvar curtida: {err}",
+            )
+        
+    async def get_curtida(self, produto_id: str, usuario_id: str):
+        try:
+            _query = select(Curtidas).where(Curtidas.produto_id == produto_id, Curtidas.usuario_id == usuario_id)
+            _curtida = await self.db.execute(_query)
+            _curtida = _curtida.scalar()
+
+            return _curtida
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar curtida: {err}",
+            )
+
+    async def delete_curtida(self, produto_id: str, usuario_id: str):
+        try:
+            _query = delete(Curtidas).where(Curtidas.produto_id == produto_id, Curtidas.usuario_id == usuario_id)
+            await self.db.execute(_query)
+            await self.db.commit()
+
+            return True
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar curtida: {err}",
+            )
     
     

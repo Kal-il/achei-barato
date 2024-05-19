@@ -185,4 +185,29 @@ async def put_erp_conexao(
 ):
     return await api_mercados_usecases.update_dados_conexao(db=db, api_mercado=api_mercado, usuario=usuario)
 
+
+# Routers para curtidas 
+
+@model_router.post("/curtir", summary="Endpoint para curtir um produto")
+async def post_curtir(
+    db: AsyncDBDependency,
+    id_produto: str,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await produto_usecases.curtir_produto(db=db, id_produto=id_produto, usuario=usuario)
+
+@model_router.get("/curtidas", summary="Endpoint para pegar todos os produtos curtidos")
+async def get_curtidas(
+    db: AsyncDBDependency,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await produto_usecases.get_produtos_curtidos(db=db, usuario=usuario)
+
+@model_router.delete("/descurtir", summary="Endpoint para descurtir um produto")
+async def delete_descurtir(
+    db: AsyncDBDependency,
+    id_produto: str,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await produto_usecases.descurtir_produto(db=db, id_produto=id_produto, usuario=usuario)
 router.include_router(model_router)
