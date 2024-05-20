@@ -9,7 +9,7 @@ from usuario.usuario.models import Usuario, UsuarioManager
 
 from mercado.mercado.erp_requests import ErpRequest
 
-from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager, ApiMercadosManager, CurtidasManager
+from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager, ApiMercadosManager, CurtidasManager, SeguirMercadoManager
 from usuario.usuario.models import UsuarioManager
 from mercado.mercado.schemas import ProdutoPromocaoErp, ApiMercados
 
@@ -422,8 +422,44 @@ class CurtidasUseCases:
         except Exception as err:
             raise err
         
+class MercadoSeguirUseCases:
+
+    async def seguir_mercado(self, db: AsyncSession, usuario: Usuario, id_mercado: str):
+        try:
+            _mercado_manager = MercadoManager(db=db)
+            mercado = await _mercado_manager.get_mercado_by_id(id_mercado)
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
+
+            _mercado_seguir_manager = SeguirMercadoManager(db=db)
+            response = await _mercado_seguir_manager.seguir_mercado(usuario=usuario, mercado=mercado)
+            if response:
+                raise HTTPException(
+                    status_code=status.HTTP_200_OK,
+                    detail="Mercado seguido com sucesso",
+                )
+        except Exception as err:
+            raise err
+    
+    async def get_mercados_seguidos(self, db: AsyncSession, usuario: Usuario):
+        try:
+            _mercado_manager = SeguirMercadoManager(db=db)
+            mercados = await _mercado_manager.get_mercados_seguir(usuario)
+            if not mercados:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Esse usuário não segue mercados.",
+                )
+            return mercados
+        except Exception as err:
+            raise err
+        
         
 api_mercados_usecases = ApiMercadosUseCases()
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()
 curtidas_usecases = CurtidasUseCases()
+mercado_seguir_usecases = MercadoSeguirUseCases()

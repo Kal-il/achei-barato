@@ -558,6 +558,55 @@ class SeguirMercado(Base):
     deleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
+class SeguirMercadoManager:
+    
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def save_seguir(self, mercado: Mercado, usuario: Usuario):
+        try:
+            _seguir = SeguirMercado(
+                mercado_id=mercado.id,
+                usuario_id=usuario.id,
+            )
+            self.db.add(_seguir)
+            await self.db.commit()
+
+        except Exception as err:    
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao salvar seguir: {err}",
+            )
+    
+    async def deleter_seguir(self, mercado: Mercado, usuario: Usuario):
+        try:
+            _query = delete(SeguirMercado).where(SeguirMercado.mercado_id == mercado.id, SeguirMercado.usuario_id == usuario.id)
+            await self.db.execute(_query)
+            await self.db.commit()
+
+            return True
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar seguir: {err}",
+            )
+        
+    async def get_mercados_seguir(self, usuario: Usuario):
+        try: 
+            _query = select(SeguirMercado).where(SeguirMercado.usuario_id == usuario.id)
+            _seguir = await self.db.execute(_query)
+            _seguir = _seguir.scalar()
+            breakpoint()
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar seguir: {err}",
+            )
+    
+
+
 
 
 

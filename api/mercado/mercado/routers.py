@@ -7,7 +7,7 @@ from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
 from mercado.mercado import schemas
-from mercado.mercado.use_cases import mercado_usecases, produto_usecases, api_mercados_usecases, curtidas_usecases
+from mercado.mercado.use_cases import mercado_usecases, produto_usecases, api_mercados_usecases, curtidas_usecases, mercado_seguir_usecases
 from usuario.usuario.models import Usuario
 from mercado.mercado.erp_requests import ErpRequest
 
@@ -219,5 +219,15 @@ async def delete_descurtir(
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
     return await curtidas_usecases.delete_curtidas(db=db, id_produto=id_produto, usuario=usuario)
+
+
+# Routers Mercado Seguir
+
+@model_router.get("/seguidos/mercado", summary="Endpoint para buscar os mercados seguidos de um usuário")
+async def mercado_seguir(
+    db: AsyncDBDependency,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await mercado_seguir_usecases.get_mercados_seguidos(db=db, usuario=usuario)
 
 router.include_router(model_router)
