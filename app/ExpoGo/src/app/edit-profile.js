@@ -1,6 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, ScrollView} from "react-native";
 import ImagesPicker from "../components/ImagesPicker.js";
 import ImputContent from "../components/ImputComponent.js";
 import BlueButton from "../components/Button.js";
