@@ -378,7 +378,6 @@ class CurtidasUseCases:
 
             _curtida_manager = CurtidasManager(db=db)
             curtidas = await _curtida_manager.save_curtida(produto=produto, usuario=usuario)
-            breakpoint()
             if curtidas:
                 raise HTTPException(
                     status_code=status.HTTP_200_OK,
