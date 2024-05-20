@@ -87,13 +87,6 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      {/* Botão de voltar no canto superior esquerdo */}
-      <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
-      <Image
-          source={require('../../assets/seta2.png')}
-          style={styles.goBackImage}
-        />
-      </TouchableOpacity>
       {/* Logo no canto superior direito */}
       <Image
         source={require('../../assets/logo2.png')}

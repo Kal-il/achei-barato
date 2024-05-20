@@ -41,12 +41,6 @@ const RegisterScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
-        <Image
-          source={require('../../assets/seta2.png')}
-          style={styles.goBackImage}
-        />
-      </TouchableOpacity>
       <Image
         source={require('../../assets/logo2.png')}
         style={styles.logo}
