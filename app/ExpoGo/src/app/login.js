@@ -13,9 +13,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen} from "../components/GoogleSignIn.js";
 
-    
-  
-
 export default function Dashboard() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
