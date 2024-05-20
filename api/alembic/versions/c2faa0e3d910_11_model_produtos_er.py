@@ -33,6 +33,7 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('deleted', sa.Boolean(), nullable=False),
+    sa.Column('descricao', sa.String(length=500), nullable=True),
     sa.ForeignKeyConstraint(['mercado_id'], ['mercado_mercado.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
