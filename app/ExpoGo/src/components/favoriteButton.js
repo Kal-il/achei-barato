@@ -27,7 +27,7 @@ export default function FavoriteButton() {
                 inputRange: [0, 1],
                 outputRange: [1, 1.2]
             }) }] }}>
-                <MaterialIcons name={isFavorited ? "favorite" : "favorite-outline"} size={32} color={isFavorited ? 'red' : '#fff'} />
+                <MaterialIcons name={isFavorited ? "favorite" : "favorite-outline"} size={28} color={isFavorited ? '#FF5F5F' : '#FF5F5F'} />
             </Animated.View>
         </TouchableOpacity>
     );

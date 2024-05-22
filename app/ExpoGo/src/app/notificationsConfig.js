@@ -1,35 +1,67 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { Link } from "expo-router";
+import GradientBackground from "../components/gradient";
+import Switchable from "../components/SwitchButton";
 
+const { width, height } = Dimensions.get('window');
 
-export default function Dashboard() {
+export default function NotificacoesConfig() {
   return (
-    <View style={styles.container}>
+    <GradientBackground style={styles.container}>
       <View style={styles.main}>
-        <Text style={styles.title}>configurações de notificação</Text>
+      <View style={styles.line} />
+        <View style={styles.field}>
+          <Text style={styles.text}>Silenciar notificações</Text>
+          <Switchable />
+        </View>
+        <View style={styles.line} />
+        <View style={styles.field}>
+          <Text style={styles.text}>Notificar quando produtos curtidos
+            entrarem em promoção</Text>
+          <Switchable />
+        </View>
+        <View style={styles.line} />
+        <View style={styles.field}>
+          <Text style={styles.text}>Notificar quando produtos de mercados
+            favoritados estiverem de promoção</Text>
+          <Switchable />
+        </View>
       </View>
-    </View>
+    </GradientBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    padding: 24,
   },
   main: {
-    flex: 1,
+    paddingTop: '30%',
+    paddingHorizontal: '5%',
     justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
   },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
+  field: {
+    marginBottom: '5%',
+    width: width * 0.9,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
+  text: {
+    width: width * 0.8,
+    paddingRight: '5%',
+    color: '#fff',
+    marginBottom: '2%',
+    marginTop: '2%',
+    fontSize: 20,
+    fontWeight: "500",
+    textAlign: 'justify', // Justifica o texto
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#fffa',
+    width: width * 0.9, // Controla a largura da linha (nesse caso está com 90% da largura da tela)
+    alignSelf: 'center', // Centraliza a linha
+    marginVertical: '1%', // Adiciona uma margem vertical para separar a linha dos links
   },
 });

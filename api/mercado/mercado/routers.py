@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, BackgroundTasks
 
 from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
@@ -9,6 +9,7 @@ from core.security import get_current_active_user
 from mercado.mercado import schemas
 from mercado.mercado.use_cases import mercado_usecases, produto_usecases
 from usuario.usuario.models import Usuario
+from mercado.mercado.erp_requests import ErpRequest
 
 router = APIRouter()
 
@@ -32,6 +33,7 @@ async def cadastrar_mercado(
     db: AsyncDBDependency,
     data: schemas.Mercado,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
+    background_tasks: BackgroundTasks,
 ):
     mercado_data = schemas.MercadoCreate(
         cnpj=data.cnpj,
@@ -51,7 +53,9 @@ async def cadastrar_mercado(
         usuario=usuario,
     )
 
-    return await mercado_usecases.cadastrar_mercado(db=db, data=mercado_data)
+    return await mercado_usecases.cadastrar_mercado(
+        db=db, data=mercado_data, background_tasks=background_tasks
+    )
 
 
 @model_router.get(
@@ -118,10 +122,17 @@ async def sync_produtos(
 
 
 @model_router.get("/produtos", summary="Obtém todos os produtos do mercado")
-async def get_produtos(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
+async def get_produtos(
+    db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
+):
     return await produto_usecases.get_produtos(db=db, usuario=usuario)
-    
-@model_router.get("/produtos/{id_produto}", summary="Obtém produto através do ID", response_model=schemas.ProdutoBase)
+
+
+@model_router.get(
+    "/produtos/{id_produto}",
+    summary="Obtém produto através do ID",
+    response_model=schemas.ProdutoBase,
+)
 async def sync_produtos(
     db: AsyncDBDependency,
     id_produto: str,
@@ -130,6 +141,15 @@ async def sync_produtos(
     return await produto_usecases.get_produto_by_id(
         db=db, id_produto=id_produto, usuario=usuario
     )
+
+
+@model_router.get(
+    "/sync/promocao/erp", summary="Sincroniza produtos em promoção do ERP"
+)
+async def teste_auth_erp(
+    usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency
+):
+    return await produto_usecases.sync_produtos_promocao_erp(usuario=usuario, db=db)
 
 
 router.include_router(model_router)

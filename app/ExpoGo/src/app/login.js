@@ -7,42 +7,69 @@ import {
   StyleSheet,
   Image,
   Button,
-	ActivityIndicator 
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
-import { GoogleSignInScreen } from "./GoogleSignIn.js"
-
-    
-  
+import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Dashboard() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-  
-  
-      // Botão auxiliar para deletar tokens
-      const handleDeleteTokens = () => {
-          deleteToken("access-token");
-          deleteToken("refresh-token");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Erro", "Usuário ou senha inválidos");
+      return;
+    }
+
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    const api = new ApiClient();
+    try {
+      const response = await api.loginUser(formData);
+
+      if (response.status === 200) {
+        const data = await response.json();
+        await AsyncStorage.setItem("access-token", data["access"]);
+      } else {
+        handleErrorResponse(response.status);
       }
-  
-    const handleLogin = () => {
-      // lógica para autenticar o usuário aqui
-      if ((username == "") & (password == "")) {
-        return;
-      }
-  
-      const formData = new URLSearchParams();
-      formData.append('username', username);
-      formData.append('password', password);
-  
-      api = new ApiClient();
-      api.loginUser(formData);
-    };
+    } catch (error) {
+      Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+    }
+  };
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Dado não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
+  };
+
   return (
     <LinearGradient
-    colors={['#A9C6FC', '#F67235']}
+      colors={['#A9C6FC', '#F67235']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}
@@ -53,10 +80,9 @@ export default function Dashboard() {
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
           <Text style={{ color: '#7F48CA' }}>Barato</Text>
-        </Text> 
-        
-        <View style={styles.inputView}>
+        </Text>
 
+        <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
             placeholder="Nome de Usuário"
@@ -75,17 +101,20 @@ export default function Dashboard() {
             onChangeText={(text) => setPassword(text)}
           />
         </View>
-        <GoogleSignInScreen/>
-        <TouchableOpacity> 
+
+        <TouchableOpacity>
           <Text style={styles.loginText} marginTop='1%'>Esqueceu sua Senha?</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
-    
 
-        <TouchableOpacity> 
+        <Text style={styles.loginText}>Ou</Text>
+
+        <GoogleSignInScreen style={{ margin: 2 }} />
+
+        <TouchableOpacity>
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
         </TouchableOpacity>
       </View>
@@ -93,38 +122,35 @@ export default function Dashboard() {
   );
 }
 
-const TesteScreen = ({navigation}) => {
-	const [username, setUsername] = useState("");
-	const [loading, setLoading] = useState(true);
+const TesteScreen = ({ navigation }) => {
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchUsername = async () => {
-
     const api = new ApiClient();
-    api.getUserDetail("api/v1/usuario/usuario/eu")
-    usuario = await api.getUserDetail("api/v1/usuario/usuario/eu")
-    setUsername(usuario["nome"])
-	setLoading(false);
-
+    const usuario = await api.getUserDetail("api/v1/usuario/usuario/eu");
+    setUsername(usuario["nome"]);
+    setLoading(false);
   };
 
-	useEffect(() => {
-	  fetchUsername();
-	}, []);
+  useEffect(() => {
+    fetchUsername();
+  }, []);
 
   if (loading) {
     return (
       <View>
         <ActivityIndicator size="large" color="#0000ff" />
-		  <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
+        <Button title="teste" onPress={() => navigation.navigate('HomeScreen')} />
       </View>
     );
   }
-  
-  return(
+
+  return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <Text> {username} </Text>
-      <Button title="teste" onPress={() => navigation.navigate('HomeScreen')}/>
-  </LinearGradient>
+      <Button title="teste" onPress={() => navigation.navigate('HomeScreen')} />
+    </LinearGradient>
   );
 }
 
@@ -157,7 +183,6 @@ const styles = StyleSheet.create({
     height: 50,
     color: '#7E48CC',
   },
-
   loginText: {
     color: "white",
   },
@@ -180,4 +205,3 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
 });
-
