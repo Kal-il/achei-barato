@@ -406,3 +406,5 @@ Este requisito possibilita que o usuário denuncie promoções consideradas inad
 |-|-|-|
 |Ações e Gerenciamento do Consumidor|Como usuário preocupado com a integridade das promoções disponibilizadas na plataforma, quero poder denunciar promoções que considero inadequadas ou falsas, para ajudar a manter a qualidade das ofertas oferecidas.|O usuário precisa estar cadastrado e autenticado na plataforma, ao ver uma primoção que considera inadequada para o aplicativo, pode encontar facilmente uma opção de denuncia na página da promoção|
 
+Adicionar a descrição 
+
