@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useNavigation } from "expo-router";
 import { ApiClient } from "../../api/ApiClient.js";
@@ -13,21 +13,59 @@ const RegisterScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = async () => {
-    const api = new ApiClient();
-
-    data = {
-        nome: username,
-        email: email,
-        password: password
-      }
-
-    let erros;
-    try {
-      await api.createUser(data);
-    } catch (err) {
-      erros = err.response.data.detail;
+    if (username === '' || email === '' || password === '' || confirmPassword === '') {
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+      return;
     }
 
+    if (password !== confirmPassword) {
+      Alert.alert("Erro", "As senhas não coincidem.");
+      return;
+    }
+
+    const api = new ApiClient();
+
+    const data = {
+      nome: username,
+      email: email,
+      password: password
+    };
+
+    try {
+      const response = await api.createUser(data);
+
+      if (response.status === 201) {
+        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+        navigation.navigate("/SuperMarkets/RegisterScreen2");
+      } else {
+        handleErrorResponse(response.status);
+      }
+    } catch (error) {
+      handleErrorResponse(error.response ? error.response.status : 500);
+    }
+  };
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Recurso não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
   };
 
   const handleGoBack = () => {
@@ -83,7 +121,7 @@ const RegisterScreen = () => {
         onChangeText={setConfirmPassword}
       />
       <Link href="/SuperMarkets/RegisterScreen2" asChild>
-        <TouchableOpacity style={styles.button} onPress={handleRegister} >
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>
       </Link>

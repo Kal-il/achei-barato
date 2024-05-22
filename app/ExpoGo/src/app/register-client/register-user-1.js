@@ -6,41 +6,77 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link } from "expo-router";
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from 'expo-secure-store';
 import GoogleSignInScreen from "../../components/GoogleSignIn";
+import { ApiClient } from "../../api/ApiClient";
 
 const CadastroScreen = ({ navigation }) => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
 
-  const handleCadastrar = () => {
-    // Lógica para cadastrar o usuário aqui
-    if (
-      nome === "" ||
-      email === "" ||
-      telefone === ""
-    ) {
-      // Verifica se algum campo está vazio
+  const handleCadastrar = async () => {
+    if (nome === "" || email === "" || telefone === "") {
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
     }
 
-    SecureStore.setItem("nome", nome);
-    SecureStore.setItem("email", email);
-    SecureStore.setItem("telefone", telefone);
+    await SecureStore.setItemAsync("nome", nome);
+    await SecureStore.setItemAsync("email", email);
+    await SecureStore.setItemAsync("telefone", telefone);
+
+    const api = new ApiClient();
+
+    const customer = {
+      nome: nome,
+      email: email,
+      telefone: telefone,
+    };
+
+    try {
+      const response = await api.createCustomer(customer);
+
+      if (response.status === 201) {
+        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+        navigation.navigate("/register-client/register-user-2");
+      } else {
+        handleErrorResponse(response.status);
+      }
+    } catch (error) {
+      handleErrorResponse(error.response ? error.response.status : 500);
+    }
+  };
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Dado não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
   };
 
   const formatarTelefone = (input) => {
     let formattedInput = input.replace(/\D/g, "");
-    // formattedInput = formattedInput.substring(0, 11);
-    // formattedInput = formattedInput.replace(
-    //   /^(\d{2})(\d{5})(\d{4})/,
-    //   "($1) $2-$3"
-    // );
     setTelefone(formattedInput);
   };
 
@@ -84,8 +120,6 @@ const CadastroScreen = ({ navigation }) => {
           />
         </View>
 
-
-
         <Link href={"/register-client/register-user-2"} asChild>
           <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
             <Text style={styles.loginText}>Continuar</Text>
@@ -98,7 +132,7 @@ const CadastroScreen = ({ navigation }) => {
           <View style={styles.line}></View>
         </View>
 
-      <GoogleSignInScreen/>
+        <GoogleSignInScreen/>
         <View style={styles.socialBtnContainer}>
           <TouchableOpacity
             style={[styles.socialBtn, { backgroundColor: "#fff" }]}
