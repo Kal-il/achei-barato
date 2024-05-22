@@ -126,22 +126,13 @@ const CadastroScreen = ({ navigation }) => {
           </TouchableOpacity>
         </Link>
 
+		<View style={styles.socialBtnContainer}>
+		<GoogleSignInScreen/>
+		</View>
+
         <View style={styles.orContainer}>
           <View style={styles.line}></View>
           <Text style={styles.orText}>ou</Text>
-          <View style={styles.line}></View>
-        </View>
-
-        <GoogleSignInScreen/>
-        <View style={styles.socialBtnContainer}>
-          <TouchableOpacity
-            style={[styles.socialBtn, { backgroundColor: "#fff" }]}
-            onPress={() => {}}
-          >
-            <FontAwesome name="google" size={24} color="#3b5998" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.orContainer2}>
           <View style={styles.line}></View>
         </View>
         <View style={styles.textContainer}>
