@@ -1,82 +1,105 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useNavigation } from "expo-router";
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from 'expo-secure-store';
 import { ApiClient } from '../../api/ApiClient';
 
-const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
+const RegisterScreen = () => {
   const navigation = useNavigation();
 
-
+  const [cnpj, setCNPJ] = useState('');
+  const [nomeEmpresa, setNomeEmpresa] = useState('');
+  const [razaoSocial, setRazaoSocial] = useState('');
+  const [telefone, setTelefone] = useState('');
   const [cep, setCep] = useState('');
   const [estado, setEstado] = useState('');
   const [cidade, setCidade] = useState('');
   const [bairro, setBairro] = useState('');
   const [endereco, setEndereco] = useState('');
 
-  var cnpj = SecureStore.getItem('cnpj');
-  var nomeEmpresa = SecureStore.getItem('nomeEmpresa');
-  var razaoSocial = SecureStore.getItem('razaoSocial');
-  var telefone = SecureStore.getItem('telefone');
+  useEffect(() => {
+    const loadSecureStoreData = async () => {
+      setCNPJ(await SecureStore.getItemAsync('cnpj') || '');
+      setNomeEmpresa(await SecureStore.getItemAsync('nomeEmpresa') || '');
+      setRazaoSocial(await SecureStore.getItemAsync('razaoSocial') || '');
+      setTelefone(await SecureStore.getItemAsync('telefone') || '');
+    };
+    loadSecureStoreData();
+  }, []);
 
-       
   const handleRegister = async () => {
-    // Lógica para registrar o usuário aqui
-   
-	  data = {
-		cnpj: cnpj,
-		razao_social: razaoSocial,
-		nome_fantasia: nomeEmpresa,
-		telefone: telefone,
-		cep: cep,
-		estado: estado,
-		cidade: cidade,
-		bairro: bairro,
-		endereco: endereco,
-		numero_endereco: 1,
-		complemento: "string",
-		nome_responsavel: "string",
-		cpf_responsavel: "09263613176",
-		usuario: {
-			id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-			nome: "string",
-			email: "user@example.com",
-			dono_mercado: true,
-			is_active: true,
-			is_superuser: false,
-			created_at: "2024-04-20T19:05:32.869Z",
-			updated_at: "2024-04-20T19:05:32.869Z",
-			deleted: false
-		  }
-		}
+    if (cep === '' || estado === '' || cidade === '' || bairro === '' || endereco === '') {
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+      return;
+    }
 
-		// Chama API
-		const api = new ApiClient();
+    const data = {
+      cnpj,
+      razao_social: razaoSocial,
+      nome_fantasia: nomeEmpresa,
+      telefone,
+      cep,
+      estado,
+      cidade,
+      bairro,
+      endereco,
+      numero_endereco: 1,
+      complemento: "string",
+      nome_responsavel: "string",
+      cpf_responsavel: "09263613176",
+      usuario: {
+        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        nome: "string",
+        email: "user@example.com",
+        dono_mercado: true,
+        is_active: true,
+        is_superuser: false,
+        created_at: "2024-04-20T19:05:32.869Z",
+        updated_at: "2024-04-20T19:05:32.869Z",
+        deleted: false
+      }
+    };
 
-		// Chama API e guarda retornados erros, caso existam.
-		let erros;
-		try {
-			await api.createMercado(data);
-		} catch (err) {
-			erros = err.response.data.detail;
-		}
+    const api = new ApiClient();
 
-		if (erros) {
-			console.error(erros);
-		} else {
-			console.log('sucesso');
-		}
+    try {
+      await api.createMercado(data);
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+      navigation.navigate("/SuperMarkets/RegisterScreen3");
+      await SecureStore.deleteItemAsync("cnpj");
+      await SecureStore.deleteItemAsync("nomeEmpresa");
+      await SecureStore.deleteItemAsync("razaoSocial");
+      await SecureStore.deleteItemAsync("telefone");
+    } catch (err) {
+      handleErrorResponse(err.response ? err.response.status : 500);
+    }
+  };
 
-		// Remove itens salvos no SecureStore
-		await SecureStore.deleteItemAsync("cnpj");
-		await SecureStore.deleteItemAsync("nomeEmpresa");
-		await SecureStore.deleteItemAsync("razaoSocial");
-		await SecureStore.deleteItemAsync("telefone");
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Recurso não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
   };
 
   const handleGoBack = () => {
-    // Lógica para voltar para a tela anterior
     navigation.goBack();
   };
 
@@ -89,7 +112,7 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
     >
       {/* Botão de voltar no canto superior esquerdo */}
       <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
-      <Image
+        <Image
           source={require('../../assets/seta2.png')}
           style={styles.goBackImage}
         />
@@ -107,7 +130,7 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
       <TextInput
         style={styles.input}
         placeholder="Cep"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={cep}
         onChangeText={setCep}
@@ -115,7 +138,7 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
       <TextInput
         style={styles.input}
         placeholder="Estado"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={estado}
         onChangeText={setEstado}
@@ -123,7 +146,7 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
       <TextInput
         style={styles.input}
         placeholder="Cidade"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={cidade}
         onChangeText={setCidade}
@@ -131,7 +154,7 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
       <TextInput
         style={styles.input}
         placeholder="Bairro"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={bairro}
         onChangeText={setBairro}
@@ -139,12 +162,11 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
       <TextInput
         style={styles.input}
         placeholder="Endereco"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={endereco}
         onChangeText={setEndereco}
       />
-      
       
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Cadastrar</Text>
@@ -156,15 +178,15 @@ const RegisterScreen = ({cnpj, nomeEmpresa, razaoSocial, telefone}) => {
 
 const styles = StyleSheet.create({
   highlightText: {
-    color: '#7F48CA', // Cor diferente apenas para a palavra "empresa"
-    fontWeight: 'bold', // Pode adicionar outros estilos necessários
+    color: '#7F48CA',
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%', // Define a largura para ocupar 100% da largura do dispositivo
-    height: '100%', // Define a altura para ocupar 100% da altura do dispositivo
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 24,
