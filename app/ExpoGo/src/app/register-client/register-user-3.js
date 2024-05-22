@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from 'expo-secure-store'
@@ -16,27 +17,25 @@ const CadastroScreen = ({ navigation }) => {
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const handleCadastrar = async () => {
-    // Lógica para cadastrar o usuário aqui
-    if (
-      senha === "" ||
-      confirmarSenha === ""
-    ) {
+    if (senha === "" || confirmarSenha === "") {
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
     }
     if (senha !== confirmarSenha) {
+      Alert.alert("Erro", "As senhas não coincidem.");
       return;
     }
 
-    const nome = SecureStore.getItem("nome");
-    const email = SecureStore.getItem("email");
-    const telefone = SecureStore.getItem("telefone");
-    const cep = SecureStore.getItem("cep");
-    const estado = SecureStore.getItem("estado");
-    const cidade = SecureStore.getItem("cidade");
-    const bairro = SecureStore.getItem("bairro");
-    const endereco = SecureStore.getItem("endereco");
+    const nome = await SecureStore.getItemAsync("nome");
+    const email = await SecureStore.getItemAsync("email");
+    const telefone = await SecureStore.getItemAsync("telefone");
+    const cep = await SecureStore.getItemAsync("cep");
+    const estado = await SecureStore.getItemAsync("estado");
+    const cidade = await SecureStore.getItemAsync("cidade");
+    const bairro = await SecureStore.getItemAsync("bairro");
+    const endereco = await SecureStore.getItemAsync("endereco");
 
-    costumer = {
+    const customer = {
       nome: nome,
       email: email,
       password: senha,
@@ -48,20 +47,44 @@ const CadastroScreen = ({ navigation }) => {
       complemento: "",
       numero_endereco: 1,
       telefone: parseInt(telefone)
-    }
+    };
 
     const api = new ApiClient();
     
-    let erros;
     try {
-      await api.createCostumer(costumer);
-    } catch (err) {
-      erros = err.response;
-      console.log('erro', err)
-    }
+      const response = await api.createCustomer(customer);
 
-    if (erros) {
-      console.error(erros);
+      if (response.status === 201) {
+        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+        // Navegar para outra tela ou limpar os campos de entrada, se necessário
+      } else {
+        handleErrorResponse(response.status);
+      }
+    } catch (error) {
+      handleErrorResponse(error.response ? error.response.status : 500);
+    }
+  };
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Dado não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
     }
   };
 
