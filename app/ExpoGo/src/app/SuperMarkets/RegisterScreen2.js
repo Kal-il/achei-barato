@@ -1,27 +1,60 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useNavigation } from "expo-router";
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from 'expo-secure-store';
 
 const RegisterScreen = () => {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   const [cnpj, setCNPJ] = useState('');
   const [nomeEmpresa, setNomeEmpresa] = useState('');
   const [razaoSocial, setRazaoSocial] = useState('');
   const [telefone, setTelefone] = useState('');
 
-  const handleRegister = () => {
-    // Lógica para registrar o usuário aqui
-    
-	SecureStore.setItem("cnpj", cnpj);
-	SecureStore.setItem("nomeEmpresa", nomeEmpresa);
-	SecureStore.setItem("razaoSocial", razaoSocial);
-	SecureStore.setItem("telefone", telefone);
+  const handleRegister = async () => {
+    if (cnpj === '' || nomeEmpresa === '' || razaoSocial === '' || telefone === '') {
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+      return;
+    }
+
+    try {
+      await SecureStore.setItemAsync("cnpj", cnpj);
+      await SecureStore.setItemAsync("nomeEmpresa", nomeEmpresa);
+      await SecureStore.setItemAsync("razaoSocial", razaoSocial);
+      await SecureStore.setItemAsync("telefone", telefone);
+
+      // Sucesso no registro
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+      navigation.navigate("/SuperMarkets/RegisterScreen3");
+    } catch (error) {
+      handleErrorResponse(error.response ? error.response.status : 500);
+    }
+  };
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Recurso não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
   };
 
   const handleGoBack = () => {
-    // Lógica para voltar para a tela anterior
     navigation.goBack();
   };
 
@@ -32,6 +65,13 @@ const RegisterScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
+      {/* Botão de voltar no canto superior esquerdo */}
+      <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
+        <Image
+          source={require('../../assets/seta2.png')}
+          style={styles.goBackImage}
+        />
+      </TouchableOpacity>
       {/* Logo no canto superior direito */}
       <Image
         source={require('../../assets/logo2.png')}
@@ -45,7 +85,7 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Nome da sua empresa"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={nomeEmpresa}
         onChangeText={setNomeEmpresa}
@@ -53,7 +93,7 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Razão Social"
-        keyboardType="TextInput"
+        keyboardType="default"
         autoCapitalize="none"
         value={razaoSocial}
         onChangeText={setRazaoSocial}
@@ -61,7 +101,7 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="CNPJ"
-        keyboardType="numbers-and-punctuation"
+        keyboardType="numeric"
         autoCapitalize="none"
         value={cnpj}
         onChangeText={setCNPJ}
@@ -69,15 +109,14 @@ const RegisterScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="Telefone"
-        keyboardType="numbers-and-punctuation"
+        keyboardType="phone-pad"
         autoCapitalize="none"
         value={telefone}
         onChangeText={setTelefone}
       />
       
-      
-      <Link href= "/SuperMarkets/RegisterScreen3" asChild>
-        <TouchableOpacity style={styles.button} onPress={handleRegister} >
+      <Link href="/SuperMarkets/RegisterScreen3" asChild>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>
       </Link>
@@ -88,15 +127,15 @@ const RegisterScreen = () => {
 
 const styles = StyleSheet.create({
   highlightText: {
-    color: '#7F48CA', // Cor diferente apenas para a palavra "empresa"
-    fontWeight: 'bold', // Pode adicionar outros estilos necessários
+    color: '#7F48CA',
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%', // Define a largura para ocupar 100% da largura do dispositivo
-    height: '100%', // Define a altura para ocupar 100% da altura do dispositivo
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 24,
