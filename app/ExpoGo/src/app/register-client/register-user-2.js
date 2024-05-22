@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
@@ -40,11 +41,19 @@ const CadastroScreen = ({ navigation }) => {
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
+        <Image
+          source={require("../../assets/logo.png")}
+          style={{ width: 85, height: 85, marginTop: "20%" }}
+        />
+        <Text style={styles.logo}>
+          <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}
+          <Text style={{ color: "#7F48CA" }}>Barato</Text>
+        </Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
             placeholder="Cep"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={cep}
             onChangeText={setCep}
@@ -55,7 +64,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Estado"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={estado}
             onChangeText={setEstado}
@@ -66,7 +75,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Cidade"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={cidade}
             onChangeText={setCidade}
@@ -77,7 +86,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Bairro"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={bairro}
             onChangeText={setBairro}
@@ -88,7 +97,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Endereco"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={endereco}
             onChangeText={setEndereco}

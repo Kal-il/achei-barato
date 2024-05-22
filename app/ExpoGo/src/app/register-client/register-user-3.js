@@ -97,9 +97,11 @@ const CadastroScreen = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
+		<View style={styles.loginBtn}>
+        <TouchableOpacity onPress={handleCadastrar}>
           <Text style={styles.loginText}>Cadastrar</Text>
         </TouchableOpacity>
+		</View>
 
       </View>
     </LinearGradient>
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
     width: "65%",
     backgroundColor: "#3672F6",
     borderRadius: 25,
-    height: "6%",
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     marginTop: "2%",

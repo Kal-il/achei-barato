@@ -84,13 +84,15 @@ const CadastroScreen = ({ navigation }) => {
           />
         </View>
 
-
-
         <Link href={"/register-client/register-user-2"} asChild>
           <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
             <Text style={styles.loginText}>Continuar</Text>
           </TouchableOpacity>
         </Link>
+
+		<View style={styles.socialBtnContainer}>
+		<GoogleSignInScreen/>
+		</View>
 
         <View style={styles.orContainer}>
           <View style={styles.line}></View>
@@ -98,18 +100,6 @@ const CadastroScreen = ({ navigation }) => {
           <View style={styles.line}></View>
         </View>
 
-      <GoogleSignInScreen/>
-        <View style={styles.socialBtnContainer}>
-          <TouchableOpacity
-            style={[styles.socialBtn, { backgroundColor: "#fff" }]}
-            onPress={() => {}}
-          >
-            <FontAwesome name="google" size={24} color="#3b5998" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.orContainer2}>
-          <View style={styles.line}></View>
-        </View>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
             É uma empresa?{" "}

@@ -102,6 +102,7 @@ export default function Dashboard() {
             </ScrollView>
 
             <Link href="/login">Login</Link>
+            <Link href="register-client/register-user-1">Cadastrar Consumidor</Link>
 
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
