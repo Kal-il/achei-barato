@@ -23,6 +23,7 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "softwareKeyboardLayoutMode": "pan",
       "package": "com.anonymous.acheibarato"
     },
     "web": {
