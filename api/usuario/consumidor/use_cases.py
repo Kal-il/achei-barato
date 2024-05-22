@@ -1,19 +1,24 @@
+import hashlib
+import os
 from uuid import UUID
 
+import aiofiles
+from fastapi.responses import FileResponse
 from sqlalchemy.exc import IntegrityError
 from pydantic import EmailStr
 from usuario.usuario.models import Usuario
 from usuario.auth.models import UsuarioAuthGoogleManager
 from usuario.consumidor.schemas import (
     ConsumidorAuth,
+    ConsumidorComFoto,
     ConsumidorGoogle,
     ConsumidorSchema,
     ConsumidorUpdate,
 )
-from usuario.consumidor.models import Consumidor, ConsumidorManager
+from usuario.consumidor.models import Consumidor, ConsumidorManager, get_foto_consumidor, upload_foto_consumidor
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 from core.security import verify_token_google
 from core.security import get_hashed_password
 
@@ -143,19 +148,26 @@ class ConsumidorUseCase:
                 detail="Dados do consumidor não encontrados",
             )
 
+        foto = await get_foto_consumidor(_consumidor_data.url_foto)
         _consumidor_data = ConsumidorSchema.model_validate(_consumidor_data)
+        # _consumidor_data = ConsumidorSchema.model_validate(_consumidor_data)
+        _consumidor_data = ConsumidorComFoto(**_consumidor_data.__dict__, foto=foto)
         return _consumidor_data
 
     @staticmethod
     async def update_consumidor_data(
-        db: AsyncSession, id_consumidor: UUID, new_consumidor: ConsumidorUpdate
+        db: AsyncSession, id_consumidor: UUID, new_consumidor: ConsumidorUpdate, foto: Optional[UploadFile]
     ):
+
         update_fields = {}
+        if foto:
+            url_foto = await upload_foto_consumidor(foto)
+            update_fields['url_foto'] = url_foto
+
         for campo in new_consumidor:
             if campo[1]:
                 update_fields[campo[0]] = campo[1]
 
-        # breakpoint()
         if not update_fields:
             return
 

@@ -9,9 +9,9 @@ from usuario.usuario.models import Usuario, UsuarioManager
 
 from mercado.mercado.erp_requests import ErpRequest
 
-from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager
+from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager, ApiMercadosManager
 from usuario.usuario.models import UsuarioManager
-from mercado.mercado.schemas import ProdutoPromocaoErp
+from mercado.mercado.schemas import ProdutoPromocaoErp, ApiMercados
 
 
 class MercadoUseCases:
@@ -34,10 +34,19 @@ class MercadoUseCases:
                 detail="Este usuário não é dono de mercado.",
             )
 
+        update_fields = {}
+        for campo in novo_mercado:
+            if campo[1]:
+                update_fields[campo[0]] = campo[1]
+
+        if not update_fields:
+            return 
+
         await self._validar_cadastro(db=db, data=novo_mercado)
 
         mercado_manager = MercadoManager(db=db)
-        await mercado_manager.update_mercado(usuario.id, mercado=novo_mercado)
+        await mercado_manager.update_mercado(usuario.id, dados_mercado=update_fields)
+
 
     async def delete_mercado(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
@@ -228,6 +237,49 @@ class ProdutoUseCases:
         except Exception as err:
             raise err
 
+class ApiMercadosUseCases:
 
+    async def save_dados_conexao(self, db: AsyncSession, api_mercado: ApiMercados, usuario: Usuario):
+
+        try:
+            if not api_mercado.validar_campos():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Campos inválidos",
+                )
+            mercado_manager = MercadoManager(db=db)
+            mercado = await mercado_manager.get_mercado_by_usuario(
+                id_usuario=usuario.id
+            )
+            if not mercado:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Mercado não encontrado",
+                )
+            
+            # if mercado.api_mercado:
+            #     # raise HTTPException(
+            #     #     status_code=status.HTTP_409_CONFLICT,
+            #     #     detail="Já existe uma api cadastrada para este mercado",
+            #     # )  
+
+
+            api_mercados_manager = ApiMercadosManager(db=db)
+            response = await api_mercados_manager.save_api_mercados(api_mercado, mercado)
+            if not response:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Erro ao salvar dados de conexão",
+                )
+            return response
+
+
+            
+
+        except Exception as err:
+            raise err
+
+
+api_mercados_usecases = ApiMercadosUseCases()
 mercado_usecases = MercadoUseCases()
 produto_usecases = ProdutoUseCases()

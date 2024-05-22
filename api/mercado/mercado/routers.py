@@ -7,7 +7,7 @@ from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
 from mercado.mercado import schemas
-from mercado.mercado.use_cases import mercado_usecases, produto_usecases
+from mercado.mercado.use_cases import mercado_usecases, produto_usecases, api_mercados_usecases
 from usuario.usuario.models import Usuario
 from mercado.mercado.erp_requests import ErpRequest
 
@@ -151,5 +151,16 @@ async def teste_auth_erp(
 ):
     return await produto_usecases.sync_produtos_promocao_erp(usuario=usuario, db=db)
 
+
+# Routers Modelo ApiMercados
+
+
+@model_router.post("/erp/conexao", summary="Endpoint para dados de conexão com ERP")
+async def post_erp_conexao(
+    db: AsyncDBDependency,
+    api_mercado: schemas.ApiMercados,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],
+):
+    return await api_mercados_usecases.save_dados_conexao(db=db, api_mercado=api_mercado, usuario=usuario)
 
 router.include_router(model_router)
