@@ -32,7 +32,7 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 - Sprint 1 - [Relatório 1](https://docs.google.com/spreadsheets/d/1JYtBeIh1ozdBSjyhj6umkUPKthkBhvYNAX-quXvdXMw/edit?usp=sharing)
 - Sprint 2 - [Relatório 2](https://docs.google.com/spreadsheets/d/1RNmKx5fS-MpNN2gncAuM-W69uN_GUAbJRsWX5HXrOY8/edit?usp=sharing)
 - Sprint 3 - [Relatório 3](https://docs.google.com/spreadsheets/d/1qY3JrJFQOwig6BxTNHlMP7zT2hDEpxNkRZ_HG4jiveU/edit?usp=sharing)
-- Sprint 4 -
+- Sprint 4 - [Relatório 4](https://docs.google.com/spreadsheets/d/12GX8wv_x6FIx4hTn6mGDf8DFUbYDHah8x3vU2PuUtiY/edit?usp=sharing)
 - Sprint 5 -
 
 ---
