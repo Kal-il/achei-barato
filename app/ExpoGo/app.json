@@ -2,16 +2,14 @@
   "expo": {
     "name": "ExpoGo",
     "slug": "ExpoGo",
-    "scheme": [
-      "expogo"
-    ],
+    "scheme": "ExpoGo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/splash.png",
-      "resizeMode": "cover",
+      "resizeMode": "center",
       "backgroundColor": "#F67235"
     },
     "assetBundlePatterns": [
@@ -25,29 +23,20 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.acheibarato",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.anonymous.acheibarato"
     },
     "web": {
       "favicon": "./src/assets/favicon.png",
       "bundler": "metro"
     },
+    "experiments": {
+      "typeRoutes": true
+    },
     "plugins": [
-      "expo-image-picker",
       "expo-secure-store",
       "expo-router",
       "@react-native-google-signin/google-signin"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "be0ffba9-faf2-48d2-848c-75f6a0841938"
-      }
-    },
-    "owner": "coutinho.cassio"
+    ]
   }
 }
