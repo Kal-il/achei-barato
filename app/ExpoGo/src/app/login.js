@@ -13,7 +13,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native';
 
 export default function Dashboard() {
   const [username, setUsername] = useState("");

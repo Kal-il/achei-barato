@@ -151,22 +151,13 @@ class MercadoManager:
 
         return _mercados
 
-    async def update_mercado(self, id_usuario: str, mercado: MercadoUpdate):
+    async def update_mercado(self, id_usuario: str, dados_mercado: dict):
         try:
             _query = (
                 update(Mercado)
                 .where(Mercado.usuario_id == id_usuario)
                 .values(
-                    nome_fantasia=mercado.nome_fantasia,
-                    telefone=mercado.telefone,
-                    descricao=mercado.descricao,
-                    cep=mercado.cep,
-                    estado=mercado.estado,
-                    cidade=mercado.cidade,
-                    bairro=mercado.bairro,
-                    endereco=mercado.endereco,
-                    numero_endereco=mercado.numero_endereco,
-                    complemento=mercado.complemento,
+                    **dados_mercado,
                     updated_at=datetime.datetime.now(),
                 )
             )

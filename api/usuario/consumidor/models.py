@@ -1,5 +1,8 @@
 import datetime
-from fastapi import HTTPException, status
+import hashlib
+import aiofiles
+import base64
+from fastapi import HTTPException, UploadFile, status
 from pydantic import EmailStr
 from usuario.usuario.models import Usuario
 from sqlalchemy import UUID, BigInteger, ForeignKey, String, Integer, exists, select, update
@@ -7,11 +10,24 @@ from sqlalchemy.orm import mapped_column, Mapped
 from core.security import get_hashed_password
 
 
+async def upload_foto_consumidor(foto: UploadFile):
+    conteudo = await foto.read()
+    md5 = hashlib.md5(await foto.read()).hexdigest()
+    store_name = f"media/{md5 + str(foto.filename)}"
+    async with aiofiles.open(store_name, "wb") as nova_foto:
+        await nova_foto.write(conteudo)
+        return store_name
+
+async def get_foto_consumidor(url_foto: str):
+    async with aiofiles.open(url_foto, "rb") as foto:
+        foto_consumidor = await foto.read()
+        foto_consumidor = base64.b64encode(foto_consumidor)
+        return foto_consumidor
+
+
 class Consumidor(Usuario):
     __tablename__ = "usuario_consumidor"
-    # id: Mapped[str] = mapped_column(
-    #     UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    # )
+
     id: Mapped[str] = mapped_column(UUID, ForeignKey("usuario_usuario.id"), primary_key=True)
     cep: Mapped[str] = mapped_column(String(8), nullable=False)
     estado: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -21,7 +37,7 @@ class Consumidor(Usuario):
     numero_endereco: Mapped[int] = mapped_column(Integer, nullable=False)
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
     telefone: Mapped[int] = mapped_column(BigInteger, nullable=False)
-
+    url_foto: Mapped[str] = mapped_column(String(255), nullable=True)
     __mapper_args__ = {
         "inherit_condition": (id == Usuario.id),
     }

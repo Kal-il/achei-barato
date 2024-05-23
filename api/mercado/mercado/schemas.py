@@ -116,9 +116,62 @@ class MercadoCreate(Mercado):
     pass
 
 
-class MercadoUpdate(MercadoBase):
-    pass
+class MercadoUpdate(BaseModel):
+    razao_social: Optional[str] = Field(..., description="Razão social")
+    nome_fantasia: Optional[str] = Field(..., description="Nome fantasia")
+    telefone: Optional[int] = Field(..., description="Telefone")
+    descricao: Optional[str] = Field(
+        ..., max_length=500, description="Descrição do mercado"
+    )
+    cep: Optional[str] = Field(..., max_length=9, description="CEP")
+    estado: Optional[str] = Field(..., max_length=255, description="Estado")
+    cidade: Optional[str] = Field(..., max_length=255, description="Cidade")
+    bairro: Optional[str] = Field(..., max_length=255, description="Bairro")
+    endereco: Optional[str] = Field(..., max_length=255, description="Endereço")
+    numero_endereco: Optional[int] = Field(..., description="Número")
+    complemento: Optional[str] = Field(..., max_length=255, description="Complemento")
 
+    def validar_campos(self):
+        erros = {}
+
+        if erro := self._validar_razao_social():
+            erros["razao_social"] = erro
+
+        if erro := self._validar_nome_fantasia():
+            erros["nome_fantasia"] = erro
+
+        if erro := self._validar_telefone():
+            erros["telefone"] = erro
+
+        if erro := self._validar_cep():
+            erros["cep"] = erro
+
+        return erros
+
+    def _validar_razao_social(self):
+        if self.razao_social and len(self.razao_social) > 30:
+            return "A razão social é muito grande."
+
+    def _validar_nome_fantasia(self):
+        if self.nome_fantasia and len(self.nome_fantasia) > 55:
+            return "O nome fantasia é muito grande."
+
+    def _validar_telefone(self):
+        if self.telefone and len(str(self.telefone)) != 11:
+            return "Este número de telefone não é válido."
+
+    def _validar_cep(self):
+        _erros = []
+
+        if self.cep:
+            self.cep = digitos_doc(self.cep)
+            if len(self.cep) != 8:
+                _erros.append("O CEP deve conter 8 dígitos")
+
+            if not self.cep.isdigit():
+                _erros.append("O CEP deve conter apenas dígitos")
+
+        return _erros
 
 class ProdutoBase(BaseModel):
     nome: Optional[str] = Field(..., max_length=255, description="Nome")

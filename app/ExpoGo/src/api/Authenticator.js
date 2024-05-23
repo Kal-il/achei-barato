@@ -91,7 +91,6 @@ export class Authenticator {
 
 	async authenticateUser(userData) {
 		// Função que chama endpoint de Login
-		console.log('oi');
         path = `api/v1/usuario/auth/login`;
         url = `${this._apiBaseUrl}${path}`;
 
