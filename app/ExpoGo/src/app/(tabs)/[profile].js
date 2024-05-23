@@ -9,6 +9,8 @@ const { width, height } = Dimensions.get('window');
 
 export default function Perfil() {
   const[consumidor, setConsumidor] = useState(null);
+  const[loading, setLoading] = useState(true);
+  const[fotoPerfil, setFotoPerfil] = useState('');
 
   const fetchConsumidorData = async () => {
     const api = new ApiClient();
@@ -20,7 +22,10 @@ export default function Perfil() {
       erros = e
     }
 
+	setLoading(false);
     setConsumidor(consumidorData);
+    foto = `data:image/jpg;base64,${consumidorData.foto}`
+	setFotoPerfil(foto);
   }
 
   useEffect(() => {
@@ -33,11 +38,15 @@ export default function Perfil() {
     <View style={styles.container}>
       <View style={styles.header}>
      <View style={styles.ProfileImage}>
-          <ImagesPicker 
+		  { loading && <ImagesPicker 
           imageSize={0.16}
           ImageHolder={require('../../assets/profile.png')}
           ImageBorderRadius={100}>
-          </ImagesPicker>
+          </ImagesPicker>}
+	      {fotoPerfil && <ImagesPicker 
+          imageSize={0.16}
+		  ImageHolder={{uri: fotoPerfil}}
+          ImageBorderRadius={100}></ImagesPicker>}
           {consumidor && <Text style={styles.title}>{consumidor.nome}</Text>}
       </View>
      </View>
