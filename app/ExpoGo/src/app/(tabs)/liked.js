@@ -20,6 +20,7 @@ export default function Dashboard() {
       <View style={styles.main}>
         <Text style={styles.title}>Itens Curtidos</Text>
         <View style={styles.line}><GradientBackground /></View>
+        <Link href={'/register-client'}>Cadastrar Cliente</Link>
       </View>
     </View>
   );

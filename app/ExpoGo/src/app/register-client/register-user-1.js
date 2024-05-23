@@ -11,7 +11,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link } from "expo-router";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from 'expo-secure-store'
+import RegisterScreen from "../SuperMarkets/RegisterScreen/";
 import GoogleSignInScreen from "../../components/GoogleSignIn";
 import { ApiClient } from "../../api/ApiClient";
 
@@ -120,6 +121,7 @@ const CadastroScreen = ({ navigation }) => {
           />
         </View>
 
+
         <Link href={"/register-client/register-user-2"} asChild>
           <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
             <Text style={styles.loginText}>Continuar</Text>
@@ -136,13 +138,16 @@ const CadastroScreen = ({ navigation }) => {
           <View style={styles.line}></View>
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            É uma empresa?{" "}
-            <Text style={styles.link} onPress={() => navigation.navigate("#")}>
-              Cadastre-se aqui!
-            </Text>
-          </Text>
+        <View style={styles.textContainer}>    
+            <Link href={"/SuperMarkets/RegisterScreen"} asChild>
+              <TouchableOpacity>
+                <Text style={styles.link}>
+                É uma empresa? Cadastre-se aqui!
+                </Text>
+              </TouchableOpacity>
+            </Link>
         </View>
+      </View>
       </View>
     </LinearGradient>
   );
@@ -234,6 +239,7 @@ const styles = StyleSheet.create({
   link: {
     color: "white",
     textDecorationLine: "underline",
+    fontWeight: "bold",
   },
   textContainer: {
     marginTop: 1,
