@@ -77,12 +77,11 @@ export class Authenticator {
         path = `api/v1/usuario/consumidor/create`;
         url = `${this._apiBaseUrl}${path}`;
 
-		console.log('url', url)
 
         await axios
         .post(url, costumerData)
         .then(async (response) => {
-			console.log('sucesso', response);
+			console.log('sucesso');
         })
 		.catch(function (error) {
             throw error;
@@ -91,7 +90,6 @@ export class Authenticator {
 
 	async authenticateUser(userData) {
 		// Função que chama endpoint de Login
-		console.log('oi');
         path = `api/v1/usuario/auth/login`;
         url = `${this._apiBaseUrl}${path}`;
 

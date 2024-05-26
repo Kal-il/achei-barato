@@ -34,7 +34,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['mercado_id'], ['mercado_mercado.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.drop_column('mercado_produto_promocao_erp', 'descricao')
     # ### end Alembic commands ###
 
 

@@ -4,7 +4,6 @@ import uuid
 from pydantic import ConfigDict, EmailStr, Field
 from usuario.usuario.schemas import UsuarioBase, UsuarioAuth
 from pydantic import BaseModel
-from validate_docbr import CNPJ
 
 
 class ConsumidorBase(UsuarioBase):
@@ -18,7 +17,9 @@ class ConsumidorBase(UsuarioBase):
 
 class ConsumidorSchema(ConsumidorBase):
     model_config = ConfigDict(from_attributes=True)
-    pass
+
+class ConsumidorComFoto(ConsumidorSchema):
+    foto: Optional[bytes]
 
 class ConsumidorUpdate(BaseModel):
     nome: Optional[str] = Field(default="", max_length=255, description="Nome do usuário")

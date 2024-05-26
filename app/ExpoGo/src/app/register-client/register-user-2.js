@@ -5,10 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image,
+  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from 'expo-secure-store';
+import { ApiClient } from "../../api/ApiClient";
 
 const CadastroScreen = ({ navigation }) => {
   const [cep, setCep] = useState("");
@@ -17,8 +20,7 @@ const CadastroScreen = ({ navigation }) => {
   const [bairro, setBairro] = useState("");
   const [endereco, setEndereco] = useState("");
 
-  const handleCadastrar = () => {
-    // Lógica para cadastrar o usuário aqui
+  const handleCadastrar = async () => {
     if (
       cep === "" ||
       estado === "" ||
@@ -26,25 +28,79 @@ const CadastroScreen = ({ navigation }) => {
       bairro === "" ||
       endereco === ""
     ) {
-      // Verifica se algum campo está vazio
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
     }
 
-    SecureStore.setItem("cep", cep);
-    SecureStore.setItem("estado", estado);
-    SecureStore.setItem("cidade", cidade);
-    SecureStore.setItem("bairro", bairro);
-    SecureStore.setItem("endereco", endereco);
+    await SecureStore.setItemAsync("cep", cep);
+    await SecureStore.setItemAsync("estado", estado);
+    await SecureStore.setItemAsync("cidade", cidade);
+    await SecureStore.setItemAsync("bairro", bairro);
+    await SecureStore.setItemAsync("endereco", endereco);
+
+    const api = new ApiClient();
+
+    const customerAddress = {
+      cep: cep,
+      estado: estado,
+      cidade: cidade,
+      bairro: bairro,
+      endereco: endereco,
+    };
+
+    try {
+      const response = await api.createCustomerAddress(customerAddress);
+
+      if (response.status === 201) {
+        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+        navigation.navigate("/register-client/register-user-3");
+      } else {
+        handleErrorResponse(response.status);
+      }
+    } catch (error) {
+      handleErrorResponse(error.response ? error.response.status : 500);
+    }
+  };
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Dado não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
   };
 
   return (
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
+        <Image
+          source={require("../../assets/logo.png")}
+          style={{ width: 85, height: 85, marginTop: "20%" }}
+        />
+        <Text style={styles.logo}>
+          <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}
+          <Text style={{ color: "#7F48CA" }}>Barato</Text>
+        </Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
             placeholder="Cep"
-            keyboardType="TextInput"
+            keyboardType="numeric"
             autoCapitalize="none"
             value={cep}
             onChangeText={setCep}
@@ -55,7 +111,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Estado"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={estado}
             onChangeText={setEstado}
@@ -66,7 +122,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Cidade"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={cidade}
             onChangeText={setCidade}
@@ -77,7 +133,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Bairro"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={bairro}
             onChangeText={setBairro}
@@ -88,7 +144,7 @@ const CadastroScreen = ({ navigation }) => {
           <TextInput
             style={styles.inputText}
             placeholder="Endereco"
-            keyboardType="TextInput"
+            keyboardType="default"
             autoCapitalize="none"
             value={endereco}
             onChangeText={setEndereco}
@@ -116,12 +172,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  logo: {
-    fontWeight: "bold",
-    fontSize: 50,
-    color: "#fff",
-    marginBottom: 40,
-  },
   inputView: {
     width: "80%",
     backgroundColor: "#fff",
@@ -145,45 +195,8 @@ const styles = StyleSheet.create({
     marginTop: "2%",
     marginBottom: "2%",
   },
-  socialBtnContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "70%",
-    marginBottom: "1%",
-    marginTop: "3%",
-  },
-  socialBtn: {
-    width: "48%",
-    borderRadius: 25,
-    height: "30%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   loginText: {
     color: "white",
-  },
-  socialText: {
-    color: "white",
-  },
-  orContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 1,
-  },
-  orContainer2: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 1,
-    marginTop: -68,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "white",
-  },
-  orText: {
-    color: "white",
-    paddingHorizontal: 10,
   },
   text: {
     color: "white",

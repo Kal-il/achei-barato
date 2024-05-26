@@ -14,20 +14,20 @@ services:
  
   api:
     build: .
-    command: uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+    command: bash -c "cd api && uvicorn main:app --reload --host 0.0.0.0 --port 8000"
     environment:
       DB_ENGINE: postgresql
       DB_HOST: db
       DB_PORT: 5432
       DB_NAME: db_achei_barato
       DB_USER: postgres
-      DB_PASSWORD: romeulindo
+      DB_PASSWORD: postgres
       ASYNC_DB_ENGINE: postgresql
       ASYNC_DB_HOST: db
       ASYNC_DB_PORT: 5432
       ASYNC_DB_NAME: db_achei_barato
       ASYNC_DB_USER: postgres
-      ASYNC_DB_PASSWORD: romeulindo
+      ASYNC_DB_PASSWORD: postgres
     volumes:
       - ./api:/achei_barato/api
     ports:

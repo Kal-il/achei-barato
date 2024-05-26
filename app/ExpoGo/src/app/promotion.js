@@ -66,11 +66,12 @@ export default function PromotionPage({
               </View>
               <View style={styles.location}>
                 <Text style={styles.text}>Rotas para {MarketName}</Text>
-                <Link href={'/location'} asChild>
+                <Link href={'https://www.google.com/maps/place/UFT+-+Campus+Palmas/@-10.1784032,-48.3622366,17z/data=!3m1!4b1!4m6!3m5!1s0x9324cafd50dab483:0xf471612c2e3c89db!8m2!3d-10.1784085!4d-48.3596617!16s%2Fg%2F11b8_nrwwp?entry=ttu'} asChild>
                   <TouchableOpacity>
                     <View style={styles.locationMap}>
                         <View>
-                          <MapView style={styles.map}/>
+                         {/* <MapView style={styles.map}/>*/}
+                         <Image source={require('../assets/maps.jpg')} style={styles.map}/>
                         </View>
                     </View>
                   </TouchableOpacity>
