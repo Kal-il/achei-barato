@@ -10,9 +10,9 @@ from usuario.usuario.models import Usuario, UsuarioManager
 
 from mercado.mercado.erp_requests import ErpRequest
 
-from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager, ApiMercadosManager, CurtidasManager, SeguirMercadoManager
+from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager
 from usuario.usuario.models import UsuarioManager
-from mercado.mercado.schemas import ProdutoPromocaoErp, ApiMercados
+from mercado.mercado.schemas import ProdutoPromocaoErp
 
 
 class MercadoUseCases:

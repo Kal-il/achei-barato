@@ -7,8 +7,7 @@ from mercado.mercado.models import Mercado
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
 from mercado.mercado import schemas
-from mercado.mercado.usecases import mercado_usecases, produto_usecases
-from mercado.mercado.use_cases import api_mercados_usecases, curtidas_usecases, mercado_seguir_usecases
+from mercado.mercado.usecases import mercado_usecases, produto_usecases, api_mercados_usecases, curtidas_usecases, mercado_seguir_usecases
 from usuario.usuario.models import Usuario
 from mercado.mercado.erp_requests import ErpRequest
 
