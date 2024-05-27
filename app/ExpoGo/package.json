@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/ngrok": "^4.1.0",
     "@gorhom/bottom-sheet": "^4",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-google-signin/google-signin": "^11.0.1",
@@ -17,7 +18,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@types/react": "~18.2.45",
     "axios": "^1.6.8",
-    "expo": "^51.0.2",
+    "expo": "^50.0.0",
     "expo-constants": "~15.4.6",
     "expo-dev-client": "~3.3.11",
     "expo-image-picker": "~14.7.1",
