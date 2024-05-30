@@ -1,18 +1,15 @@
 
 from email.policy import HTTP
 from typing import List, Union
-from fastapi import HTTPException, status, BackgroundTasks
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from mercado.mercado.models import MercadoManager, ProdutoManager
-from mercado.mercado import schemas
-from usuario.usuario.models import Usuario, UsuarioManager
+from usuario.usuario.models import Usuario
 
 from mercado.mercado.erp_requests import ErpRequest
 
-from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager, ApiMercadosManager, CurtidasManager, SeguirMercadoManager
-from usuario.usuario.models import UsuarioManager
-from mercado.mercado.schemas import ProdutoPromocaoErp, ApiMercados
+from mercado.mercado.managers import MercadoManager, ApiMercadosManager, CurtidasManager, ProdutoManager
+from mercado.mercado.schemas import ApiMercados
 
 
 class ApiMercadosUseCases:

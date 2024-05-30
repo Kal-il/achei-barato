@@ -4,15 +4,15 @@ from typing import List, Union
 from fastapi import HTTPException, status, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from mercado.mercado.models import MercadoManager, ProdutoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
 
 from mercado.mercado.erp_requests import ErpRequest
 
-from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager
 from usuario.usuario.models import UsuarioManager
 from mercado.mercado.schemas import ProdutoPromocaoErp
+
+from mercado.mercado.managers import MercadoManager, ProdutosPromocaoErpManager, ProdutoManager
 
 
 class MercadoUseCases:

@@ -4,13 +4,12 @@ from typing import List, Union
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from mercado.mercado.models import MercadoManager, ProdutoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario
 
 from mercado.mercado.erp_requests import ErpRequest
 
-from mercado.mercado.models import MercadoManager, ProdutosPromocaoErpManager
+from mercado.mercado.managers import MercadoManager, ProdutosPromocaoErpManager, ProdutoManager
 from mercado.mercado.schemas import ProdutoPromocaoErp
 
 
