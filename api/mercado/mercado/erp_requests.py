@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from fastapi import HTTPException, status
 import httpx
 from core.redis import redis
 from core.config import settings
@@ -49,7 +50,7 @@ class ErpRequest:
         return token
 
     @staticmethod
-    async def sync_produtos_erp(page: int):
+    async def fetch_products_from_erp(page: int):
         token = await ErpRequest.verify_token_erp()
         base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar?limit=1000&page={page}"
         headers = {
@@ -64,101 +65,101 @@ class ErpRequest:
             return response.json()
 
     @staticmethod
-    async def get_produtos_promocao_erp():
-        lista_response = []
-        page = 1
-        while True:
-            response = await ErpRequest.sync_produtos_erp(page)
-            if not response["docs"]:
-                break
-            lista_response.extend(
-                [produto.get("proId") for produto in response["docs"]]
+    async def get_all_produtos():
+        try:
+            product_ids = []
+            page = 1
+            while True:
+                response = await ErpRequest.fetch_products_from_erp(page)
+                if not response["docs"]:
+                    break
+                product_ids.extend(
+                    [product.get("proId") for product in response["docs"]]
+                )
+                page += 1
+            await ErpRequest.fetch_promotional_products(product_ids)
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar produtos no ERP: {err}",
             )
-            page += 1
 
-        await ErpRequest.get_produtos_promocao_real(lista_response)
-
-        return f"deu certo {len(lista_response)}"
+        return f"deu certo {len(product_ids)}"
 
     @staticmethod
-    async def get_produtos_promocao_real(lista_response):
+    async def fetch_promotional_products(product_ids):
         token = await ErpRequest.verify_token_erp()
-        dict_produtos_promo = []
+        promo_products = []
         base_url = "http://rds.maxdata.com.br:9000/v1/produto/consultar"
+        sem = asyncio.Semaphore(30)
 
-        sem = asyncio.Semaphore(30) 
-
-        async def fetch_product(id_produto):
-            print(datetime.now())
+        async def fetch_product_details(product_id):
             headers = {
                 "Content-Type": "application/json",
                 "empId": str(settings.emp_id),
                 "Authorization": f"Bearer {token.get('token')}",
             }
-            print(f"Buscando produto {id_produto}")
             async with sem:
                 async with httpx.AsyncClient() as client:
-                    url = f"{base_url}/{id_produto}"
+                    url = f"{base_url}/{product_id}"
                     response = await client.get(url, headers=headers)
                     response.raise_for_status()
                     try:
-                        response_value = json.loads(response.content.decode("utf-8"))
+                        product_data = json.loads(response.content.decode("utf-8"))
                     except UnicodeDecodeError:
-                        response_value = json.loads(response.content.decode("ISO-8859-1"))
+                        product_data = json.loads(response.content.decode("ISO-8859-1"))
                     except Exception as err:
-                        print(err)
                         print(f"Erro ao processar a resposta JSON: {err}")
                         return None
 
-                    if response_value.get("vlrPromocao", 0) > 0:
-                        return response_value
-
+                    if product_data.get("vlrPromocao", 0) > 0:
+                        return product_data
             return None
-        tasks = [fetch_product(id_produto) for id_produto in lista_response] 
-        breakpoint()
 
-        print("teste")
+        tasks = [fetch_product_details(product_id) for product_id in product_ids]
         results = await asyncio.gather(*tasks)
 
-        dict_produtos_promo = [result for result in results if result is not None]
-
-        print(dict_produtos_promo)
+        promo_products = [result for result in results if result is not None]
 
     @staticmethod
-    async def get_teste():
-        id_produtos_promo = ["30", "9103", "5260"]
-        produtos_promocao = []
-        asyncio.run(await ErpRequest.get_produtos_promocao_erp())
+    async def run_test():
+        promo_product_ids = ["30", "9103", "5260"]
+        promo_products = []
 
-        print("teste568")
-        token = await ErpRequest.verify_token_erp()
-        headers = {
-            "Content-Type": "application/json",
-            "empId": str(settings.emp_id),
-            "Authorization": f"Bearer {token.get('token')}",
-        }
+        try:
 
-        for id_produto in id_produtos_promo:
-            url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar/{id_produto}"
-            try:
-                async with httpx.AsyncClient() as client:
-                    response = await client.get(url=url, headers=headers)
-                    response.raise_for_status()
-                response_produto = response.json()
+            token = await ErpRequest.verify_token_erp()
+            headers = {
+                "Content-Type": "application/json",
+                "empId": str(settings.emp_id),
+                "Authorization": f"Bearer {token.get('token')}",
+            }
 
-            except UnicodeDecodeError:
-                response_produto = response.content.decode(
-                    "latin-1", errors="replace"
-                ).encode("utf-8")
-                response_produto = json.loads(response_produto.decode("utf-8"))
-            except Exception as err:
-                print(err)
-                return err
+            for product_id in promo_product_ids:
+                url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar/{product_id}"
+                try:
+                    async with httpx.AsyncClient() as client:
+                        response = await client.get(url=url, headers=headers)
+                        response.raise_for_status()
+                    product_data = response.json()
 
-            if response_produto.get("vlrPromocao", 0) > 0:
-                produtos_promocao.append(response_produto)
+                except UnicodeDecodeError:
+                    product_data = response.content.decode(
+                        "latin-1", errors="replace"
+                    ).encode("utf-8")
+                    product_data = json.loads(product_data.decode("utf-8"))
+                except Exception as err:
+                    raise err
 
-        return produtos_promocao
+                if product_data.get("vlrPromocao", 0) > 0:
+                    promo_products.append(product_data)
 
-# Exemplo de uso
-# asyncio.run(ErpRequest.get_produtos_promocao_erp())
+            return promo_products
+        
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro ao buscar produtos promocionais no ERP, tente novamente mais tarde.",
+            )
+
