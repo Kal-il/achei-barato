@@ -51,7 +51,7 @@ class ErpRequest:
 
     @staticmethod
     async def fetch_products_from_erp(page: int):
-        token = await ErpRequest.get_erp_token()
+        token = await ErpRequest.verify_token_erp()
         base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar?limit=1000&page={page}"
         headers = {
             "Content-Type": "application/json",
@@ -77,20 +77,21 @@ class ErpRequest:
                     [product.get("proId") for product in response["docs"]]
                 )
                 page += 1
-
+            breakpoint()
             await ErpRequest.fetch_promotional_products(product_ids)
 
         except Exception as err:
+            breakpoint()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Erro ao buscar produtos no ERP, tente novamente mais tarde.",
+                detail=f"Erro ao buscar produtos no ERP: {err}",
             )
 
         return f"deu certo {len(product_ids)}"
 
     @staticmethod
     async def fetch_promotional_products(product_ids):
-        token = await ErpRequest.get_erp_token()
+        token = await ErpRequest.verify_token_erp()
         promo_products = []
         base_url = "http://rds.maxdata.com.br:9000/v1/produto/consultar"
         sem = asyncio.Semaphore(30)
