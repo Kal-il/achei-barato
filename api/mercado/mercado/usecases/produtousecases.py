@@ -57,7 +57,7 @@ class ProdutoUseCases:
     async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):
         try:
           
-            lista_produtos_promo = await ErpRequest.get_all_produtos()
+            lista_produtos_promo = await ErpRequest.run_test()
 
             if not lista_produtos_promo:
                 raise HTTPException(

@@ -77,11 +77,9 @@ class ErpRequest:
                     [product.get("proId") for product in response["docs"]]
                 )
                 page += 1
-            breakpoint()
             await ErpRequest.fetch_promotional_products(product_ids)
 
         except Exception as err:
-            breakpoint()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao buscar produtos no ERP: {err}",
