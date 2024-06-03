@@ -17,7 +17,7 @@ class MercadoBase(BaseModel):
     nome_fantasia: str = Field(..., description="Nome fantasia")
     telefone: int = Field(..., description="Telefone")
     descricao: Optional[str] = Field(
-        ..., max_length=500, description="Descrição do mercado"
+        default="", max_length=500, description="Descrição do mercado"
     )
     cep: str = Field(..., max_length=9, description="CEP")
     estado: str = Field(..., max_length=255, description="Estado")
@@ -264,3 +264,9 @@ class ApiMercados(BaseModel):
         
         if not self.url_base.startswith("http://") or not self.url_base.startswith("https://"):
             return "URL base inválida, precisa começar com http:// ou https://"
+
+class PromocaoBase(BaseModel):
+    data_inicial: datetime.datetime = Field(..., description="Data de início da promoção")
+    data_final: datetime.datetime = Field(..., description="Data de encerramento da promoção")
+    percental_desconto: float = Field(..., description="Percentual de desconto aplicado nos produtos")
+    produtos: list = Field(..., description="Produtos em promoção")

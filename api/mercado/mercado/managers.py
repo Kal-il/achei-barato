@@ -1,42 +1,35 @@
-from mercado.mercado.models import Mercado, Produto, ProdutosPromocaoErp, ApiMercados, Curtidas, SeguirMercado
+from mercado.mercado.models import (
+    Mercado,
+    Produto,
+    ProdutosPromocaoErp,
+    ApiMercados,
+    Curtidas,
+    Promocao,
+    SeguirMercado,
+)
 import datetime
-from typing import Any, List
-import uuid
+from typing import List
 
 from fastapi import HTTPException, status
 from sqlalchemy import (
-    BigInteger,
-    Boolean,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    UUID,
     delete,
     select,
     update,
     func,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.orm import backref, relationship
 
 from core.database import Base
 from mercado.mercado.schemas import (
     MercadoCreate,
-    MercadoUpdate,
     ProdutoBase,
     ProdutoPromocaoErp,
+    PromocaoBase,
 )
 from usuario.usuario.models import Usuario
 
-from sqlalchemy.dialects.postgresql import JSONB
-from fastapi_storages import FileSystemStorage
-from fastapi_storages.integrations.sqlalchemy import ImageType
-from mercado.mercado.enums import TipoEmpresaERP
+
 from core.redis import redis
-import sqlalchemy
 from sqlalchemy.orm import selectinload
 
 
@@ -170,7 +163,7 @@ class MercadoManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao restaurar mercado: {err}",
             )
-        
+
 
 class ProdutoManager:
     def __init__(self, db: AsyncSession):
@@ -217,7 +210,7 @@ class ProdutoManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao salvar produto: {err}",
             )
-        
+
     async def get_produto_id(self, id_produto: str):
         _query = select(Produto).where(Produto.id == id_produto)
         _produto = await self.db.execute(_query)
@@ -272,49 +265,56 @@ class ApiMercadosManager:
             await self.db.commit()
 
             return api_mercado
-        
+
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao salvar dados de conexão com ERP: {err}",
             )
-    
-    async def get_api_mercados(self, mercado: Mercado):  
+
+    async def get_api_mercados(self, mercado: Mercado):
         try:
             _query = select(ApiMercados).where(ApiMercados.mercado_id == mercado.id)
             _api_mercado = await self.db.execute(_query)
             _api_mercado = _api_mercado.scalar()
 
             return _api_mercado
-        
+
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao buscar dados de conexão com ERP: {err}",
             )
-    
+
     async def delete_api_mercados(self, mercado_id: str):
         try:
             _query = delete(ApiMercados).where(ApiMercados.mercado_id == mercado_id.id)
             await self.db.execute(_query)
             await self.db.commit()
-            
-            return True 
+
+            return True
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao deletar dados de conexão com ERP: {err}",
             )
-    async def update_api_mercados(self, mercado_atualizado: Mercado, api_mercado: ApiMercados):
+
+    async def update_api_mercados(
+        self, mercado_atualizado: Mercado, api_mercado: ApiMercados
+    ):
         try:
-            _query = update(ApiMercados).where(ApiMercados.mercado_id == api_mercado.id).values(
-                url_base=mercado_atualizado.url_base,
-                porta=mercado_atualizado.porta,
-                empresa_erp=mercado_atualizado.empresa_erp,
-                terminal=mercado_atualizado.terminal,
-                emp_id=mercado_atualizado.emp_id,
+            _query = (
+                update(ApiMercados)
+                .where(ApiMercados.mercado_id == api_mercado.id)
+                .values(
+                    url_base=mercado_atualizado.url_base,
+                    porta=mercado_atualizado.porta,
+                    empresa_erp=mercado_atualizado.empresa_erp,
+                    terminal=mercado_atualizado.terminal,
+                    emp_id=mercado_atualizado.emp_id,
+                )
             )
-            
+
             await self.db.execute(_query)
             await self.db.commit()
 
@@ -324,7 +324,7 @@ class ApiMercadosManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao atualizar dados de conexão com ERP: {err}",
             )
-        
+
 
 class CurtidasManager:
 
@@ -340,12 +340,12 @@ class CurtidasManager:
             self.db.add(_curtida)
             await self.db.commit()
 
-        except Exception as err:    
+        except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao salvar curtida: {err}",
             )
-        
+
     async def get_curtidas(self, usuario: Usuario):
         try:
             _query = select(Curtidas).where(Curtidas.usuario_id == usuario.id)
@@ -362,7 +362,9 @@ class CurtidasManager:
 
     async def delete_curtidas(self, produto: Produto, usuario: Usuario):
         try:
-            _query = delete(Curtidas).where(Curtidas.produto_id == produto.id, Curtidas.usuario_id == usuario.id)
+            _query = delete(Curtidas).where(
+                Curtidas.produto_id == produto.id, Curtidas.usuario_id == usuario.id
+            )
             await self.db.execute(_query)
             await self.db.commit()
 
@@ -373,10 +375,10 @@ class CurtidasManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao deletar curtida: {err}",
             )
-        
+
 
 class SeguirMercadoManager:
-    
+
     def __init__(self, db: AsyncSession):
         self.db = db
 
@@ -389,16 +391,19 @@ class SeguirMercadoManager:
             self.db.add(_seguir)
             await self.db.commit()
             return True
-        
-        except Exception as err:    
+
+        except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao salvar seguir: {err}",
             )
-    
+
     async def delete_seguir(self, mercado: Mercado, usuario: Usuario):
         try:
-            _query = delete(SeguirMercado).where(SeguirMercado.mercado_id == mercado.id, SeguirMercado.usuario_id == usuario.id)
+            _query = delete(SeguirMercado).where(
+                SeguirMercado.mercado_id == mercado.id,
+                SeguirMercado.usuario_id == usuario.id,
+            )
             await self.db.execute(_query)
             await self.db.commit()
 
@@ -409,16 +414,16 @@ class SeguirMercadoManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao deletar seguir: {err}",
             )
-        
+
     async def get_mercados_seguir(self, usuario: Usuario):
-        try: 
+        try:
             _query = (
                 select(SeguirMercado)
                 .where(SeguirMercado.usuario_id == usuario.id)
                 .options(selectinload(SeguirMercado.mercado))
-                )
+            )
             result = await self.db.execute(_query)
-            _seguir = result.scalars().all()  
+            _seguir = result.scalars().all()
 
             mercados = [seguir.mercado for seguir in _seguir]
             return mercados
@@ -428,31 +433,54 @@ class SeguirMercadoManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao buscar seguir: {err}",
             )
-        
+
     async def get_mercado_numero_seguidos(self, usuario: Usuario):
         try:
-            _query = select(func.count()).select_from(SeguirMercado).where(SeguirMercado.usuario_id == usuario.id)
+            _query = (
+                select(func.count())
+                .select_from(SeguirMercado)
+                .where(SeguirMercado.usuario_id == usuario.id)
+            )
             _numero_seguidos = await self.db.execute(_query)
             _numero_seguidos = _numero_seguidos.scalar()
-            
+
             return _numero_seguidos
-        
+
         except Exception as err:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                detail=f"Erro ao buscar número de seguidos: {err}"
-                )
-   
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar número de seguidos: {err}",
+            )
+
     async def get_mercado_numero_seguindo(self, mercado: Mercado):
         try:
-            _query = select(func.count()).select_from(SeguirMercado).where(SeguirMercado.mercado_id == mercado.id)
+            _query = (
+                select(func.count())
+                .select_from(SeguirMercado)
+                .where(SeguirMercado.mercado_id == mercado.id)
+            )
             _numero_seguindo = await self.db.execute(_query)
             _numero_seguindo = _numero_seguindo.scalar()
-            
+
             return _numero_seguindo
-        
+
         except Exception as err:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                detail=f"Erro ao buscar número de seguindo: {err}"
-                )
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar número de seguindo: {err}",
+            )
+
+class PromocaoManager:
+    def __init__(self, db: AsyncSession) -> None:
+        self.db = db
+
+    async def save_promocao(self, promocao: PromocaoBase):
+        try:
+            promocao = Promocao(**promocao.__dict__)
+
+            await self.db.add(promocao)
+            await self.db.commit()
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.http
+            )
