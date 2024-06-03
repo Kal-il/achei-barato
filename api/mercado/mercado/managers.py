@@ -1,3 +1,4 @@
+import uuid
 from mercado.mercado.models import (
     Mercado,
     Produto,
@@ -474,13 +475,23 @@ class PromocaoManager:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
 
-    async def save_promocao(self, promocao: PromocaoBase):
+    async def save_promocao(self, promocao: PromocaoBase, mercado):
         try:
-            promocao = Promocao(**promocao.__dict__)
+            promocao = Promocao(**promocao.__dict__, mercado=mercado)
 
-            await self.db.add(promocao)
+            self.db.add(promocao)
             await self.db.commit()
         except Exception as e:
+            print(e)
             raise HTTPException(
-                status_code=status.http
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+    async def get_promocoes(self, mercado_id: uuid.UUID):
+        try:
+            query = select(Promocao).where(Promocao.mercado_id == mercado_id)
+
+            promocoes = await self.db.execute(query)
+            return promocoes.scalars().all()
+        except Exception as e:
+            raise e

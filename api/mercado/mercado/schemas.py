@@ -1,9 +1,9 @@
 from ast import List
 import datetime
-from typing import Optional
+from typing import Any, Optional
 import uuid
 from fastapi import UploadFile
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, validator
 from validate_docbr import CNPJ
 
 from mercado.mercado.utils import digitos_doc
@@ -268,5 +268,12 @@ class ApiMercados(BaseModel):
 class PromocaoBase(BaseModel):
     data_inicial: datetime.datetime = Field(..., description="Data de início da promoção")
     data_final: datetime.datetime = Field(..., description="Data de encerramento da promoção")
-    percental_desconto: float = Field(..., description="Percentual de desconto aplicado nos produtos")
-    produtos: list = Field(..., description="Produtos em promoção")
+    percentual_desconto: float = Field(..., description="Percentual de desconto aplicado nos produtos")
+    produto: list[str]= Field(..., description="Produtos em promoção")
+
+    @validator("data_inicial", "data_final")
+    def data_validar(cls, data):
+        return data.replace(tzinfo=None)
+
+    class Config:
+        from_attributes = True

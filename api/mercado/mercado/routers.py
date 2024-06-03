@@ -324,9 +324,14 @@ async def promocao_cadastrar(
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
     promocao: schemas.PromocaoBase,
 ):
-    return await promocao_usecases.cadastrar_promocao(
-        db=db, usuario=usuario, promocao=promocao
-    )
+    return await promocao_usecases.cadastrar_promocao(db=db, usuario=usuario, promocao=promocao)
+
+@model_router.get("/promocoes", summary="Retorna todas as promoções de um mercado")
+async def promocoes_mercado(
+    db: AsyncDBDependency,
+    usuario: Annotated[Usuario, Depends(get_current_active_user)],   
+):
+    return await promocao_usecases.get_promocoes(db=db, usuario=usuario)
 
 
 router.include_router(model_router)
