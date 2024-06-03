@@ -90,7 +90,7 @@ export class Authenticator {
 
 	async authenticateUser(userData) {
 		// Função que chama endpoint de Login
-        path = `/api/v1/usuario/auth/login`;
+        path = `api/v1/usuario/auth/login`;
         url = `${this._apiBaseUrl}${path}`;
 
 		// OBS.: lembrar de utilizar o 'await' antes de chamar funções assíncronas, como

@@ -38,7 +38,7 @@ export default function Dashboard() {
       // Verifica se a resposta está definida
       if (response) {
         // Verifica o status da resposta apenas se ela estiver definida
-        if (response.status === 200) {
+        if (response.status == 200) {
           const data = await response.json();
           await AsyncStorage.setItem("access-token", data["access"]);
           Alert.alert("Sucesso", "Login efetuado com sucesso");
@@ -52,6 +52,7 @@ export default function Dashboard() {
       }
     } catch (error) {
       // Adiciona um log para depurar
+      console.log(JSON.stringify(error))
       console.error("Erro ao logar usuário:", error);
       Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
     } finally {
