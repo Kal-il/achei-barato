@@ -33,7 +33,7 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 - Sprint 2 - [Relatório 2](https://docs.google.com/spreadsheets/d/1RNmKx5fS-MpNN2gncAuM-W69uN_GUAbJRsWX5HXrOY8/edit?usp=sharing)
 - Sprint 3 - [Relatório 3](https://docs.google.com/spreadsheets/d/1qY3JrJFQOwig6BxTNHlMP7zT2hDEpxNkRZ_HG4jiveU/edit?usp=sharing)
 - Sprint 4 - [Relatório 4](https://docs.google.com/spreadsheets/d/12GX8wv_x6FIx4hTn6mGDf8DFUbYDHah8x3vU2PuUtiY/edit?usp=sharing)
-- Sprint 5 -
+- Sprint 5 - [Relatório 5](https://docs.google.com/spreadsheets/d/12GX8wv_x6FIx4hTn6mGDf8DFUbYDHah8x3vU2PuUtiY/edit?usp=sharing)
 
 ---
 ## Definindo os requisitos funcionais do projeto
@@ -408,3 +408,30 @@ Este requisito possibilita que o usuário denuncie promoções consideradas inad
 
 Adicionar a descrição 
 
+---
+
+### Pesquisa sobre a funcionalidade do aplicativo com usuários reais
+
+- **Autor** @MatheusDreher - Matheus Henrique Dreher dos Santos 
+- **Revisor** @Kal-il - Kalil Garcia Canuto
+
+#### Descrição
+Esta pesquisa foi feita para entender a experiência de uso que usuários reais tem com o aplicativo e sua interface, o que acham de sua funcionalidade e design.
+
+#### Resultados
+
+![pergunta1](https://uploaddeimagens.com.br/images/004/791/145/original/pergunta1.png?1717393337)
+
+![pergunta2](https://uploaddeimagens.com.br/images/004/791/146/original/pergunta2.png?1717393437)
+
+![pergunta3](https://uploaddeimagens.com.br/images/004/791/147/original/pergunta3.png?1717393528)
+
+![pergunta4](https://uploaddeimagens.com.br/images/004/791/148/original/pergunta4.png?1717393601)
+
+![pergunta5](https://uploaddeimagens.com.br/images/004/791/149/original/pergunta5.png?1717393676)
+
+![pergunta6](https://uploaddeimagens.com.br/images/004/791/150/original/pergunta6.png?1717393756)
+
+![pergunta7](https://uploaddeimagens.com.br/images/004/791/151/original/pergunta7.png?1717393840)
+
+![pergunta8](https://uploaddeimagens.com.br/images/004/791/152/original/pergunta8.png?1717393900)
