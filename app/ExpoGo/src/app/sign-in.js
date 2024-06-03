@@ -36,10 +36,9 @@ export default function Dashboard() {
       await api.loginUser(formData);
     } catch (error) {
       // Adiciona um log para depurar
-      if (error.response.status == 404) {
-        console.error("Erro ao logar usuário:", error.response.data.detail);
-        Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
-      }
+      console.log('stringo' + JSON.stringify(error));
+      console.error("Erro ao logar usuário:", error);
+      Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
     } finally {
       setLoading(false);
     }
