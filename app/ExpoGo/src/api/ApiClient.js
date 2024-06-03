@@ -12,7 +12,7 @@ export class ApiClient {
 
     async getUserDetail () {
 		// Função que chama endpoint de teste
-        return await this._callApi("api/v1/usuario/usuario/eu", "GET", null, false);
+        return await this._callApi("api/v1/usuario/usuario/eu", "GET", null, null, false);
     }
 
 	async loginUser (formData) {
