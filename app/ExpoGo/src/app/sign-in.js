@@ -13,11 +13,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router'; // Importa o useRouter
+import { useSession } from '../contexts/authContext'; // Importe o hook useSession
 
 export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { signIn } = useSession(); // Use o hook useSession
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -33,41 +36,13 @@ export default function Dashboard() {
   
     const api = new ApiClient();
     try {
-      await api.loginUser(formData);
+      await signIn(username, password); // Chame a função signIn do contexto de autenticação
     } catch (error) {
-      // Adiciona um log para depurar
-      console.log('stringo' + JSON.stringify(error));
-      console.error("Erro ao logar usuário:", error);
-      Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
+      // Adicione um alerta ou tratamento de erro aqui, se necessário
     } finally {
       setLoading(false);
     }
   };
-  
-
-  const handleErrorResponse = (status) => {
-    switch (status) {
-      case 400:
-        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
-        break;
-      case 403:
-        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
-        break;
-      case 404:
-        Alert.alert("Erro", "Dado não encontrado.");
-        break;
-      case 409:
-        Alert.alert("Erro", "Esta ação já foi realizada.");
-        break;
-      case 500:
-        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
-    }
-  };
-
   return (
     <LinearGradient
       colors={['#A9C6FC', '#F67235']}

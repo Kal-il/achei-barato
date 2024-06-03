@@ -1,24 +1,21 @@
 import { Stack, Redirect } from 'expo-router';
-import GradientBackground from '../../components/gradient';
-import { Text } from 'react-native';
 import React from 'react';
 import { useSession } from '../../contexts/authContext';
+import { Text } from 'react-native';
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
 
-  // Você pode manter a tela de carregamento aberta ou renderizar uma tela de carregamento como fazemos aqui.
+  // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
   if (isLoading) {
     return <Text>Carregando...</Text>;
   }
 
-  // Exige autenticação dentro do layout do grupo de aplicativos, já que os usuários
-  // precisam acessar o grupo de autenticação e fazer login novamente.
+  // Se o usuário não estiver autenticado, redirecione-o para a página de login
   if (!session) {
-    // No web, a renderização estática irá parar aqui, pois o usuário não está autenticado
-    // no processo Node headless em que as páginas são renderizadas.
     return <Redirect href="/sign-in" />;
   }
+
   
   return (
     <Stack screenOptions={{

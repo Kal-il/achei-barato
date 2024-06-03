@@ -24,20 +24,17 @@ export function SessionProvider(props) {
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-
+  
     const api = new ApiClient();
     try {
-      const response = await api.loginUser(formData);
-
-      if (response.status === 200) {
-        const data = await response.json();
-        await setSession(data["access"]);
-      } else {
-        handleErrorResponse(response.status);
-      }
+      await api.loginUser(formData);
     } catch (error) {
-      Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-    }
+      // Adiciona um log para depurar
+      if (error.response.status == 404) {
+        console.error("Erro ao logar usuário:", error.response.data.detail);
+        Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
+      }
+    } 
   };
 
   const signOut = () => {
