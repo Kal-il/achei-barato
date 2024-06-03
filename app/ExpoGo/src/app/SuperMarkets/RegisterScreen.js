@@ -35,7 +35,6 @@ const RegisterScreen = () => {
       const response = await api.createUser(data);
 
       if (response.status === 201) {
-        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
         navigation.navigate("/SuperMarkets/RegisterScreen2");
       } else {
         handleErrorResponse(response.status);
