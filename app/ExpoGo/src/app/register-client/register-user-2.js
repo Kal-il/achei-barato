@@ -151,7 +151,7 @@ const CadastroScreen = ({ navigation }) => {
           />
         </View>
 
-        <Link href={"/register-client/register-user-3"} asChild>
+        <Link href={"register-user-3"} asChild>
           <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
             <Text style={styles.loginText}>Continuar</Text>
           </TouchableOpacity>

@@ -22,8 +22,8 @@ export default function PromotionPage({
   LikesNumber,
   description }) {
 
-  imageSource = require('../assets/apple.png');
-  MarketImageProfile = require('../assets/supermercado.png');
+  imageSource = require('../../assets/apple.png');
+  MarketImageProfile = require('../../assets/supermercado.png');
   MarketName = "Supermercado Central";
   OldPrice = "R$ 15,99";
   Price = "R$ 10,49";
@@ -40,7 +40,7 @@ export default function PromotionPage({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <ImageBackground source={require('../assets/apple.png')} style={styles.PromotionImage} />
+        <ImageBackground source={require('../../assets/apple.png')} style={styles.PromotionImage} />
         <BotomSheet
           ref={bottonSheetRef}
           index={1}
@@ -71,7 +71,7 @@ export default function PromotionPage({
                     <View style={styles.locationMap}>
                         <View>
                          {/* <MapView style={styles.map}/>*/}
-                         <Image source={require('../assets/maps.jpg')} style={styles.map}/>
+                         <Image source={require('../../assets/maps.jpg')} style={styles.map}/>
                         </View>
                     </View>
                   </TouchableOpacity>
@@ -82,11 +82,11 @@ export default function PromotionPage({
                 <CommentCard commentAuthor={"String dos Santos"}
                   commentDate={"05/05/24"}
                   commentText={"As maçãs estavam ótimas, e pelo preço que paguei valeu muito a pena!"}
-                  commentAuthorImage={require('../assets/profile.png')} />
+                  commentAuthorImage={require('../../assets/profile.png')} />
                   <CommentCard commentAuthor={"String dos Santos"}
                   commentDate={"05/05/24"}
                   commentText={"As maçãs estavam ótimas, e pelo preço que paguei valeu muito a pena!"}
-                  commentAuthorImage={require('../assets/profile.png')} />
+                  commentAuthorImage={require('../../assets/profile.png')} />
               </ScrollView>
             </View>
         </BotomSheet>

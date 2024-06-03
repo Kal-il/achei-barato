@@ -62,7 +62,7 @@ export default function EditarPerfil() {
      <View style={styles.ProfileImage}>
 		  {loading && <ImagesPicker 
           imageSize={0.16}
-          ImageHolder={require('../assets/profile.png')}
+          ImageHolder={require('../../assets/profile.png')}
           ImageBorderRadius={100}
           Condition={true}/* Essa condição diz se o usuário vai ou não poder mudar a imagem*/>
           </ImagesPicker>}

@@ -10,8 +10,8 @@ const { width, height } = Dimensions.get('window');
 export default function Dashboard({ MarketName, MarketProfileImage, MarketBackgroundImage }) {
 
   // imagens e nomes para fins de teste do design, podem ser apagados se preciso
-  MarketBackgroundImage = require('../assets/apple.png');
-  MarketProfileImage = require('../assets/supermercado.png');
+  MarketBackgroundImage = require('../../assets/apple.png');
+  MarketProfileImage = require('../../assets/supermercado.png');
   MarketName = "Supermercado Central";
 
   return (
@@ -21,7 +21,7 @@ export default function Dashboard({ MarketName, MarketProfileImage, MarketBackgr
         barStyle="light-content"
       />
       <View style={styles.header}>
-        <ImageBackground style={styles.backgroundImage} source={require('../assets/apple.png')}>
+        <ImageBackground style={styles.backgroundImage} source={require('../../assets/apple.png')}>
 
         </ImageBackground>
         <View style={styles.ProfileImage}>
@@ -63,13 +63,13 @@ export default function Dashboard({ MarketName, MarketProfileImage, MarketBackgr
 
       <ScrollView contentContainerStyle={styles.productsContainer}>
         <Product
-          ProductInfo={require('../assets/food.png')}
+          ProductInfo={require('../../assets/food.png')}
         />
         <Product
-          ProductInfo={require('../assets/food.png')}
+          ProductInfo={require('../../assets/food.png')}
         />
         <Product
-          ProductInfo={require('../assets/food.png')}
+          ProductInfo={require('../../assets/food.png')}
         />
       </ScrollView>
 

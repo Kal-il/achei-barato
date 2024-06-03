@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,43 +6,59 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Button,
-  ActivityIndicator,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { ApiClient } from "../../api/ApiClient.js";
-import { GoogleSignInScreen } from "../../components/GoogleSignIn.js";
+import { ApiClient } from "../api/ApiClient.js";
+import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!username || !password) {
       Alert.alert("Erro", "Usuário ou senha inválidos");
       return;
     }
-
+  
+    setLoading(true);
+  
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-
+  
     const api = new ApiClient();
     try {
       const response = await api.loginUser(formData);
-
-      if (response.status === 200) {
-        const data = await response.json();
-        await AsyncStorage.setItem("access-token", data["access"]);
+  
+      // Verifica se a resposta está definida
+      if (response) {
+        // Verifica o status da resposta apenas se ela estiver definida
+        if (response.status === 200) {
+          const data = await response.json();
+          await AsyncStorage.setItem("access-token", data["access"]);
+          Alert.alert("Sucesso", "Login efetuado com sucesso");
+        } else {
+          handleErrorResponse(response.status);
+        }
       } else {
-        handleErrorResponse(response.status);
+        // Adiciona um log para depurar
+        console.error("Resposta da API não definida");
+        Alert.alert("Erro", "Resposta da API não definida");
       }
     } catch (error) {
-      Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+      // Adiciona um log para depurar
+      console.error("Erro ao logar usuário:", error);
+      Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   const handleErrorResponse = (status) => {
     switch (status) {
@@ -110,6 +126,8 @@ export default function Dashboard() {
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
 
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
         <Text style={styles.loginText}>Ou</Text>
 
         <GoogleSignInScreen style={{ margin: 2 }} />
@@ -118,38 +136,6 @@ export default function Dashboard() {
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
         </TouchableOpacity>
       </View>
-    </LinearGradient>
-  );
-}
-
-const TesteScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  const fetchUsername = async () => {
-    const api = new ApiClient();
-    const usuario = await api.getUserDetail("api/v1/usuario/usuario/eu");
-    setUsername(usuario["nome"]);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchUsername();
-  }, []);
-
-  if (loading) {
-    return (
-      <View>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Button title="teste" onPress={() => navigation.navigate('HomeScreen')} />
-      </View>
-    );
-  }
-
-  return (
-    <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
-      <Text> {username} </Text>
-      <Button title="teste" onPress={() => navigation.navigate('HomeScreen')} />
     </LinearGradient>
   );
 }

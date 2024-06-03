@@ -1,35 +1,34 @@
-import { Stack, Redirect, Stack} from 'expo-router';
+import { Stack, Redirect } from 'expo-router';
 import GradientBackground from '../../components/gradient';
 import { Text } from 'react-native';
 import React from 'react';
-
-import { useSession } from '../../contexts/authContext.js';
-
+import { useSession } from '../../contexts/authContext';
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
 
-  // You can keep the splash screen open, or render a loading screen like we do here.
+  // Você pode manter a tela de carregamento aberta ou renderizar uma tela de carregamento como fazemos aqui.
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text>Carregando...</Text>;
   }
 
-  // Only require authentication within the (app) group's layout as users
-  // need to be able to access the (auth) group and sign in again.
+  // Exige autenticação dentro do layout do grupo de aplicativos, já que os usuários
+  // precisam acessar o grupo de autenticação e fazer login novamente.
   if (!session) {
-    // On web, static rendering will stop here as the user is not authenticated
-    // in the headless Node process that the pages are rendered in.
+    // No web, a renderização estática irá parar aqui, pois o usuário não está autenticado
+    // no processo Node headless em que as páginas são renderizadas.
     return <Redirect href="/sign-in" />;
   }
+  
   return (
     <Stack screenOptions={{
-      headerTintColor: '#fff', //  isso define a cor do botão de voltar e do título para branco
+      headerTintColor: '#fff', // isso define a cor do botão de voltar e do título para branco
       headerShadowVisible: false,
     }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="register-client" options={{ headerShown: false }} />
-      <Stack.Screen name="SuperMarkets" options={{headerShown: false}} />
-      <Stack.Screen name="login" options={{headerShown: false}} />
+      <Stack.Screen name="SuperMarkets" options={{ headerShown: false }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
 
       <Stack.Screen name="promotion" options={{
         title: "promoção",

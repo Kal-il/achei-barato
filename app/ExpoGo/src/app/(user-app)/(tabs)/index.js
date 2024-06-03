@@ -14,9 +14,9 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import { Feather, FontAwesome } from '@expo/vector-icons';
-import PromotionCard from "../../components/PromotionCard.js";
-import GradientBackground from "../../components/gradient.js";
-import { Authenticator } from "../../api/Authenticator.js";
+import PromotionCard from "../../../components/PromotionCard.js";
+import GradientBackground from "../../../components/gradient.js";
+import { Authenticator } from "../../../api/Authenticator.js";
 
 const windowDimensions = Dimensions.get('window');
 const windowWidth = windowDimensions.width;
@@ -32,8 +32,8 @@ export default function Dashboard() {
 
   const [data, setData] = useState([
     {
-      imageSource: require('../../assets/apple.png'),
-      MarketImageProfile: require('../../assets/supermercado.png'),
+      imageSource: require('../../../assets/apple.png'),
+      MarketImageProfile: require('../../../assets/supermercado.png'),
       MarketName: "Supermercado Central",
       OldPrice: "R$ 15,99",
       Price: "R$ 10,49",
@@ -96,9 +96,9 @@ export default function Dashboard() {
           <ScrollView style={{ zIndex: 0 }}>
 
             <ScrollView style={[styles.Scrolpromocoes, { height: 180 }]} horizontal={true}>
-              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
-              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
-              <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
+              <Image source={require('../../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
+              <Image source={require('../../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
+              <Image source={require('../../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
             </ScrollView>
 
             <Link href="/login">Login</Link>

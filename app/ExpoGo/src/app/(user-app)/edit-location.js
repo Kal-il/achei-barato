@@ -75,7 +75,7 @@ export default function EditarLocal() {
         <View style={styles.ProfileImage}>
 			{loading && <ImagesPicker
             imageSize={0.16}
-            ImageHolder={require('../assets/profile.png')}
+            ImageHolder={require('../../assets/profile.png')}
             ImageBorderRadius={100}>
           </ImagesPicker>}
 	      {fotoPerfil && <ImagesPicker 

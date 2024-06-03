@@ -9,7 +9,7 @@ export default function Dashboard() {
     <View style={styles.container}>
       <View style={styles.main}>
         <ListCard 
-        NotificationImage = {require('../assets/food.png')}
+        NotificationImage = {require('../../assets/food.png')}
         Description = {"O produto X está em promoção no supermercado Y !!"}
         NotificationLink={"/promotion"}
         />

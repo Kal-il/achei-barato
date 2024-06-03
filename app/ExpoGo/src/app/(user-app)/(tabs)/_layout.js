@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from "react-native";
-import GradientBackground from '../../components/gradient';
+import GradientBackground from '../../../components/gradient';
 
 
 export default function TabRoutesLayout() {
