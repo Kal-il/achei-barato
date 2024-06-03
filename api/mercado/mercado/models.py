@@ -116,6 +116,8 @@ class Promocao(Base):
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
+    mercado = relationship(Mercado, backref=backref("promocao", uselist=False))
     produto: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     data_inicial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
     data_final: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)

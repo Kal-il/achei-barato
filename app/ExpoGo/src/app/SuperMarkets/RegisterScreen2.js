@@ -24,9 +24,8 @@ const RegisterScreen = () => {
       await SecureStore.setItemAsync("telefone", telefone);
 
       // Sucesso no registro
-      Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
-      navigation.navigate("/SuperMarkets/RegisterScreen3");
     } catch (error) {
+      console.log(error.response.data.detail)
       handleErrorResponse(error.response ? error.response.status : 500);
     }
   };
@@ -47,9 +46,6 @@ const RegisterScreen = () => {
         break;
       case 500:
         Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
         break;
     }
   };
