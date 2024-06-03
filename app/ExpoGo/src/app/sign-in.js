@@ -33,28 +33,13 @@ export default function Dashboard() {
   
     const api = new ApiClient();
     try {
-      const response = await api.loginUser(formData);
-  
-      // Verifica se a resposta está definida
-      if (response) {
-        // Verifica o status da resposta apenas se ela estiver definida
-        if (response.status == 200) {
-          const data = await response.json();
-          await AsyncStorage.setItem("access-token", data["access"]);
-          Alert.alert("Sucesso", "Login efetuado com sucesso");
-        } else {
-          handleErrorResponse(response.status);
-        }
-      } else {
-        // Adiciona um log para depurar
-        console.error("Resposta da API não definida");
-        Alert.alert("Erro", "Resposta da API não definida");
-      }
+      await api.loginUser(formData);
     } catch (error) {
       // Adiciona um log para depurar
-      console.log(JSON.stringify(error))
-      console.error("Erro ao logar usuário:", error);
-      Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
+      if (error.response.status == 404) {
+        console.error("Erro ao logar usuário:", error.response.data.detail);
+        Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
+      }
     } finally {
       setLoading(false);
     }

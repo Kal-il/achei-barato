@@ -104,7 +104,8 @@ export class Authenticator {
             }
         })
         .catch(function (error) {
-            console.error("erro ao logar usuário:", error)
+            console.error("erro ao logar usuário:", error);
+			throw error;
         });
 	}
 
