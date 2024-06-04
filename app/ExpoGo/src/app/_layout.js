@@ -1,21 +1,14 @@
-import React from 'react';
-import { Slot, useRouter } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
-import { SessionProvider, useSession } from '../contexts/authContext'; // Importe o hook useSession
+import { Slot } from 'expo-router';
+import { SessionProvider } from '../contexts/ctx';
 
-export default function Root() {
-  const { isAuthenticated } = useSession(); // Use o hook useSession
-  const router = useRouter();
+export const unstable_settings = {
+  initialRouteName: 'login',
+};
 
-  // Verifique se o usuário está autenticado e redirecione-o para a página inicial, se necessário
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/(user-app)/(tabs)/index'); // Redireciona para a página inicial
-    }
-  }, [isAuthenticated, router]);
-
+export default function RootLayoutNav() {
   return (
     <SessionProvider>
-      <Slot /> 
+      <Slot />
     </SessionProvider>
   );
 }

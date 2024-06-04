@@ -14,82 +14,14 @@ import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router'; // Importa o useRouter
-import { useSession } from '../contexts/authContext'; // Importe o hook useSession
+import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
 export default function Dashboard() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { signIn } = useSession(); // Use o hook useSession
-
-  const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert("Erro", "Usuário ou senha inválidos");
-      return;
-    }
-  
-    setLoading(true);
-  
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('password', password);
-  
-    const api = new ApiClient();
-    try {
-      // Chamada para login
-      response = await api.loginUser(formData);
-  
-      // Console.log para depuração
-      console.log(response.data.access_token);
-  
-      // Verifica se a resposta está definida
-      if (response.data.access_token) {
-        // Verifica o status da resposta apenas se ela estiver definida
-        if (response.status === 200) {
-          const data = await response.json();
-          await AsyncStorage.setItem("access-token", data["access"]);
-          Alert.alert("Sucesso", "Login efetuado com sucesso");
-        } else {
-          handleErrorResponse(response.status);
-        }
-      } else {
-        // Adiciona um log para depurar
-        console.error("Resposta da API não definida");
-        Alert.alert("Erro", "Resposta da API não definida");
-      }
-    } catch (error) {
-      // Adiciona um log para depurar
-      //console.log('stringo' + JSON.stringify(error));
-      console.error("Erro ao logar usuário:", error);
-      Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  
-
-  const handleErrorResponse = (status) => {
-    switch (status) {
-      case 400:
-        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
-        break;
-      case 403:
-        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
-        break;
-      case 404:
-        Alert.alert("Erro", "Dado não encontrado.");
-        break;
-      case 409:
-        Alert.alert("Erro", "Esta ação já foi realizada.");
-        break;
-      case 500:
-        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
-    }
+  const { signIn } = useSession();
+  const handleLogin = () => {
+    signIn();
+    //Antes de navegar, tenha certeza de que o usuário está autenticado
+    router.replace("/index");
   };
 
   return (

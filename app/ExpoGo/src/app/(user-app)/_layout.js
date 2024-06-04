@@ -1,6 +1,6 @@
 import { Stack, Redirect } from 'expo-router';
 import React from 'react';
-import { useSession } from '../../contexts/authContext';
+import { useSession } from '../../contexts/ctx';
 import { Text } from 'react-native';
 
 export default function AppLayout() {
