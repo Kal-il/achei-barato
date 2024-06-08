@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useStorageState } from './useStorageState';
+import { ApiClient } from "../api/ApiClient";
+import { Alert } from "react-native";
 
 const AuthContext = React.createContext({
   signIn: () => null,
@@ -13,13 +15,13 @@ export function useSession() {
 }
 
 export function SessionProvider({ children }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [[isLoading, session], setSession] = useStorageState('session');
 
   const signIn = async (username, password) => {
+
+    setLoading(true); // Inicia o carregamento
+
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
@@ -27,23 +29,26 @@ export function SessionProvider({ children }) {
     const api = new ApiClient();
     try {
       await api.loginUser(formData);
-      setSession('John Doe');  // Isso seria a resposta da API com a sessão do usuário
+      console.log("Usuário logado com sucesso!")
+      const user = await api.getUserDetail();
+      console.log(user);
+      setSession(true); // Isso seria a resposta da API com a sessão do usuário
     } catch (error) {
-      if (error.response && error.response.status === 404) {
+      if (error.response.status == 404) {
         console.error("Erro ao logar usuário:", error.response.data.detail);
         Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
       }
     } finally {
-      setLoading(false);
+      setLoading(false); // Finaliza o carregamento
     }
   };
 
   const signOut = () => {
-    setSession(null);
+    setSession(false);
   };
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, session, isLoading }}>
+    <AuthContext.Provider value={{ signIn, signOut, session, isLoading: loading }}>
       {children}
     </AuthContext.Provider>
   );

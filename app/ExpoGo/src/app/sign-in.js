@@ -12,16 +12,20 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
 export default function Dashboard() {
-  const { signIn } = useSession();
+  const { signIn, isLoading } = useSession();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter(); // Adiciona useRouter
+
   const handleLogin = () => {
-    signIn();
-    //Antes de navegar, tenha certeza de que o usuário está autenticado
-    router.replace("/index");
+    signIn(username, password).then(() => {
+      // Antes de navegar, tenha certeza de que o usuário está autenticado
+      router.replace("/");
+    });
   };
 
   return (
@@ -67,7 +71,7 @@ export default function Dashboard() {
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
 
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {isLoading && <ActivityIndicator size="large" color="#0000ff" />} {/* Mostra o indicador de carregamento */}
 
         <Text style={styles.loginText}>Ou</Text>
 

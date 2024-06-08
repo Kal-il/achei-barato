@@ -4,16 +4,10 @@ import { useSession } from '../../contexts/ctx';
 import { Text } from 'react-native';
 
 export default function AppLayout() {
-  const { session, isLoading } = useSession();
+  const { session } = useSession();
 
-  // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
-  if (isLoading) {
-    return <Text>Carregando...</Text>;
-  }
-
-  // Se o usuário não estiver autenticado, redirecione-o para a página de login
   if (!session) {
-    return <Redirect href="/sign-in" />;
+    return <Redirect href="/login" />;
   }
 
   
