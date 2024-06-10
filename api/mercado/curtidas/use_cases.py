@@ -1,9 +1,9 @@
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from mercado.curtidas.models import CurtidasManager
+from mercado.produto.models import ProdutoManager
 from usuario.usuario.models import Usuario
-
-from mercado.mercado.managers import CurtidasManager, ProdutoManager
 
 
 class CurtidasUseCases:
@@ -19,16 +19,17 @@ class CurtidasUseCases:
                 )
 
             _curtida_manager = CurtidasManager(db=db)
-            curtidas = await _curtida_manager.save_curtida(produto=produto, usuario=usuario)
+            curtidas = await _curtida_manager.save_curtida(
+                produto=produto, usuario=usuario
+            )
             if curtidas:
                 raise HTTPException(
                     status_code=status.HTTP_200_OK,
                     detail="Curtida salva com sucesso",
-                )   
-        
+                )
+
         except Exception as err:
-            raise err 
-        
+            raise err
 
     async def get_curtidas(self, db: AsyncSession, usuario: Usuario):
         try:
@@ -42,8 +43,10 @@ class CurtidasUseCases:
             return curtidas
         except Exception as err:
             raise err
-        
-    async def delete_curtidas(self, db: AsyncSession, usuario: Usuario, id_produto: str):
+
+    async def delete_curtidas(
+        self, db: AsyncSession, usuario: Usuario, id_produto: str
+    ):
         try:
             _produto_manager = ProdutoManager(db=db)
             produto = await _produto_manager.get_produto_id(id_produto)
@@ -54,7 +57,9 @@ class CurtidasUseCases:
                 )
 
             _curtida_manager = CurtidasManager(db=db)
-            response = await _curtida_manager.delete_curtidas(usuario=usuario, produto=produto)
+            response = await _curtida_manager.delete_curtidas(
+                usuario=usuario, produto=produto
+            )
             if response:
                 raise HTTPException(
                     status_code=status.HTTP_200_OK,
@@ -62,3 +67,6 @@ class CurtidasUseCases:
                 )
         except Exception as err:
             raise err
+
+
+use_cases_curtidas = CurtidasUseCases()

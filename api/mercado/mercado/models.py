@@ -1,5 +1,4 @@
 import datetime
-from typing import Any, List
 import uuid
 
 from fastapi import HTTPException, status
@@ -7,15 +6,12 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     DateTime,
-    Float,
     ForeignKey,
     Integer,
     String,
     UUID,
-    delete,
     select,
     update,
-    func,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
@@ -24,19 +20,8 @@ from sqlalchemy.orm import backref, relationship
 from core.database import Base
 from mercado.mercado.schemas import (
     MercadoCreate,
-    MercadoUpdate,
-    ProdutoBase,
-    ProdutoPromocaoErp,
 )
 from usuario.usuario.models import Usuario
-
-from sqlalchemy.dialects.postgresql import JSONB
-from fastapi_storages import FileSystemStorage
-from fastapi_storages.integrations.sqlalchemy import ImageType
-from mercado.mercado.enums import TipoEmpresaERP
-from core.redis import redis
-import sqlalchemy
-from sqlalchemy.orm import selectinload
 
 
 class Mercado(Base):
@@ -74,152 +59,133 @@ class Mercado(Base):
     mercado_valido: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
-storage = FileSystemStorage(path="./media")
+class MercadoManager:
+    def __init__(self, db: AsyncSession):
+        self.db = db
 
+    async def create_mercado(self, data: MercadoCreate):
+        _mercado = Mercado(
+            cnpj=data.cnpj,
+            usuario_id=data.usuario.id,
+            razao_social=data.razao_social,
+            nome_fantasia=data.nome_fantasia,
+            telefone=data.telefone,
+            descricao=data.descricao,
+            cep=data.cep,
+            estado=data.estado,
+            cidade=data.cidade,
+            bairro=data.bairro,
+            endereco=data.endereco,
+            numero_endereco=data.numero_endereco,
+            nome_responsavel=data.nome_responsavel,
+            cpf_responsavel=data.cpf_responsavel,
+        )
 
-class Produto(Base):
-    """Models responsável por registrar os produtos do mercado"""
+        self.db.add(_mercado)
+        await self.db.commit()
 
-    __tablename__ = "mercado_produto"
+        return _mercado
 
-    id: Mapped[str] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
-    mercado = relationship(Mercado, backref=backref("mercado", uselist=False))
-    nome: Mapped[str] = mapped_column(String(255), nullable=True)
-    marca: Mapped[str] = mapped_column(String(255), nullable=True)
-    data_validade: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
-    ncm_produto: Mapped[str] = mapped_column(String(10), nullable=True)
-    gtin_produto: Mapped[str] = mapped_column(String(14), nullable=True)
-    mpn_produto: Mapped[str] = mapped_column(String(30), nullable=True)
-    id_produto_erp: Mapped[str] = mapped_column(String(), nullable=True)
-    descricao: Mapped[str] = mapped_column(String(500), nullable=True)
-    preco: Mapped[float] = mapped_column(Float, nullable=True)
-    preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)
-    imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
-    codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=True)
+    async def get_mercado_by_cnpj(self, cnpj: str):
+        _query = select(Mercado).where(Mercado.cnpj == cnpj)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
 
+        return _mercado
 
-class Promocao(Base):
-    """Models responsável por registrar as promoções de produtos no mercado"""
+    async def get_mercado_by_id(self, mercado_id: str):
+        _query = select(Mercado).where(Mercado.id == mercado_id)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
 
-    __tablename__ = "mercado_promocao"
+        return _mercado
 
-    id: Mapped[str] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
-    mercado = relationship(Mercado, backref=backref("promocao", uselist=False))
-    produto: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
-    data_inicial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
-    data_final: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
-    percentual_desconto: Mapped[float] = mapped_column(Float, nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    async def get_mercado_by_usuario(self, id_usuario: str):
+        _query = select(Mercado).where(Mercado.usuario_id == id_usuario)
+        _mercado = await self.db.execute(_query)
+        _mercado = _mercado.scalar()
 
+        return _mercado
 
-class ProdutosPromocaoErp(Base):
-    """Models responsável por registrar os produtos em promoção no ERP"""
+    async def get_mercados_by_nome(self, nome: str):
+        _query = select(Mercado).filter(Mercado.nome_fantasia.like(f"{nome}%"))
+        _mercados = await self.db.execute(_query)
+        _mercados = _mercados.scalars().all()
 
-    __tablename__ = "mercado_produto_promocao_erp"
+        return _mercados
 
-    id: Mapped[str] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
-    mercado = relationship(
-        Mercado, backref=backref("produtospromocaoerp", uselist=False)
-    )
-    nome = mapped_column(String(255), nullable=True)
-    preco = mapped_column(Float, nullable=True)
-    preco_promocional = mapped_column(Float, nullable=True)
-    codigo_produto = mapped_column(String(30), nullable=True)
-    ncm_produto = mapped_column(String(10), nullable=True)
-    id_produto_erp = mapped_column(String(), nullable=True)
-    marca = mapped_column(String(255), nullable=True)
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    async def get_mercado_id(self, id_usuario: str):
+        _query = select(Mercado.id).filter(Mercado.usuario_id == id_usuario)
+        _mercado_id = await self.db.execute(_query)
+        _mercado_id = _mercado_id.scalar()
 
+        return _mercado_id
 
-class ApiMercados(Base):
-    """Models responsável por registrar os dados de conexão da API do ERP"""
-    
-    __tablename__ = "api_mercados"
+    async def get_cnpj_by_usuario(self, id_usuario: str):
+        _query = select(Mercado.cnpj).filter(Mercado.usuario_id == id_usuario)
+        _cnpj = await self.db.execute(_query)
+        _cnpj = _cnpj.scalar()
 
-    id: Mapped[str] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
-    mercado = relationship(
-        Mercado, backref=backref("api_mercados", uselist=False)
-    )
-    url_base: Mapped[str] = mapped_column(String(255), nullable=True)
-    porta: Mapped[int] = mapped_column(Integer, nullable=True)
-    empresa_erp: Mapped[TipoEmpresaERP] = mapped_column(sqlalchemy.Enum(TipoEmpresaERP), nullable=True)
-    terminal: Mapped[str] = mapped_column(String(255), nullable=True)
-    emp_id: Mapped[int] = mapped_column(Integer, nullable=True)
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+        return _cnpj
 
+    async def get_mercados(self):
+        _query = select(Mercado).filter(Mercado.deleted == False)
+        _mercados = await self.db.execute(_query)
+        _mercados = _mercados.scalars().all()
 
-class Curtidas(Base):
-    """Models responsável por registrar as curtidas de produtos no mercado"""
+        return _mercados
 
-    __tablename__ = "mercado_curtida"
+    async def update_mercado(self, id_usuario: str, dados_mercado: dict):
+        try:
+            _query = (
+                update(Mercado)
+                .where(Mercado.usuario_id == id_usuario)
+                .values(
+                    **dados_mercado,
+                    updated_at=datetime.datetime.now(),
+                )
+            )
 
-    id: Mapped[str] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    produto_id = mapped_column(UUID, ForeignKey("mercado_produto.id"))
-    produto = relationship(Produto, backref=backref("mercado_curtida", uselist=False))
-    usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
-    usuario = relationship(Usuario, backref=backref("curtida", uselist=False))
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao atualizar dados do mercado: {err}",
+            )
 
-        
-class SeguirMercado(Base):
-    __tablename__ = "mercado_seguir"
+    async def delete_mercado_by_usuario(self, id_usuario):
+        try:
+            _query = (
+                update(Mercado)
+                .where(Mercado.usuario_id == id_usuario)
+                .values(
+                    deleted=True,
+                )
+            )
 
-    id: Mapped[str] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
-    mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
-    mercado = relationship(Mercado, backref=backref("mercado_seguir", uselist=False, lazy="selectin"))
-    usuario_id = mapped_column(UUID, ForeignKey("usuario_usuario.id"))
-    usuario = relationship(Usuario, backref=backref("mercado_seguir", uselist=False))
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
-    )
-    deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar mercado: {err}",
+            )
+
+    async def restore_mercado_by_usuario(self, id_usuario):
+        try:
+            _query = (
+                update(Mercado)
+                .where(Mercado.usuario_id == id_usuario)
+                .values(
+                    deleted=False,
+                )
+            )
+
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao restaurar mercado: {err}",
+            )
