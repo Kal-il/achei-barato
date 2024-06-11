@@ -15,13 +15,14 @@ import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import { useRouter } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
-export default function Dashboard() {
+export default function SignIn() {
   const { signIn, isLoading } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter(); // Adiciona useRouter
 
   const handleLogin = () => {
+
     signIn(username, password).then(() => {
       // Antes de navegar, tenha certeza de que o usuário está autenticado
       router.replace("/");

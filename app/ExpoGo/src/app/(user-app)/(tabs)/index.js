@@ -101,7 +101,7 @@ export default function Dashboard() {
               <Image source={require('../../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
             </ScrollView>
 
-            <Link href="/login">Login</Link>
+            <Link href="/notification">Login</Link>
             <Link href="register-client/register-user-1">Cadastrar Consumidor</Link>
 
             <View style={styles.viewLocalizacao}>

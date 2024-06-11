@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 const AuthContext = React.createContext({
   signIn: () => null,
   signOut: () => null,
-  session: null,
+  session: false,
   isLoading: false,
 });
 
@@ -20,6 +20,8 @@ export function SessionProvider({ children }) {
 
   const signIn = async (username, password) => {
 
+    console.log("Logando usuário...");
+
     setLoading(true); // Inicia o carregamento
 
     const formData = new URLSearchParams();
@@ -29,9 +31,6 @@ export function SessionProvider({ children }) {
     const api = new ApiClient();
     try {
       await api.loginUser(formData);
-      console.log("Usuário logado com sucesso!")
-      const user = await api.getUserDetail();
-      console.log(user);
       setSession(true); // Isso seria a resposta da API com a sessão do usuário
     } catch (error) {
       if (error.response.status == 404) {
@@ -44,7 +43,7 @@ export function SessionProvider({ children }) {
   };
 
   const signOut = () => {
-    setSession(false);
+    setSession(null);
   };
 
   return (

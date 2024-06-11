@@ -6,6 +6,7 @@ import GradientBackground from '../../../components/gradient';
 
 
 export default function TabRoutesLayout() {
+    
     return (
         <Tabs screenOptions={{
             tabBarInactiveTintColor: '#fff',
