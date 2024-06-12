@@ -13,7 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router'; // Importa o useRouter
+import { useRouter, Link } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
 
@@ -117,9 +117,11 @@ export default function Dashboard() {
 
         <GoogleSignInScreen style={{ margin: 2 }} />
 
+        <Link href = "/RegisterScreen" asChild>
         <TouchableOpacity>
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
         </TouchableOpacity>
+        </Link>
       </View>
     </LinearGradient>
   );

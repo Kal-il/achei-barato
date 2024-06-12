@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useNavigation } from "expo-router";
-import { ApiClient } from "../../api/ApiClient.js";
+import { Link, useRouter } from "expo-router";
+import { ApiClient } from "../api/ApiClient.js";
 
 const RegisterScreen = () => {
-  const navigation = useNavigation();
-
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
     if (username === '' || email === '' || password === '' || confirmPassword === '') {
@@ -31,17 +31,15 @@ const RegisterScreen = () => {
       password: password
     };
 
+    setLoading(true);
     try {
-      const response = await api.createUser(data);
-
-      if (response.status === 201) {
+        const response = await api.createUser(data);
         Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
-        navigation.navigate("/SuperMarkets/RegisterScreen2");
-      } else {
-        handleErrorResponse(response.status);
-      }
+        router.replace("/RegisterScreen2");
     } catch (error) {
       handleErrorResponse(error.response ? error.response.status : 500);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,8 +67,9 @@ const RegisterScreen = () => {
   };
 
   const handleGoBack = () => {
-    navigation.goBack();
+    router.replace("/sign-in");
   };
+
 
   return (
     <LinearGradient
@@ -79,8 +78,15 @@ const RegisterScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
+        
+      <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
+        <Image
+          source={require('../assets/seta2.png')}
+          style={styles.goBackImage}
+        />
+      </TouchableOpacity>
       <Image
-        source={require('../../assets/logo2.png')}
+        source={require('../assets/logo2.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>
@@ -114,11 +120,10 @@ const RegisterScreen = () => {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
-      <Link href="/SuperMarkets/RegisterScreen2" asChild>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>
-      </Link>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
     </LinearGradient>
   );
 };

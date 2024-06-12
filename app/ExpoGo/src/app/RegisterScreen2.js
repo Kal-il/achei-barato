@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useNavigation } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
 
 const RegisterScreen = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
   const [cnpj, setCNPJ] = useState('');
   const [nomeEmpresa, setNomeEmpresa] = useState('');
   const [razaoSocial, setRazaoSocial] = useState('');
   const [telefone, setTelefone] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
     if (cnpj === '' || nomeEmpresa === '' || razaoSocial === '' || telefone === '') {
       Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
     }
-
+    setLoading(true);
     try {
       await SecureStore.setItemAsync("cnpj", cnpj);
       await SecureStore.setItemAsync("nomeEmpresa", nomeEmpresa);
@@ -25,9 +26,11 @@ const RegisterScreen = () => {
 
       // Sucesso no registro
       Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
-      navigation.navigate("/SuperMarkets/RegisterScreen3");
+      router.replace("/RegisterScreen3");
     } catch (error) {
       handleErrorResponse(error.response ? error.response.status : 500);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -54,10 +57,6 @@ const RegisterScreen = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
-
   return (
     <LinearGradient
       colors={['#A9C6FC', '#F67235']}
@@ -66,15 +65,17 @@ const RegisterScreen = () => {
       style={styles.container}
     >
       {/* Botão de voltar no canto superior esquerdo */}
-      <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
+      <Link href = '/RegisterScreen'>
+      <TouchableOpacity style={styles.goBackButton}>
         <Image
-          source={require('../../assets/seta2.png')}
+          source={require('../assets/seta2.png')}
           style={styles.goBackImage}
         />
       </TouchableOpacity>
+      </Link>
       {/* Logo no canto superior direito */}
       <Image
-        source={require('../../assets/logo2.png')}
+        source={require('../assets/logo2.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>
@@ -114,12 +115,12 @@ const RegisterScreen = () => {
         value={telefone}
         onChangeText={setTelefone}
       />
-      
-      <Link href="/SuperMarkets/RegisterScreen3" asChild>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>
-      </Link>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
+     
       
     </LinearGradient>
   );
