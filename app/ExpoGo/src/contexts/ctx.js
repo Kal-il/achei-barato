@@ -1,54 +1,84 @@
-import React, { useState } from "react";
+import React from 'react';
 import { useStorageState } from './useStorageState';
-import { ApiClient } from "../api/ApiClient";
-import { Alert } from "react-native";
+import { ApiClient } from '../api/ApiClient.js';
+import { Authenticator } from '../api/Authenticator';
 
 const AuthContext = React.createContext({
-  signIn: () => null,
-  signOut: () => null,
-  session: false,
+  signIn: async () => {},
+  signOut: () => {},
+  session: null,
   isLoading: false,
 });
 
 export function useSession() {
-  return React.useContext(AuthContext);
+  const value = React.useContext(AuthContext);
+  if (!value) {
+    throw new Error('useSession must be wrapped in a <SessionProvider />');
+  }
+  return value;
 }
 
-export function SessionProvider({ children }) {
-  const [loading, setLoading] = useState(false);
+export function SessionProvider(props) {
   const [[isLoading, session], setSession] = useStorageState('session');
 
   const signIn = async (username, password) => {
-
-    console.log("Logando usuário...");
-
-    setLoading(true); // Inicia o carregamento
-
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-
+    
+    console.log("Tentando obter token...");
+    const auth = new Authenticator();
+    let token = auth.fetchAccessToken();
+  
+    console.log("Token obtido:", token);
+  
     const api = new ApiClient();
     try {
+      console.log("Tentando logar usuário...");
       await api.loginUser(formData);
-      setSession(true); // Isso seria a resposta da API com a sessão do usuário
+      setSession(token);
+      console.log("Usuário logado com sucesso!");
     } catch (error) {
+      // Adiciona um log para depurar
       if (error.response.status == 404) {
         console.error("Erro ao logar usuário:", error.response.data.detail);
         Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
+      } else {
+        console.error("Erro inesperado ao logar usuário:", error);
       }
-    } finally {
-      setLoading(false); // Finaliza o carregamento
     }
   };
-
+  
   const signOut = () => {
     setSession(null);
   };
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, session, isLoading: loading }}>
-      {children}
+    <AuthContext.Provider value={{ signIn, signOut, session, isLoading }}>
+      {props.children}
     </AuthContext.Provider>
   );
 }
+
+const handleErrorResponse = (status) => {
+  switch (status) {
+    case 400:
+      Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+      break;
+    case 403:
+      Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+      break;
+    case 404:
+      Alert.alert("Erro", "Dado não encontrado.");
+      break;
+    case 409:
+      Alert.alert("Erro", "Esta ação já foi realizada.");
+      break;
+    case 500:
+      Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+      break;
+    default:
+      Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+      break;
+  }
+};

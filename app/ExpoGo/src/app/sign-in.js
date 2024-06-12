@@ -12,21 +12,60 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
-export default function SignIn() {
-  const { signIn, isLoading } = useSession();
+
+export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter(); // Adiciona useRouter
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useSession();
+  const router = useRouter();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    console.log("handleLogin chamado"); // Log para depuração
+    if (!username || !password) {
+      Alert.alert("Erro", "Usuário ou senha inválidos");
+      return;
+    }
 
-    signIn(username, password).then(() => {
-      // Antes de navegar, tenha certeza de que o usuário está autenticado
+    setLoading(true);
+    try {
+      await signIn(username, password);
+      console.log("funciona carai"); 
       router.replace("/");
-    });
+    } catch (error) {
+      console.error("deu merda:", error); // Log para depuração
+      Alert.alert("otário: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleErrorResponse = (status) => {
+    switch (status) {
+      case 400:
+        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
+        break;
+      case 403:
+        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        break;
+      case 404:
+        Alert.alert("Erro", "Dado não encontrado.");
+        break;
+      case 409:
+        Alert.alert("Erro", "Esta ação já foi realizada.");
+        break;
+      case 500:
+        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
+        break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
+    }
   };
 
   return (
@@ -72,7 +111,7 @@ export default function SignIn() {
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
 
-        {isLoading && <ActivityIndicator size="large" color="#0000ff" />} {/* Mostra o indicador de carregamento */}
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
 
         <Text style={styles.loginText}>Ou</Text>
 

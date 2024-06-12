@@ -2,14 +2,20 @@ import { Stack, Redirect, useRouter } from 'expo-router';
 import React from 'react';
 import { useSession } from '../../contexts/ctx';
 import { Text } from 'react-native';
+import SignIn from '../sign-in';
 
 export default function AppLayout() {
-  const { session } = useSession();
-  const router = useRouter(); // Adiciona useRouter
+  const { session, isLoading } = useSession();
 
+  // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
+  if (isLoading) {
+    console.log("Carregando...");
+  }
+
+  // Se o usuário não estiver autenticado, redirecione-o para a página de login
   if (!session) {
-    console.log("Usuário não logado");
-    return <Redirect to="../sign-in" />;
+    console.log("Usuário não autenticado, redirecionando pra tela de login...");
+    return <Redirect href="/sign-in" />;
   }
 
   
@@ -38,7 +44,7 @@ export default function AppLayout() {
       <Stack.Screen name="store-profile" options={{
         title: "perfil do mercado",
         headerTransparent: true,
-      }} />    
+      }}/>    
       <Stack.Screen
         name="edit-location"
         options={{

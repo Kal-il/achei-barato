@@ -1,0 +1,40 @@
+Casa: 
+EXPO_PUBLIC_IP_HOST=192.168.1.6
+uft
+EXPO_PUBLIC_IP_HOST=10.90.8.103
+
+
+
+/*
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Erro", "Usuário ou senha inválidos");
+      return;
+    }
+  
+    setLoading(true);
+  
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+  
+    const api = new ApiClient();
+    try {
+      // Chamada para login
+      console.log("Tentando logar usuário...");
+      response = await api.loginUser(formData);
+      console.log("Usuário logado com sucesso!");
+  
+      // Verifica se a resposta está definida
+     
+    } catch (error) {
+      // Adiciona um log para depurar
+      //console.log('stringo' + JSON.stringify(error));
+      console.error("Erro ao logar usuário:", error);
+      Alert.alert("Erro", "Erro ao logar usuário: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+*/

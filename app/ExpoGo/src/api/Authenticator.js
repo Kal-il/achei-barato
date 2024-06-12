@@ -14,7 +14,7 @@ export class Authenticator {
 	fetchAccessToken() {
 		return SecureStore.getItem('access-token');
 	}
-
+ 
 	fetchRefreshToken() {
 		return SecureStore.getItem('refresh-token');
 	}
