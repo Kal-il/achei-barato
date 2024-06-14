@@ -6,7 +6,6 @@ from sqlalchemy import select
 from mercado.mercado.models import Mercado
 from mercado.api_mercados.models import ApiMercados
 from core.redis import redis
-from core.config import settings
 import pytz
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession

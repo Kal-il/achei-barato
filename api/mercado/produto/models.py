@@ -43,7 +43,9 @@ class Produto(Base):
     mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
     mercado = relationship(Mercado, backref=backref("mercado", uselist=False))
     promocao_id = mapped_column(UUID, ForeignKey("mercado_promocao.id"))
-    promocao = relationship(Promocao, backref=backref("promocao", uselist=False))
+    promocao = relationship(
+        Promocao, backref=backref("promocao", uselist=False), lazy="selectin"
+    )
     nome: Mapped[str] = mapped_column(String(255), nullable=True)
     marca: Mapped[str] = mapped_column(String(255), nullable=True)
     data_validade: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
@@ -118,18 +120,42 @@ class ProdutoManager:
 
         return _produto
 
+    async def get_produto_por_id_erp(self, id_produto_erp: str, id_mercado: str):
+        _query = select(Produto).where(
+            Produto.id_produto_erp == id_produto_erp, Produto.mercado_id == id_mercado
+        )
+
+        _produto = await self.db.execute(_query)
+        _produto = _produto.scalar()
+
+        return _produto
+
     async def get_produtos_promocao(self, promocao_id: uuid.UUID):
         _query = select(Produto).where(Produto.promocao_id == promocao_id)
         _produtos = await self.db.execute(_query)
         return _produtos.scalars().all()
 
     async def update_produto_promocao(
-        self, id_produtos: list[str], promocao_id: uuid.UUID
+        self, promocao: Promocao, mercado_id: str, id_produtos: list[str] = None
     ):
+        # Atualiza os produtos em promoção, atribuindo o ID da promoção e o valor promocional
+        if not id_produtos:
+            query = select(Produto.id_produto_erp).where(Produto.promocao_id == promocao.id)
+            id_produtos = await self.db.execute(query)
+            id_produtos = id_produtos.scalars().all()
+            breakpoint()
+
         for produto_id in id_produtos:
             query = (
                 update(Produto)
-                .where(Produto.id == produto_id)
-                .values(Produto.promocao_id == promocao_id)
+                .where(Produto.id_produto_erp == produto_id)
+                .values(
+                    promocao_id=promocao.id,
+                    mercado_id=mercado_id,
+                    preco_promocional=(
+                        Produto.preco - (Produto.preco * promocao.percentual_desconto)
+                    ),
+                )
             )
             await self.db.execute(query)
+        await self.db.commit()
