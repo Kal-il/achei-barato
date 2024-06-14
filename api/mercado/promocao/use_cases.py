@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
-from mercado.mercado.managers import MercadoManager, PromocaoManager
-from mercado.mercado.schemas import PromocaoBase
+from mercado.mercado.models import MercadoManager
+from mercado.promocao.models import PromocaoManager
+from mercado.promocao.schemas import PromocaoBase
 from usuario.usuario.models import Usuario
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,7 +12,10 @@ class PromocaoUseCases:
         self, db: AsyncSession, usuario: Usuario, promocao: PromocaoBase
     ):
         if not usuario.dono_mercado:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="O usuário não é dono de mercado")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="O usuário não é dono de mercado",
+            )
 
         try:
             mercado_manager = MercadoManager(db=db)
@@ -27,7 +31,10 @@ class PromocaoUseCases:
 
     async def get_promocoes(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="O usuário não é dono de mercado")       
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="O usuário não é dono de mercado",
+            )
 
         try:
             mercado_manager = MercadoManager(db=db)
@@ -40,3 +47,5 @@ class PromocaoUseCases:
         except Exception as e:
             print(e)
 
+
+use_cases_promocoes = PromocaoUseCases()
