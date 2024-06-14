@@ -2,26 +2,37 @@ from datetime import datetime
 import json
 from fastapi import HTTPException, status
 import httpx
+from sqlalchemy import select
+from api.mercado.mercado.models import ApiMercados, Mercado
 from core.redis import redis
 from core.config import settings
 import pytz
 import asyncio
+from sqlalchemy.ext.asyncio import AsyncSession
 
 class ErpRequest:
+    async def get_dados_conexao(self, db: AsyncSession, mercado: Mercado):
+        conexao_erp = await self._get_conexao_erp(mercado)
+        self.base_url = f"{conexao_erp.url_base}:{conexao_erp.porta}"
+        self.emp_id = str(conexao_erp.emp_id)
+        self.terminal = str(conexao_erp.terminal) 
 
-    @staticmethod
-    async def save_token_to_redis(token, expiration):
+    async def _get_conexao_erp(self, mercado: Mercado) -> ApiMercados:
+        query = select(ApiMercados).where(ApiMercados.mercado_id == mercado.id)
+        conexao_erp = await self.db.execute(query)
+        return conexao_erp.scalar()
+
+    async def save_token_to_redis(self, token, expiration):
         return await redis.save_string(
             "token_erp", {"token": token, "expiracao": expiration}
         )
 
-    @staticmethod
-    async def auth_erp():
-        url = f"{settings.url_erp}/v1/auth"
+    async def auth_erp(self):
+        url = f"{self.base_url}/v1/auth"
         headers = {
             "Content-Type": "application/json",
-            "terminal": settings.terminal,
-            "empId": str(settings.emp_id),
+            "terminal": self.terminal,
+            "empId": self.emp_id,
         }
         response = httpx.get(url, headers=headers)
         if response.status_code != 200:
@@ -31,31 +42,29 @@ class ErpRequest:
         token = response_dict.get("token")
         expiration = response_dict.get("expiracao")
 
-        await ErpRequest.save_token_to_redis(token, expiration)
+        await self.save_token_to_redis(token, expiration)
 
         return {"token": token, "expiration": expiration}
 
-    @staticmethod
-    async def verify_token_erp():
+    async def verify_token_erp(self):
         token = await redis.get_string("token_erp")
 
         if not token:
-            return await ErpRequest.auth_erp()
+            return await self.auth_erp()
 
         if token and datetime.strptime(
             token.get("expiracao"), "%Y-%m-%dT%H:%M:%S.%f%z"
         ) < datetime.now().replace(tzinfo=pytz.utc):
-            return await ErpRequest.auth_erp()
+            return await self.auth_erp()
     
         return token
 
-    @staticmethod
-    async def fetch_products_from_erp(page: int):
-        token = await ErpRequest.verify_token_erp()
-        base_url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar?limit=1000&page={page}"
+    async def fetch_products_from_erp(self, page: int):
+        token = await self.verify_token_erp()
+        base_url = f"{self.base_url}/v1/produto/consultar?limit=1000&page={page}"
         headers = {
             "Content-Type": "application/json",
-            "empId": str(settings.emp_id),
+            "empId": self.emp_id,
             "Authorization": f"Bearer {token.get('token')}",
         }
 
@@ -64,20 +73,19 @@ class ErpRequest:
             response.raise_for_status()
             return response.json()
 
-    @staticmethod
-    async def get_all_produtos():
+    async def get_all_produtos(self):
         try:
             product_ids = []
             page = 1
             while True:
-                response = await ErpRequest.fetch_products_from_erp(page)
+                response = await self.fetch_products_from_erp(page)
                 if not response["docs"]:
                     break
                 product_ids.extend(
                     [product.get("proId") for product in response["docs"]]
                 )
                 page += 1
-            await ErpRequest.fetch_promotional_products(product_ids)
+            await self.fetch_promotional_products(product_ids)
 
         except Exception as err:
             raise HTTPException(
@@ -87,17 +95,16 @@ class ErpRequest:
 
         return f"deu certo {len(product_ids)}"
 
-    @staticmethod
-    async def fetch_promotional_products(product_ids):
-        token = await ErpRequest.verify_token_erp()
+    async def fetch_promotional_products(self, product_ids):
+        token = await self.verify_token_erp()
         promo_products = []
-        base_url = "http://rds.maxdata.com.br:9000/v1/produto/consultar"
+        base_url = f"{self.base_url}/v1/produto/consultar"
         sem = asyncio.Semaphore(30)
 
         async def fetch_product_details(product_id):
             headers = {
                 "Content-Type": "application/json",
-                "empId": str(settings.emp_id),
+                "empId": self.emp_id,
                 "Authorization": f"Bearer {token.get('token')}",
             }
             async with sem:
@@ -122,8 +129,7 @@ class ErpRequest:
 
         promo_products = [result for result in results if result is not None]
 
-    @staticmethod
-    async def run_test():
+    async def run_test(self):
         promo_product_ids = ["30", "9103", "5260"]
         promo_products = []
 
@@ -132,12 +138,12 @@ class ErpRequest:
             token = await ErpRequest.verify_token_erp()
             headers = {
                 "Content-Type": "application/json",
-                "empId": str(settings.emp_id),
+                "empId": self.emp_id,
                 "Authorization": f"Bearer {token.get('token')}",
             }
 
             for product_id in promo_product_ids:
-                url = f"http://rds.maxdata.com.br:9000/v1/produto/consultar/{product_id}"
+                url = f"{self.base_url}/v1/produto/consultar/{product_id}"
                 try:
                     async with httpx.AsyncClient() as client:
                         response = await client.get(url=url, headers=headers)
