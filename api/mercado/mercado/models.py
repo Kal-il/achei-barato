@@ -1,4 +1,5 @@
 import datetime
+from typing import List
 import uuid
 
 from fastapi import HTTPException, status
@@ -63,7 +64,7 @@ class MercadoManager:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_mercado(self, data: MercadoCreate):
+    async def create_mercado(self, data: MercadoCreate) -> Mercado:
         _mercado = Mercado(
             cnpj=data.cnpj,
             usuario_id=data.usuario.id,
@@ -86,49 +87,49 @@ class MercadoManager:
 
         return _mercado
 
-    async def get_mercado_by_cnpj(self, cnpj: str):
+    async def get_mercado_by_cnpj(self, cnpj: str) -> Mercado | None:
         _query = select(Mercado).where(Mercado.cnpj == cnpj)
         _mercado = await self.db.execute(_query)
         _mercado = _mercado.scalar()
 
         return _mercado
 
-    async def get_mercado_by_id(self, mercado_id: str):
+    async def get_mercado_by_id(self, mercado_id: str) -> Mercado | None:
         _query = select(Mercado).where(Mercado.id == mercado_id)
         _mercado = await self.db.execute(_query)
         _mercado = _mercado.scalar()
 
         return _mercado
 
-    async def get_mercado_by_usuario(self, id_usuario: str):
+    async def get_mercado_by_usuario(self, id_usuario: str) -> Mercado | None:
         _query = select(Mercado).where(Mercado.usuario_id == id_usuario)
         _mercado = await self.db.execute(_query)
         _mercado = _mercado.scalar()
 
         return _mercado
 
-    async def get_mercados_by_nome(self, nome: str):
+    async def get_mercados_by_nome(self, nome: str) -> Mercado | None:
         _query = select(Mercado).filter(Mercado.nome_fantasia.like(f"{nome}%"))
         _mercados = await self.db.execute(_query)
         _mercados = _mercados.scalars().all()
 
         return _mercados
 
-    async def get_mercado_id(self, id_usuario: str):
+    async def get_mercado_id(self, id_usuario: str) -> Mercado | None:
         _query = select(Mercado.id).filter(Mercado.usuario_id == id_usuario)
         _mercado_id = await self.db.execute(_query)
         _mercado_id = _mercado_id.scalar()
 
         return _mercado_id
 
-    async def get_cnpj_by_usuario(self, id_usuario: str):
+    async def get_cnpj_by_usuario(self, id_usuario: str) -> str | None:
         _query = select(Mercado.cnpj).filter(Mercado.usuario_id == id_usuario)
         _cnpj = await self.db.execute(_query)
         _cnpj = _cnpj.scalar()
 
         return _cnpj
 
-    async def get_mercados(self):
+    async def get_mercados(self) -> List[Mercado]:
         _query = select(Mercado).filter(Mercado.deleted == False)
         _mercados = await self.db.execute(_query)
         _mercados = _mercados.scalars().all()

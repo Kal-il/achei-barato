@@ -67,7 +67,7 @@ class MercadoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Mercado não encontrado."
             )
 
-        _mercado = schemas.MercadoSchema.model_validate(_mercado)
+        _mercado = schemas.MercadoSchema(**_mercado.__dict__)
         return _mercado
 
     async def get_mercado_by_nome(self, db: AsyncSession, nome: str):

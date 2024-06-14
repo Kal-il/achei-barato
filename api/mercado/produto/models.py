@@ -21,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import backref, relationship
 
+from mercado.promocao.models import Promocao
 from mercado.mercado.models import Mercado
 from core.database import Base
 from .schemas import ProdutoBase
@@ -41,6 +42,8 @@ class Produto(Base):
     )
     mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
     mercado = relationship(Mercado, backref=backref("mercado", uselist=False))
+    promocao_id = mapped_column(UUID, ForeignKey("mercado_promocao.id"))
+    promocao = relationship(Promocao, backref=backref("promocao", uselist=False))
     nome: Mapped[str] = mapped_column(String(255), nullable=True)
     marca: Mapped[str] = mapped_column(String(255), nullable=True)
     data_validade: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
@@ -114,3 +117,19 @@ class ProdutoManager:
         _produto = _produto.scalar()
 
         return _produto
+
+    async def get_produtos_promocao(self, promocao_id: uuid.UUID):
+        _query = select(Produto).where(Produto.promocao_id == promocao_id)
+        _produtos = await self.db.execute(_query)
+        return _produtos.scalars().all()
+
+    async def update_produto_promocao(
+        self, id_produtos: list[str], promocao_id: uuid.UUID
+    ):
+        for produto_id in id_produtos:
+            query = (
+                update(Produto)
+                .where(Produto.id == produto_id)
+                .values(Produto.promocao_id == promocao_id)
+            )
+            await self.db.execute(query)

@@ -131,5 +131,4 @@ class ProdutoUseCases:
         except Exception as err:
             raise err
 
-
 use_cases_produtos = ProdutoUseCases()

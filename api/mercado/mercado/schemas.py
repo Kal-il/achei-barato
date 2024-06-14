@@ -1,10 +1,12 @@
 import datetime
 from typing import Optional
+import uuid
 from pydantic import BaseModel, ConfigDict, Field
 from validate_docbr import CNPJ
 
 from mercado.utils import digitos_doc
 from usuario.usuario.schemas import UsuarioBase
+
 
 # Schemas relacionados ao Mercado
 class MercadoBase(BaseModel):
@@ -70,6 +72,7 @@ class MercadoBase(BaseModel):
 class MercadoSchema(MercadoBase):
     """Schema acrescenta campos de CNPJ, nome e CPF do responsável."""
 
+    id: uuid.UUID = Field(..., description="ID do mercado")
     cnpj: str = Field(..., max_length=18, description="CNPJ")
     nome_responsavel: str = Field(
         ..., max_length=255, description="Nome do responsável"

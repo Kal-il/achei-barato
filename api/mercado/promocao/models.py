@@ -1,4 +1,5 @@
 import datetime
+import json
 from typing import Any, List
 import uuid
 
@@ -11,6 +12,7 @@ from sqlalchemy import (
     String,
     UUID,
     select,
+    update,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
@@ -33,7 +35,6 @@ class Promocao(Base):
     )
     mercado_id = mapped_column(UUID, ForeignKey("mercado_mercado.id"))
     mercado = relationship(Mercado, backref=backref("promocao", uselist=False))
-    produto: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     data_inicial: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
     data_final: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
     percentual_desconto: Mapped[float] = mapped_column(Float, nullable=False)
@@ -52,13 +53,16 @@ class PromocaoManager:
 
     async def save_promocao(self, promocao: PromocaoBase, mercado):
         try:
+            produtos = promocao.produto
             promocao = Promocao(**promocao.__dict__, mercado=mercado)
-
             self.db.add(promocao)
             await self.db.commit()
+
+            breakpoint()
+
+            return promocao 
         except Exception as e:
-            print(e)
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            raise e
 
     async def get_promocoes(self, mercado_id: uuid.UUID):
         try:

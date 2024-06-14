@@ -3,19 +3,21 @@ import json
 from fastapi import HTTPException, status
 import httpx
 from sqlalchemy import select
-from api.mercado.mercado.models import ApiMercados, Mercado
+from mercado.mercado.models import Mercado
+from mercado.api_mercados.models import ApiMercados
 from core.redis import redis
 from core.config import settings
 import pytz
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 class ErpRequest:
     async def get_dados_conexao(self, db: AsyncSession, mercado: Mercado):
         conexao_erp = await self._get_conexao_erp(mercado)
         self.base_url = f"{conexao_erp.url_base}:{conexao_erp.porta}"
         self.emp_id = str(conexao_erp.emp_id)
-        self.terminal = str(conexao_erp.terminal) 
+        self.terminal = str(conexao_erp.terminal)
 
     async def _get_conexao_erp(self, mercado: Mercado) -> ApiMercados:
         query = select(ApiMercados).where(ApiMercados.mercado_id == mercado.id)
@@ -56,7 +58,7 @@ class ErpRequest:
             token.get("expiracao"), "%Y-%m-%dT%H:%M:%S.%f%z"
         ) < datetime.now().replace(tzinfo=pytz.utc):
             return await self.auth_erp()
-    
+
         return token
 
     async def fetch_products_from_erp(self, page: int):
@@ -162,10 +164,9 @@ class ErpRequest:
                     promo_products.append(product_data)
 
             return promo_products
-        
+
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Erro ao buscar produtos promocionais no ERP, tente novamente mais tarde.",
             )
-

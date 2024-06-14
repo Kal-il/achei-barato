@@ -9,7 +9,7 @@ from usuario.usuario.models import Usuario
 
 router = APIRouter()
 
-MODEL_NAME = "mercado"
+MODEL_NAME = "seguir"
 
 model_router = APIRouter(
     prefix=f"/{MODEL_NAME}",
