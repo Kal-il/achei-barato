@@ -55,7 +55,7 @@ async def get_promocao(
     return await use_cases_promocoes.get_promocao(db, id_promocao, id_mercado)
 
 
-@model_router.delete("/{id_promocao}")
+@model_router.delete("/{id_promocao}", summary="Deleta uma promoção")
 async def deletar_promocao(
     db: AsyncDBDependency,
     id_promocao: uuid.UUID,
