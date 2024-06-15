@@ -1,6 +1,6 @@
 import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class ProdutoBase(BaseModel):
@@ -22,3 +22,7 @@ class ProdutoBase(BaseModel):
     codigo_produto: Optional[str] = Field(
         ..., max_length=30, description="Código do produto"
     )
+
+    @validator("data_validade")
+    def data_validar(cls, data):
+        return data.replace(tzinfo=None)
