@@ -28,9 +28,10 @@ class PostagemPromocaoManager:
             postagem_promocao_foto= base64.b64encode(postagem_promocao_foto).decode('utf-8')
         return postagem_promocao_foto
 
-    async def create_postagem_promocao(self, data, usuario) -> PostagemPromocao:
-        if data.imagem:
-            _imagem = await self.upload_postagem_promocao(data.imagem)
+    async def create_postagem_promocao(self, data, usuario, foto) -> PostagemPromocao:
+        if foto:
+            _imagem = await self.upload_postagem_promocao(foto)
+            
         nova_postagem = PostagemPromocao(
             id=uuid.uuid4(),
             usuario_id=data.usuario_id,

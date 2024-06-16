@@ -8,8 +8,7 @@ from pydantic import BaseModel
 class PostagemPromocaoBase(BaseModel):
     legenda: str = Field(..., max_length=255, description="Legenda")
     denuncia: Optional[bool]= False 
-    imagem: str = Field(..., max_length=255, description="Imagem")
-
+    
 
 class PostagemPromocaoCreate(PostagemPromocaoBase):
     pass

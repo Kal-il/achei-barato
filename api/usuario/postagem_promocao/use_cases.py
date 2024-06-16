@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import status
+from fastapi import status, UploadFile
 import uuid
 from usuario.postagem_promocao.manager import PostagemPromocaoManager
 from usuario.postagem_promocao.schemas import PostagemPromocaoCreate 
@@ -10,16 +10,15 @@ from usuario.usuario.schemas import UsuarioAuth
 class PostagemPromocaoUseCases:
 
     @staticmethod
-    async def create_postagem_promocao(db: AsyncSession, data: PostagemPromocaoCreate, usuario: UsuarioAuth):
+    async def create_postagem_promocao(db: AsyncSession, foto: UploadFile, data: PostagemPromocaoCreate, usuario: UsuarioAuth):
         postagem_promocao_manager = PostagemPromocaoManager(db=db)
-
         try:
-            if not data.imagem:
+            if foto is None:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Imagem não informada",
                 )
-            await postagem_promocao_manager.create_postagem_promocao(data, usuario)
+            await postagem_promocao_manager.create_postagem_promocao(data, usuario, foto)
         except HTTPException as err:
             raise err
         except Exception as err:
