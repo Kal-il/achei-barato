@@ -11,7 +11,7 @@ import { StyleSheet,
   Dimensions } from 'react-native';
 import { Link } from 'expo-router';
 import GradientBackground from '../../../components/gradient.js';
-import ProductCategory from '../../../components/Product.js';
+import ProductCategory from '../../../components/ProductCategory.js';
 
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
 

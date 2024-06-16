@@ -2,6 +2,7 @@ import React from 'react';
 import { useStorageState } from './useStorageState';
 import { ApiClient } from '../api/ApiClient.js';
 import { Authenticator } from '../api/Authenticator';
+import { Alert } from 'react-native';
 
 const AuthContext = React.createContext({
   signIn: async () => {},
@@ -40,17 +41,21 @@ export function SessionProvider(props) {
       console.log("Usuário logado com sucesso!");
     } catch (error) {
       // Adiciona um log para depurar
-      if (error.response.status == 404) {
-        console.error("Erro ao logar usuário:", error.response.data.detail);
-        Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
-      } else {
-        console.error("Erro inesperado ao logar usuário:", error);
-      }
+      console.error("Erro ao logar usuário:", error);
+      Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
     }
   };
   
-  const signOut = () => {
+  const signOut = async () => {
+   try {
+    const api2 = new ApiClient();
+    console.log("Deslogando usuário...");
+    await api2.logoutUser();
     setSession(null);
+   } catch (error) {
+     console.error("Erro ao deslogar usuário:", error);
+     Alert.alert("Erro", "Erro ao deslogar usuário: " + error.response.data.detail);
+   }
   };
 
   return (

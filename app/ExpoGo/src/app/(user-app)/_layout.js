@@ -25,10 +25,6 @@ export default function AppLayout() {
       headerShadowVisible: false,
     }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="register-client" options={{ headerShown: false }} />
-      <Stack.Screen name="SuperMarkets" options={{ headerShown: false }} />
-      <Stack.Screen name="login" options={{ headerShown: false }} />
-
       <Stack.Screen name="promotion" options={{
         title: "promoção",
         headerBackground: () => (

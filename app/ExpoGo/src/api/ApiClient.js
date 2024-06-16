@@ -20,6 +20,12 @@ export class ApiClient {
 		return await this._authenticator.authenticateUser(formData);
 	}
 
+	async logoutUser () {
+		// Função que chama endpoint para deslogar o usuário do sistema
+		console.log("chegou aqui")
+		return await this._authenticator.cleanUserState();
+	}
+
 	async createUser (formData) {
 		return await this._authenticator.createAndAuthenticateUser(formData);
 	}

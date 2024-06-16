@@ -25,10 +25,6 @@ const Height = '100%';
 
 export default function Dashboard() {
 
-  const auth = new Authenticator();
-  if (!auth.validateToken()) {
-    // Lógica para redirecionar para tela de login
-  }
 
   const [data, setData] = useState([
     {
@@ -100,9 +96,6 @@ export default function Dashboard() {
               <Image source={require('../../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
               <Image source={require('../../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
             </ScrollView>
-
-            <Link href="/notification">Login</Link>
-            <Link href="register-client/register-user-1">Cadastrar Consumidor</Link>
 
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
