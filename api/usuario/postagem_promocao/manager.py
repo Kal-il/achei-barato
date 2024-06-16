@@ -24,16 +24,18 @@ class PostagemPromocaoManager:
     @staticmethod
     async def get_postagem_promocao(url_foto: str) -> str:
         async with aiofiles.open(url_foto, "rb") as foto:
-            foto_consumidor = await foto.read()
-            foto_consumidor = base64.b64encode(foto_consumidor).decode('utf-8')
-        return foto_consumidor
+            postagem_promocao_foto= await foto.read()
+            postagem_promocao_foto= base64.b64encode(postagem_promocao_foto).decode('utf-8')
+        return postagem_promocao_foto
 
-    async def create_postagem_promocao(self, data) -> PostagemPromocao:
+    async def create_postagem_promocao(self, data, usuario) -> PostagemPromocao:
+        if data.imagem:
+            _imagem = await self.upload_postagem_promocao(data.imagem)
         nova_postagem = PostagemPromocao(
             id=uuid.uuid4(),
             usuario_id=data.usuario_id,
             legenda=data.legenda,
-            imagem=data.imagem,
+            imagem=_imagem,
         )
         self.db.add(nova_postagem)
         await self.db.commit()

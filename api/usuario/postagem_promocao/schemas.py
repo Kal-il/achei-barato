@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class PostagemPromocaoBase(BaseModel):
     legenda: str = Field(..., max_length=255, description="Legenda")
-    denuncia: bool = Field(..., max_length=255, description="Estado")
+    denuncia: Optional[bool]= False 
     imagem: str = Field(..., max_length=255, description="Imagem")
 
 
