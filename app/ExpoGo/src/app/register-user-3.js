@@ -6,11 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Alert
+  Alert,
+  Dimensions
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from 'expo-secure-store'
-import { ApiClient } from "../../api/ApiClient";
+import { ApiClient } from "../api/ApiClient";
+import {useRouter} from "expo-router";
+
+const { height, width } = Dimensions.get('window');
+
 
 const CadastroScreen = ({ navigation }) => {
   const [senha, setSenha] = useState("");
@@ -34,6 +39,7 @@ const CadastroScreen = ({ navigation }) => {
     const cidade = await SecureStore.getItemAsync("cidade");
     const bairro = await SecureStore.getItemAsync("bairro");
     const endereco = await SecureStore.getItemAsync("endereco");
+    const router = useRouter();
 
     const customer = {
       nome: nome,
@@ -52,15 +58,14 @@ const CadastroScreen = ({ navigation }) => {
     const api = new ApiClient();
     
     try {
-      const response = await api.createCustomer(customer);
-
-      if (response.status === 201) {
-        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+      console.log(customer);
+      console.log("tentando cadastrar");
+      const response = await api.createCostumer(customer);
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+      router.replace("/");
         // Navegar para outra tela ou limpar os campos de entrada, se necessário
-      } else {
-        handleErrorResponse(response.status);
-      }
     } catch (error) {
+      console.log(error);
       handleErrorResponse(error.response ? error.response.status : 500);
     }
   };
@@ -92,7 +97,7 @@ const CadastroScreen = ({ navigation }) => {
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
         <Image
-          source={require("../../assets/logo.png")}
+          source={require("../assets/logo.png")}
           style={{ width: 85, height: 85, marginTop: "20%" }}
         />
         <Text style={styles.logo}>
@@ -120,11 +125,13 @@ const CadastroScreen = ({ navigation }) => {
           />
         </View>
 
-		<View style={styles.loginBtn}>
+	
         <TouchableOpacity onPress={handleCadastrar}>
+        <View style={styles.button}>
           <Text style={styles.loginText}>Cadastrar</Text>
+          </View>
         </TouchableOpacity>
-		</View>
+
 
       </View>
     </LinearGradient>
@@ -160,15 +167,22 @@ const styles = StyleSheet.create({
     height: 50,
     color: "#8D8D8D",
   },
-  loginBtn: {
-    width: "65%",
-    backgroundColor: "#3672F6",
-    borderRadius: 25,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: "2%",
-    marginBottom: "2%",
+  button: {
+    width: width * 0.4,
+    height: height * 0.05,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
+    marginBottom: '5%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
   },
   socialBtnContainer: {
     flexDirection: "row",

@@ -9,9 +9,9 @@ import {
   Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
+import { Link, useRouter} from "expo-router";
 import * as SecureStore from 'expo-secure-store';
-import { ApiClient } from "../../api/ApiClient";
+import { ApiClient } from "../api/ApiClient";
 
 const CadastroScreen = ({ navigation }) => {
   const [cep, setCep] = useState("");
@@ -19,6 +19,7 @@ const CadastroScreen = ({ navigation }) => {
   const [cidade, setCidade] = useState("");
   const [bairro, setBairro] = useState("");
   const [endereco, setEndereco] = useState("");
+ 
 
   const handleCadastrar = async () => {
     if (
@@ -48,15 +49,10 @@ const CadastroScreen = ({ navigation }) => {
       endereco: endereco,
     };
 
-    try {
-      const response = await api.createCustomerAddress(customerAddress);
+    const router = useRouter();
 
-      if (response.status === 201) {
-        Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
-        navigation.navigate("/register-client/register-user-3");
-      } else {
-        handleErrorResponse(response.status);
-      }
+    try {
+        router.replace("/register-user-3");
     } catch (error) {
       handleErrorResponse(error.response ? error.response.status : 500);
     }
@@ -89,7 +85,7 @@ const CadastroScreen = ({ navigation }) => {
     <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
       <View style={styles.innerContainer}>
         <Image
-          source={require("../../assets/logo.png")}
+          source={require("../assets/logo.png")}
           style={{ width: 85, height: 85, marginTop: "20%" }}
         />
         <Text style={styles.logo}>

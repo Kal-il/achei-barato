@@ -164,6 +164,7 @@ export class Authenticator {
 		// Função que limpa o estado do usuário, deslogando ele do sistema.
 		this._deleteRefreshToken();
 		this._deleteAccessToken();
+		console.log("TOkens deletados com sucesso caralho")
 	}
 
 	

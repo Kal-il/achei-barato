@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Button, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 import { Authenticator } from '../api/Authenticator';
+import {useRouter} from "expo-router";
+
+const router = useRouter();
 
 const {width, height} = Dimensions.get('window');
 
@@ -32,6 +35,7 @@ export const GoogleManager = () => {
     try {
       await GoogleSignin.hasPlayServices();
       userInfoGoogle = await GoogleSignin.signIn();
+      router.replace("/");
     
     } catch (error) {
 
@@ -65,7 +69,7 @@ export const GoogleSignInScreen = () => {
 
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{justifyContent: 'center', alignItems: 'center' }}>
       <View style={{ alignItems: 'center' }}>
 
         <TouchableOpacity onPress={signIn}>

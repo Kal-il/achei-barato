@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Image,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
@@ -16,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, Link } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
+const { height, width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const [username, setUsername] = useState("");
@@ -23,6 +25,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const { signIn } = useSession();
   const router = useRouter();
+
+  const handleRedirect = async () => {
+    router.replace("/register-user-1")
+  }
 
   const handleLogin = async () => {
     console.log("handleLogin chamado"); // Log para depuração
@@ -76,7 +82,7 @@ export default function Dashboard() {
       style={styles.container}
     >
       <View style={styles.innerContainer}>
-        <Image source={require('../assets/logo.png')} />
+        <Image source={require('../assets/logo.png')} style = {styles.image} />
         <Text style={styles.logo}>
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
@@ -113,15 +119,19 @@ export default function Dashboard() {
 
         {loading && <ActivityIndicator size="large" color="#0000ff" />}
 
-        <Text style={styles.loginText}>Ou</Text>
+        <View style={styles.lineContainer}>
+          <View style={styles.line} />
+          <Text style={styles.loginText}>Ou</Text>
+          <View style={styles.line} />
+        </View>
 
         <GoogleSignInScreen style={{ margin: 2 }} />
 
-        <Link href = "/RegisterScreen" asChild>
-        <TouchableOpacity>
+        <View style={styles.separator} />
+        
+        <TouchableOpacity onPress={handleRedirect}>
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
         </TouchableOpacity>
-        </Link>
       </View>
     </LinearGradient>
   );
@@ -137,6 +147,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
+  image: {
+    width: width * 0.5,
+    height: height * 0.25,
+    marginBottom: '5%',
+  },
   logo: {
     fontWeight: "bold",
     fontSize: 50,
@@ -144,13 +159,21 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   inputView: {
-    width: '80%',
+    width: width * 0.8,
     backgroundColor: '#fff',
     borderRadius: 24,
-    height: '8%',
+    height: height * 0.07,
     marginBottom: '5%',
     justifyContent: 'center',
     padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
   },
   inputText: {
     height: 50,
@@ -158,6 +181,8 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: "white",
+    marginHorizontal: "3%",
+    fontWeight: "bold", 
   },
   button: {
     width: '40%',
@@ -176,5 +201,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 6,
+  },
+  lineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: '3%',
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "white",
+  },
+  separator: {
+    borderBottomColor: '#fff',
+    borderBottomWidth: 1,
+    width: width,
+    alignSelf: 'center',
+    marginTop: '3%',
+    marginBottom: '5%',
   },
 });
