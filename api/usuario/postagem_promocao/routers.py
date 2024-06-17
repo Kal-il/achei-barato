@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, File
 from core.security import get_current_active_user
 from usuario.usuario.models import Usuario
 from usuario.postagem_promocao import schemas
@@ -18,7 +18,7 @@ model_router = APIRouter(
 )
 
 @model_router.post("/postar", summary=f"Postar Promoção")
-async def create_user(db: AsyncDBDependency, data: schemas.PostagemPromocaoCreate, foto: UploadFile,  usuario: Annotated[Usuario, Depends(get_current_active_user)]):
+async def create_user(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)], data: schemas.PostagemPromocaoBase = Depends(), foto: UploadFile = File(...)):
     return await postagem_promocao_usecases.create_postagem_promocao(db, data, foto, usuario)
 
 # @model_router.get("/consultar/{id_postagem}", summary="Obtém dados da postagem pelo ID")
