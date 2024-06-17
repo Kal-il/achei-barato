@@ -30,16 +30,54 @@ class PostagemPromocaoUseCases:
         return HTTPException(status_code=status.HTTP_201_CREATED, detail="Promoção Postada com sucesso!")
     
     @staticmethod
-    async def get_postagem_promocao_by_id(db: AsyncSession, id: uuid.UUID):
+    async def get_postagem_promocao_by_usuario(db: AsyncSession, usuario: UsuarioAuth):
 
         postagem_promocao_manager = PostagemPromocaoManager(db=db)
 
         try:
-            _postagem = await postagem_promocao_manager.get_postagem_promocao_by_id(id)
+            _postagens = await postagem_promocao_manager.get_postagem_promocao_by_usuario(usuario)
+            _postagem_promocao_usuario = [] 
+            for postagem in _postagens:
+                postagem.imagem = await postagem_promocao_manager.get_postagem_promocao(postagem.imagem)
+                _postagem_promocao_usuario.append(postagem)
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao buscar postagem promocao: {err}",
+            )
+
+        return _postagem_promocao_usuario
+
+    @staticmethod 
+    async def get_all_postagem_promocao(db: AsyncSession):
+
+        postagem_promocao_manager = PostagemPromocaoManager(db=db)
+
+        try:
+            _postagens = await postagem_promocao_manager.get_all_promocao_all()
+            _postagem_promocao = [] 
+            for postagem in _postagens:
+                postagem.imagem = await postagem_promocao_manager.get_postagem_promocao(postagem.imagem)
+                _postagem_promocao.append(postagem)
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao buscar postagens promoção: {err}",
+            )
+
+        return _postagem_promocao
+    
+    @staticmethod
+    async def delete_postagem_promocao(db: AsyncSession, id: uuid.UUID):
+
+        postagem_promocao_manager = PostagemPromocaoManager(db=db)
+
+        try:
+            _postagem = await postagem_promocao_manager.delete_postagem_promocao(id)
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao deletar postagem promocao: {err}",
             )
 
         return _postagem
