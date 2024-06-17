@@ -8,10 +8,57 @@ import {
 } from "react-native";
 import ImageInput from "../components/ImageInput";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { ApiClient } from "../api/ApiClient";
 
 const { width, height } = Dimensions.get("window"); //essa função retorna o tamanho da tela do dispositivo
 
 export default function CriarPost() {
+  const [titulo, setTitulo] = useState("");
+  const [legenda, setLegenda] = useState("");
+  const [imagem, setImagem] = useState(null);
+
+  const [erroFormulario, setErroFormulario] = useState("");
+
+  const _validarFormulario = () => {
+    if (!titulo || !legenda) {
+      setErroFormulario("Todos os campos devem estar preenchidos");
+      return false;
+    }
+
+    if (!imagem) {
+      setErroFormulario("Você deve selecionar uma imagem");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleCriarPost = async () => {
+    if (!_validarFormulario()) {
+      return;
+    }
+
+    params = {
+      titulo: titulo,
+      legenda: legenda,
+      denuncia: false,
+    };
+
+    let erros;
+    const api = new ApiClient();
+
+    try {
+      await api.createPost(imagem, params);
+    } catch (e) {
+      erros = e.response.data.detail;
+    }
+  };
+
+  const imageToParent = (childData) => {
+    setImagem(childData);
+  };
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -19,22 +66,43 @@ export default function CriarPost() {
         start={{ x: 0.8, y: 0.8 }}
         end={{ x: 0, y: 0.2 }}
         style={{
-            position: "absolute",
-            width: "100%",
-            height: "50%",
-            borderBottomLeftRadius: 18,
-            borderBottomRightRadius: 18,
-            top: 30,
-            zIndex: 0,
-          }}
-      >
-      </LinearGradient>
+          position: "absolute",
+          width: "100%",
+          height: "50%",
+          borderBottomLeftRadius: 18,
+          borderBottomRightRadius: 18,
+          top: 30,
+          zIndex: 0,
+        }}
+      ></LinearGradient>
 
       <View style={styles.formContainer}>
         <View style={styles.titleAreaContainer}>
           <View style={styles.titleArea}>
             <Text style={styles.title}>Compartilhe uma {"\n"}promoção</Text>
           </View>
+          {erroFormulario && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 5,
+                marginBottom: 20,
+                backgroundColor: "white",
+                padding: 8,
+                borderRadius: 8,
+                backgroundColor: "#F9EEEE",
+              }}
+            >
+              <MaterialIcons
+                name="error"
+                size={24}
+                style={styles.icons}
+                color={"#d83933"}
+              />
+              <Text>{erroFormulario}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.formArea}>
           <View style={styles.inputView}>
@@ -42,6 +110,8 @@ export default function CriarPost() {
               style={styles.inputText}
               placeholder="Insira o título do seu post"
               placeholderTextColor="#7E48CC"
+              value={titulo}
+              onChangeText={(text) => setTitulo(text)}
             />
           </View>
           <View style={styles.inputLongTextView}>
@@ -51,6 +121,8 @@ export default function CriarPost() {
               placeholderTextColor="#7E48CC"
               multiline={true}
               numberOfLines={6}
+              value={legenda}
+              onChangeText={(text) => setLegenda(text)}
             />
           </View>
           <View style={styles.imageInputView}>
@@ -58,11 +130,15 @@ export default function CriarPost() {
               ButtonText={"Selecione a foto"}
               ButtonIcon={"camera-alt"}
               ButtonIconColor={"#7E48CC"}
+              imageToParent={imageToParent}
             />
           </View>
         </View>
         <View>
-          <TouchableOpacity style={{ width: "95%", alignItems: "flex-end" }}>
+          <TouchableOpacity
+            onPress={handleCriarPost}
+            style={{ width: "95%", alignItems: "flex-end" }}
+          >
             <View style={[styles.button, { backgroundColor: "#659BFF" }]}>
               <Text style={styles.text}>Postar</Text>
             </View>
@@ -107,7 +183,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginBottom: 20,
     fontWeight: "700",
-    color: 'white'
+    color: "white",
   },
   inputView: {
     width: "90%",
@@ -128,7 +204,6 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 50,
-    color: "#7E48CC",
   },
   inputLongText: {
     height: 200,

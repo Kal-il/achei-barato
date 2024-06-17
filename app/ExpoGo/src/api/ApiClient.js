@@ -40,6 +40,10 @@ export class ApiClient {
 		return await this._callApi("api/v1/usuario/consumidor/atualizar", "PUT", userData, params, multipart);
 	}
 
+	async createPost(imagem, params) {
+		return await this._callApi("url", "POST", imagem, params, true)
+	}
+
     async _callApi(path, method, data, params, multipart) {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;

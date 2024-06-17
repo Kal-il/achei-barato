@@ -20,6 +20,7 @@ export default function ProfileScreenButton({
   ButtonText,
   ButtonIcon,
   ButtonIconColor,
+  imageToParent,
 }) {
   const [image, setImage] = useState(null);
   const pickImage = async () => {
@@ -33,6 +34,8 @@ export default function ProfileScreenButton({
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
+
+    imageToParent(result.assets[0].uri);
   };
 
   return (
