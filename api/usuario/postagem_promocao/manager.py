@@ -98,3 +98,14 @@ class PostagemPromocaoManager:
             print(f"Erro ao deletar a postagem: {e}")
             return False
         
+
+    async def get_postagem_by_id(self, id: uuid.UUID) -> PostagemPromocao:
+        try:
+            _query = select(PostagemPromocao).where(PostagemPromocao.id == id)
+            resultado = await self.db.execute(_query)
+            postagem = resultado.scalars().all()
+            return postagem
+        except Exception as e:
+            print(f"Erro ao buscar a postagem: {e}")
+            return None
+        

@@ -1,6 +1,7 @@
 from typing import Annotated
+import uuid
 
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, BackgroundTasks, Depends, UploadFile, File
 from core.security import get_current_active_user
 from usuario.usuario.models import Usuario
 from usuario.postagem_promocao import schemas
@@ -29,16 +30,12 @@ async def get_postagem_promocao_by_id(db: AsyncDBDependency, usuario: Annotated[
 async def get_all_postagem_promocao(db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
     return await postagem_promocao_usecases.get_all_postagem_promocao(db)
 
-# @model_router.put("/atualizar/{id_postagem}", summary="Atualiza dados da postagem pelo ID")
-# async def update_postagem_promocao(db: AsyncDBDependency, id_postagem: str, data: schemas.PostagemPromocaoUpdate):
-#     return await postagem_promocao_usecases.update_postagem_promocao(db, id_postagem, data)
-
 @model_router.delete("/deletar/{id_postagem}", summary="Deleta postagem pelo ID")   
 async def delete_postagem_promocao(db: AsyncDBDependency, id_postagem: str, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
     return await postagem_promocao_usecases.delete_postagem_promocao(db, id_postagem)
 
-# @model_router.post("/denunciar/{id_postagem}", summary="Denunciar postagem pelo ID")
-# async def denunciar_postagem_promocao(db: AsyncDBDependency, id_postagem: str):
-#     return await postagem_promocao_usecases.denunciar_postagem_promocao(db, id_postagem)
+@model_router.post("/denunciar/{id_postagem}", summary="Denunciar postagem pelo ID")
+async def denunciar_postagem(id_postagem: str, background_tasks: BackgroundTasks, db: AsyncDBDependency):
+    return await postagem_promocao_usecases.denunciar_postagem_promocao(db, id_postagem, background_tasks)
 
 router.include_router(model_router)

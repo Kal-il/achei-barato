@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import BackgroundTasks, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import status, UploadFile
 import uuid
@@ -78,6 +78,28 @@ class PostagemPromocaoUseCases:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao deletar postagem promocao: {err}",
+            )
+
+        return _postagem
+    
+    @staticmethod
+    async def denunciar_postagem_promocao(db: AsyncSession, id_postagem: uuid.UUID, background_tasks: BackgroundTasks):
+
+        postagem_promocao_manager = PostagemPromocaoManager(db=db)
+
+        try:
+            _postagem = await postagem_promocao_manager.get_postagem_by_id(id_postagem)
+            if _postagem is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Postagem não encontrada",
+                )
+            # background_tasks.add_task(postagem_promocao_manager.denunciar_postagem_promocao, id_postagem)
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao denunciar postagem promocao: {err}",
             )
 
         return _postagem
