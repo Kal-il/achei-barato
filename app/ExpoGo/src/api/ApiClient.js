@@ -41,7 +41,7 @@ export class ApiClient {
 	}
 
 	async createPost(imagem, params) {
-		return await this._callApi("url", "POST", imagem, params, true)
+		return await this._callApi("api/v1/usuario/postagem_promocao/postar", "POST", imagem, params, true)
 	}
 
     async _callApi(path, method, data, params, multipart) {
