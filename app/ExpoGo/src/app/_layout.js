@@ -90,6 +90,12 @@ export default function AppLayout() {
           title: "Produtos",
           headerTransparent: true,
         }} />
+        <Stack.Screen
+        name="createPost"
+        options={{
+          title: "",
+          headerTransparent: true,
+        }} />
     </Stack>
   );
 }

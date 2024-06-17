@@ -103,6 +103,7 @@ export default function Dashboard() {
 
             <Link href="/login">Login</Link>
             <Link href="register-client/register-user-1">Cadastrar Consumidor</Link>
+            <Link href="/createPost">Criar Post</Link>
 
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
