@@ -16,12 +16,16 @@ import {useRouter} from "expo-router";
 
 const { height, width } = Dimensions.get('window');
 
+const router = useRouter();
+
 
 const CadastroScreen = ({ navigation }) => {
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const handleCadastrar = async () => {
+    console.log('handleCadastrar foi chamada');
+
     if (senha === "" || confirmarSenha === "") {
       Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
@@ -31,15 +35,32 @@ const CadastroScreen = ({ navigation }) => {
       return;
     }
 
-    const nome = await SecureStore.getItemAsync("nome");
-    const email = await SecureStore.getItemAsync("email");
-    const telefone = await SecureStore.getItemAsync("telefone");
-    const cep = await SecureStore.getItemAsync("cep");
-    const estado = await SecureStore.getItemAsync("estado");
-    const cidade = await SecureStore.getItemAsync("cidade");
-    const bairro = await SecureStore.getItemAsync("bairro");
-    const endereco = await SecureStore.getItemAsync("endereco");
-    const router = useRouter();
+    let nome, email, telefone, cep, estado, cidade, bairro, endereco;
+
+    try {
+      console.log('try');
+
+      nome = await SecureStore.getItemAsync("nome");
+
+      email = await SecureStore.getItemAsync("email");
+     
+      telefone = await SecureStore.getItemAsync("telefone");
+  
+      cep = await SecureStore.getItemAsync("cep");
+     
+      estado = await SecureStore.getItemAsync("estado");
+     
+      cidade = await SecureStore.getItemAsync("cidade");
+
+      bairro = await SecureStore.getItemAsync("bairro");
+     
+      endereco = await SecureStore.getItemAsync("endereco");
+
+    } catch (error) {
+      console.error("Erro ao obter dados do SecureStore:", error);
+      return;
+    }
+    
 
     const customer = {
       nome: nome,

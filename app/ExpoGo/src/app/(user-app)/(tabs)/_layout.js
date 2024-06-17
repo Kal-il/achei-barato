@@ -1,12 +1,30 @@
-import React from "react";
+import React, {useState} from "react";
 import { Tabs } from "expo-router";
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from "react-native";
 import GradientBackground from '../../../components/gradient';
+import { useSession } from '../../../contexts/ctx';
+import { Redirect } from 'expo-router';
+
 
 
 export default function TabRoutesLayout() {
-    
+    const { session, isLoading } = useSession();
+
+    // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
+    if (isLoading) {
+      console.log("Carregando...");
+    }
+  
+    // Se o usuário não estiver autenticado, redirecione-o para a página de login
+    if (!session) {
+      console.log("Usuário não autenticado, redirecionando pra tela de login...");
+      return <Redirect href="/sign-in" />;
+    }
+
+    const [showScreenTab, setShowScreenTab] = useState(true); // Adicione isso no início do seu componente
+
+
     return (
         <Tabs screenOptions={{
             tabBarInactiveTintColor: '#fff',
@@ -15,7 +33,7 @@ export default function TabRoutesLayout() {
             tabBarBackground: () => (
                 <GradientBackground ></GradientBackground>
             ),
-        }}>
+        }}>s
 
             <Tabs.Screen
                 name="index"
@@ -35,6 +53,7 @@ export default function TabRoutesLayout() {
             <Tabs.Screen
                 name="liked"
                 options={{ title: "Favoritos", tabBarIcon: ({ size, color, focused }) => { return focused == false ? <MaterialIcons name="favorite-outline" size={28} color={color} /> : <MaterialIcons name="favorite" size={34} color={color} /> }, headerShown: false, tabBarShowLabel: false }} />
+           
             <Tabs.Screen
                 name="[profile]"
                 options={{

@@ -22,7 +22,7 @@ export class ApiClient {
 
 	async logoutUser () {
 		// Função que chama endpoint para deslogar o usuário do sistema
-		console.log("chegou aqui")
+		console.log("chegou aqui - deslogando usuário")
 		return await this._authenticator.cleanUserState();
 	}
 
@@ -35,6 +35,7 @@ export class ApiClient {
 	}
 
 	async createCostumer (formData) {
+		console.log("chegou aqui - criando consumidor")
 		return await this._authenticator.createCostumer(formData);
 	}
 

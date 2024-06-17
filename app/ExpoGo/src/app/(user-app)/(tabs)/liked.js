@@ -5,7 +5,7 @@ import GradientBackground from "../../../components/gradient";
 
 const { width, height } = Dimensions.get("window");
 
-export default function Dashboard() {
+export default function Liked() {
   return (
     
     <View style={styles.container}>
