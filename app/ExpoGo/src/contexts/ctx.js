@@ -41,7 +41,7 @@ export function SessionProvider(props) {
       console.log("Usuário logado com sucesso!");
     } catch (error) {
       // Adiciona um log para depurar
-      console.error("Erro ao logar usuário:", error);
+      console.error("Erro ao logar usuário:", JSON.stringify(error));
       Alert.alert("Erro", "Erro ao logar usuário: " + error.response.data.detail);
     }
   };

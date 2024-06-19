@@ -12,15 +12,6 @@ export default function TabRoutesLayout() {
     const { session, isLoading } = useSession();
 
     // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
-    if (isLoading) {
-      console.log("Carregando...");
-    }
-  
-    // Se o usuário não estiver autenticado, redirecione-o para a página de login
-    if (!session) {
-      console.log("Usuário não autenticado, redirecionando pra tela de login...");
-      return <Redirect href="/sign-in" />;
-    }
 
     const [showScreenTab, setShowScreenTab] = useState(true); // Adicione isso no início do seu componente
 

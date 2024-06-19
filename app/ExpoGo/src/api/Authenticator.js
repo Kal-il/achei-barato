@@ -12,7 +12,9 @@ export class Authenticator {
     }
 	
 	fetchAccessToken() {
-		return SecureStore.getItem('access-token');
+		token = SecureStore.getItem('access-token');
+		console.log(token)
+		return token
 	}
  
 	fetchRefreshToken() {
@@ -164,7 +166,6 @@ export class Authenticator {
 		// Função que limpa o estado do usuário, deslogando ele do sistema.
 		this._deleteRefreshToken();
 		this._deleteAccessToken();
-		console.log("TOkens deletados com sucesso caralho")
 	}
 
 	

@@ -14,7 +14,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter, Link } from 'expo-router'; // Importa o useRouter
+import { useRouter, Link, Redirect } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
 
 const { height, width } = Dimensions.get('window');
@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const { signIn } = useSession();
   const router = useRouter();
+  const [erro, setErro] = useState("");
 
   const handleRedirect = async () => {
     router.replace("/register-user-1")
@@ -41,13 +42,18 @@ export default function Dashboard() {
     try {
       await signIn(username, password);
       console.log("funciona carai"); 
-      router.replace("/");
     } catch (error) {
-      console.error("deu merda:", error); // Log para depuração
+      setErro(error)
       Alert.alert("otário: " + error.message);
     } finally {
       setLoading(false);
     }
+
+    if (!erro) {
+      console.log('tentando redirecionar')
+      router.replace("/")
+    }
+
   };
 
 

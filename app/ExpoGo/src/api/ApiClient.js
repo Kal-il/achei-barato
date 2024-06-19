@@ -51,6 +51,7 @@ export class ApiClient {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;
         let token = this._authenticator.fetchAccessToken();
+		console.log("token:::; " + token);
         
 		try {
 			var response = await this._callApiWithToken(url, method, data, params, token, multipart);

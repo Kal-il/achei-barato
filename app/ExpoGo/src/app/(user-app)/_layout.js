@@ -1,11 +1,14 @@
 import { Stack, Redirect, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSession } from '../../contexts/ctx';
 import { Text } from 'react-native';
 import SignIn from '../sign-in';
+import { ApiClient } from '../../api/ApiClient';
 
 export default function AppLayout() {
   const { session, isLoading } = useSession();
+  const router = useRouter();
+  // const {erro, setErro} = useState("");
 
   // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
   if (isLoading) {
@@ -13,12 +16,33 @@ export default function AppLayout() {
   }
 
   // Se o usuário não estiver autenticado, redirecione-o para a página de login
-  if (!session) {
-    console.log("Usuário não autenticado, redirecionando pra tela de login...");
-    return <Redirect href="/sign-in" />;
-  }
+  useEffect(() => {
+    const asyncChecaUsuario = async () => {
+      const api = new ApiClient();
+      let usuario, erro;
+      try {
+        usuario = await api.getUserDetail();
+      } catch (e) {
+        console.log("erro at: " + e);
+        erro = e.response.data.detail;
+      }
 
-  
+      console.log("usuario:" + usuario);
+
+      if (erro) {
+        console.log('replacing')
+        router.replace("/sign-in")
+      }
+    }
+
+    asyncChecaUsuario();
+  }, []);
+
+  // if (erro.current) {
+  //   console.log('redirecionando')
+  //   return <Redirect href="/sign-in" />;
+  // }
+
   return (
     <Stack screenOptions={{
       headerTintColor: '#fff', // isso define a cor do botão de voltar e do título para branco
