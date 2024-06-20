@@ -44,6 +44,9 @@ export class ApiClient {
 		return await this._callApi("api/v1/usuario/postagem_promocao/postar", "POST", imagem, params, true)
 	}
 
+	async getTodosPosts() {
+		return await this._callApi("api/v1/usuario/postagem_promocao/consultar", "GET", null, null, false);
+	}
     async _callApi(path, method, data, params, multipart) {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;
