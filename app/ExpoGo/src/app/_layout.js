@@ -113,7 +113,7 @@ export default function AppLayout() {
         options={{
           title: "",
           headerTransparent: true,
-          // headerBackground: () => <GradientBackground></GradientBackground>,
+          headerBackground: () => <GradientBackground></GradientBackground>,
         }}
       />
     </Stack>
