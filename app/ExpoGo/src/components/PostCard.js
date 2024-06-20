@@ -16,6 +16,17 @@ const PostCard = ({ postId, imagem, titulo, preco, autor }) => {
   return (
     <View style={postStyles.card}>
       <View style={postStyles.cardContent}>
+        <Link
+          href={{
+            pathname: "/post/[id]",
+            params: { id: postId },
+          }}
+          asChild
+        >
+          <TouchableOpacity>
+            <Image source={{uri: imagem}} style={postStyles.promotionImage} />
+          </TouchableOpacity>
+        </Link>
         <View style={postStyles.textContainer}>
           <View>
             <Text style={postStyles.textBold}>{titulo}</Text>
@@ -31,11 +42,11 @@ const PostCard = ({ postId, imagem, titulo, preco, autor }) => {
                 href={{
                   pathname: "/post/[id]",
                   params: { id: postId },
-                }}
+                }} asChild
               >
                 <TouchableOpacity>
                   <AntDesign
-                    name="arrowright"
+                    name="right"
                     size={24}
                     style={postStyles.icons}
                   />
@@ -44,17 +55,7 @@ const PostCard = ({ postId, imagem, titulo, preco, autor }) => {
             </View>
           </View>
         </View>
-        <Link
-          href={{
-            pathname: "/post/[id]",
-            params: { id: postId },
-          }}
-          asChild
-        >
-          <TouchableOpacity>
-            <Image source={{uri: imagem}} style={postStyles.promotionImage} />
-          </TouchableOpacity>
-        </Link>
+
       </View>
     </View>
   );
