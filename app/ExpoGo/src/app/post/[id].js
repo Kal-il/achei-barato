@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -34,6 +35,7 @@ export default function PostDetail() {
   }, []);
 
   return (
+    <ScrollView>
     <View style={{ paddingTop: 100 }}>
       <View style={styles.mainPadding}>
         <View style={styles.postInfo}>
@@ -96,6 +98,7 @@ export default function PostDetail() {
         </View>
       </View>
     </View>
+    </ScrollView>
   );
 }
 
