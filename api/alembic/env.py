@@ -30,6 +30,7 @@ models = [
     "mercado.api_mercados.models.ApiMercados",
     "mercado.curtidas.models.Curtidas", 
     "mercado.mercado_seguir.models.MercadoSeguir",
+    "usuario.postagem_promocao.models.PostagemPromocao",
 ]
 
 for model in models:
