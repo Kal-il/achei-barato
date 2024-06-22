@@ -18,6 +18,7 @@ export default function CriarPost() {
   const [titulo, setTitulo] = useState("");
   const [legenda, setLegenda] = useState("");
   const [imagem, setImagem] = useState(null);
+  const api = new ApiClient();
 
   const [erroFormulario, setErroFormulario] = useState("");
 
@@ -40,19 +41,17 @@ export default function CriarPost() {
       return;
     }
 
-    params = {
-      titulo: titulo,
-      legenda: legenda,
-      denuncia: false,
-    };
-
     let erros;
-    const api = new ApiClient();
+    const parametros = await api.getParametrosRequisicao({
+      imagem: imagem,
+      formulario: { legenda: legenda, denuncia: true },
+    });
 
     try {
-      await api.createPost(imagem, params);
+      await api.createPost(parametros);
     } catch (e) {
       erros = e.response.data.detail;
+      console.error(erros);
     }
   };
 
