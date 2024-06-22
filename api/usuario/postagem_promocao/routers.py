@@ -35,7 +35,11 @@ async def delete_postagem_promocao(db: AsyncDBDependency, id_postagem: str, usua
     return await postagem_promocao_usecases.delete_postagem_promocao(db, id_postagem)
 
 @model_router.post("/denunciar/{id_postagem}", summary="Denunciar postagem pelo ID")
-async def denunciar_postagem(id_postagem: str, background_tasks: BackgroundTasks, db: AsyncDBDependency):
+async def denunciar_postagem(id_postagem: str, background_tasks: BackgroundTasks, db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
     return await postagem_promocao_usecases.denunciar_postagem_promocao(db, id_postagem, background_tasks)
+
+@model_router.post("/marcar/denuncia/{id_postagem}", summary="Marcar denúncia na postagem pelo ID")
+async def denunciar_postagem(id_postagem: str, db: AsyncDBDependency):
+    return await postagem_promocao_usecases.marcar_postagem_denuncia(db, id_postagem)
 
 router.include_router(model_router)

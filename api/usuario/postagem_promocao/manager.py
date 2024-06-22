@@ -109,3 +109,11 @@ class PostagemPromocaoManager:
             print(f"Erro ao buscar a postagem: {e}")
             return None
         
+    async def marcar_denuncia_postagem(self, id: uuid.UUID):
+        try:
+            _query = update(PostagemPromocao).where(PostagemPromocao.id == id).values(denuncia=True)
+            await self.db.execute(_query)
+            await self.db.commit()
+        except Exception as e:
+            print(f"Erro ao marcar a denuncia: {e}")    
+            return None
