@@ -85,6 +85,13 @@ async def teste_auth_erp(
     usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency
 ):
     return await use_cases_produtos.sync_produtos_promocao_erp(usuario=usuario, db=db)
+@model_router.post(
+    "/pesquisar/nome/", summary="Pesquisar por nome por produto e mercado"
+)
+async def pesquisar_nome_produto_mercado(
+    usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency, nome:str
+):
+    return await use_cases_produtos.pesquisar_nome(db=db, nome=nome)
 
 
 router.include_router(model_router)

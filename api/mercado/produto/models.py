@@ -143,8 +143,7 @@ class ProdutoManager:
             query = select(Produto.id_produto_erp).where(Produto.promocao_id == promocao.id)
             id_produtos = await self.db.execute(query)
             id_produtos = id_produtos.scalars().all()
-            breakpoint()
-
+    
         for produto_id in id_produtos:
             query = (
                 update(Produto)
@@ -159,3 +158,27 @@ class ProdutoManager:
             )
             await self.db.execute(query)
         await self.db.commit()
+
+
+    async def get_produtos_or_mercado(self, nome:str):
+        try:
+
+            produto_query = select(Produto).where(Produto.nome.ilike(f"{nome}%"))
+            produto_result = await self.db.execute(produto_query)
+            produtos = produto_result.scalars().all()
+
+            
+            mercado_query = select(Mercado).where(Mercado.nome.ilike(f"{nome}%"))
+            mercado_result = await self.db.execute(mercado_query)
+            mercados = mercado_result.scalars().all()
+
+            result = {
+                "produtos": produtos,
+                "mercados": mercados
+            }
+
+            return result
+        except Exception as e:
+            print(f"Erro ao buscar a postagem: {e}")
+            return None
+        

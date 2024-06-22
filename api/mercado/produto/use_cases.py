@@ -130,5 +130,19 @@ class ProdutoUseCases:
             return response
         except Exception as err:
             raise err
+        
+    async def pesquisar_nome(self, db: AsyncSession, nome: str):
+        try:
+            produto_manager = ProdutoManager(db=db)
+            produtos = await produto_manager.get_produtos_or_mercado(nome)
+            if not produtos:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Produto não encontrado",
+                )
+            
+            return produtos
+        except Exception as err:
+            raise err
 
 use_cases_produtos = ProdutoUseCases()
