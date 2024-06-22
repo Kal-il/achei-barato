@@ -5,6 +5,8 @@ import uuid
 from usuario.postagem_promocao.manager import PostagemPromocaoManager
 from usuario.postagem_promocao.schemas import PostagemPromocaoCreate 
 from usuario.usuario.schemas import UsuarioAuth 
+import smtplib
+from core.config import settings
 
 
 class PostagemPromocaoUseCases:
@@ -82,9 +84,35 @@ class PostagemPromocaoUseCases:
 
         return _postagem
     
+    def enviar_email_denuncia(self, id_postagem: uuid.UUID):
+        try:
+            email_from = settings.email_from
+            email_to = settings.email_to  
+            email_password = settings.email_password  
+            
+
+            mensagem = MIMEMultipart()
+            mensagem['From'] = email_from
+            mensagem['To'] = email_to
+            mensagem['Subject'] = 'Denúncia de Postagem'
+
+            corpo_email = f'A postagem com ID {id_postagem} recebeu uma denúncia.'
+            mensagem.attach(MIMEText(corpo_email, 'plain'))
+
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(email_from, email_password)
+            server.send_message(mensagem)
+            server.quit()
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao enviar email de denuncia: {err}",
+            )
+
     @staticmethod
     async def denunciar_postagem_promocao(db: AsyncSession, id_postagem: uuid.UUID, background_tasks: BackgroundTasks):
-
         postagem_promocao_manager = PostagemPromocaoManager(db=db)
 
         try:
@@ -94,7 +122,9 @@ class PostagemPromocaoUseCases:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Postagem não encontrada",
                 )
-            # background_tasks.add_task(postagem_promocao_manager.denunciar_postagem_promocao, id_postagem)
+
+            # Adiciona a tarefa de envio de email em background
+            background_tasks.add_task(postagem_promocao_manager.enviar_email_denuncia, id_postagem)
 
         except Exception as err:
             raise HTTPException(
@@ -102,6 +132,7 @@ class PostagemPromocaoUseCases:
                 detail=f"Erro ao denunciar postagem promocao: {err}",
             )
 
+        return _postagem
         return _postagem
     
 
