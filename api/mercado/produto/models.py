@@ -28,6 +28,7 @@ from .schemas import ProdutoBase
 from fastapi_storages import FileSystemStorage
 from fastapi_storages.integrations.sqlalchemy import ImageType
 from core.redis import redis
+from sqlalchemy.orm import selectinload
 
 storage = FileSystemStorage(path="./media")
 
@@ -162,13 +163,16 @@ class ProdutoManager:
 
     async def get_produtos_or_mercado(self, nome:str):
         try:
-
-            produto_query = select(Produto).where(Produto.nome.ilike(f"{nome}%"))
+            produto_query = (
+            select(Produto)
+            .options(selectinload(Produto.mercado))
+            .where(Produto.nome.ilike(f"{nome}%"))
+        )
             produto_result = await self.db.execute(produto_query)
             produtos = produto_result.scalars().all()
 
-            
-            mercado_query = select(Mercado).where(Mercado.nome.ilike(f"{nome}%"))
+        
+            mercado_query = select(Mercado).where(Mercado.nome_fantasia.ilike(f"{nome}%"))
             mercado_result = await self.db.execute(mercado_query)
             mercados = mercado_result.scalars().all()
 
@@ -179,6 +183,6 @@ class ProdutoManager:
 
             return result
         except Exception as e:
-            print(f"Erro ao buscar a postagem: {e}")
+            print(f"Erro ao buscar os produtos: {e}")
             return None
         
