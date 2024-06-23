@@ -30,7 +30,6 @@ class PostagemPromocaoManager:
 
     @staticmethod
     async def create_postagem_promocao(self, foto, usuario, data) -> PostagemPromocao:
-        breakpoint()
         if foto:
             _imagem = await self.upload_postagem_promocao(foto)
         nova_postagem = PostagemPromocao(
