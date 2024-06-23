@@ -134,14 +134,14 @@ class ProdutoUseCases:
     async def pesquisar_nome(self, db: AsyncSession, nome: str):
         try:
             produto_manager = ProdutoManager(db=db)
-            produtos = await produto_manager.get_produtos_or_mercado(nome)
-            if not produtos:
+            objetos = await produto_manager.get_produtos_or_mercado(nome)
+            if not objetos['mercados'] and not objetos['produtos']:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Produto não encontrado",
                 )
             
-            return produtos
+            return objetos
         except Exception as err:
             raise err
 
