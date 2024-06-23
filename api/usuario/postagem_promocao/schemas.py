@@ -1,14 +1,21 @@
-import re
-from typing import Optional
-import uuid
-from pydantic import ConfigDict, EmailStr, Field
-from usuario.usuario.schemas import UsuarioBase, UsuarioAuth
+import datetime
+from pydantic import Field
 from pydantic import BaseModel
 
+
 class PostagemPromocaoBase(BaseModel):
+    titulo: str = Field(..., max_length=50, description="Título")
     legenda: str = Field(..., max_length=255, description="Legenda")
-    denuncia: Optional[bool]= False 
+    produto: str | None = Field(..., max_length=50, description="Nome do produto")
+    preco: float | None = Field(description="Preço do produto em promoção")
+
+
+class PostagemPromocaoOutput(PostagemPromocaoBase):
+    autor: str
+    imagem: bytes
+    data_postagem: datetime.datetime
     
+
 
 class PostagemPromocaoCreate(PostagemPromocaoBase):
     pass
