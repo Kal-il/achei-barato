@@ -26,7 +26,7 @@ class PostagemPromocaoManager:
         return store_name
 
     @staticmethod
-    async def get_postagem_promocao(url_foto: str) -> str:
+    async def get_foto_postagem(url_foto: str) -> str:
         async with aiofiles.open(url_foto, "rb") as foto:
             postagem_promocao_foto = await foto.read()
             postagem_promocao_foto = base64.b64encode(postagem_promocao_foto).decode(
@@ -40,7 +40,7 @@ class PostagemPromocaoManager:
         if foto:
             _imagem = await self.upload_postagem_promocao(foto)
         nova_postagem = PostagemPromocao(
-            **postagem,
+            **postagem.__dict__,
             usuario_id=usuario.id,
             imagem=_imagem,
         )
@@ -122,8 +122,16 @@ class PostagemPromocaoManager:
         try:
             _query = select(PostagemPromocao).where(PostagemPromocao.id == id)
             resultado = await self.db.execute(_query)
-            postagem = resultado.scalars().all()
-            return postagem
+            return resultado.scalar()
         except Exception as e:
             print(f"Erro ao buscar a postagem: {e}")
             return None
+
+    async def get_nome_autor(self, usuario_id: uuid.UUID) -> str:
+        try:
+            _query = select(Usuario.nome).where(Usuario.id == usuario_id)
+            nome = await self.db.execute(_query)
+            return nome.scalar()
+        except Exception as e:
+            print(f"Erro ao buscar nome do autor: {e}")
+            return ""

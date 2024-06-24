@@ -21,28 +21,43 @@ const { width, height } = Dimensions.get("window");
 export default function PostDetail() {
   const { id } = useLocalSearchParams();
   const [post, setPost] = useState(null);
+  const [erro, setErro] = useState("");
 
   useEffect(() => {
-    const api = new ApiClient();
-    let postData, erro;
-    try {
-      postData = api.getPostData(id);
-    } catch (e) {
-      erro = e;
+    const fetchPostData = async () => {
+      const api = new ApiClient();
+      let postData, erro;
+      try {
+        postData = await api.getPostData(id);
+      } catch (e) {
+        erro = e.response;
+      }
+
+      if (postData) {
+        postData.imagem = `data:image/jpg;base64,${postData.imagem}`
+        setPost(postData);
+        setErro("");
+      }
+
+      if (erro) {
+        setErro(erro.data.detail);
+        setPost(null);
+      }
     }
 
-    setPost(postData);
+    fetchPostData();
   }, []);
 
   return (
     <ScrollView>
     <View style={{ paddingTop: 100 }}>
+      {post &&
       <View style={styles.mainPadding}>
         <View style={styles.postInfo}>
           <View style={styles.infoContainer}>
 
             <View style={styles.postHeader}>
-              <Text style={styles.title}>Promoção boa na casa do robson</Text>
+              <Text style={styles.title}>{post.titulo}</Text>
 
               <View style={styles.postAuthor}>
                 <Image
@@ -50,7 +65,7 @@ export default function PostDetail() {
                   source={require("../../assets/profile.png")}
                 />
                 <View>
-                  <Text style={styles.textAuthor}>Kalil Garcia Canudo</Text>
+                  <Text style={styles.textAuthor}>{post.autor}</Text>
                   <Text style={styles.textDate}>12h04 • 20 de Junho de 2024</Text>
                 </View>
               </View>
@@ -61,20 +76,16 @@ export default function PostDetail() {
                 <Text style={{fontWeight: "bold", fontSize: 20, paddingHorizontal: 10, paddingVertical: 2}}>Novidade!</Text>
               </View>
               <View>
-                <Text style={{color: 'green', fontWeight: "bold", fontSize: 24}}>R$10,00</Text>
+                <Text style={{color: 'green', fontWeight: "bold", fontSize: 24}}>R${post.preco}</Text>
               </View>
             </View>
 
           </View>
 
           <View style={{ marginVertical: 15 }}>
-            <Image
-              style={styles.image}
-              source={require("../../assets/apple.png")}
-            ></Image>
+            <Image style={styles.image}source={{uri: post.imagem}}></Image>
             <Text style={styles.subtitle}>
-              Encontrada promoção top na casa do robson preço barato demais ce
-              ta doido
+              {post.legenda}
             </Text>
 
             <View style={styles.postAction}>
@@ -94,9 +105,15 @@ export default function PostDetail() {
               </View>
             </View>
           </View>
-
         </View>
       </View>
+        } 
+        {erro && 
+          <View style={{height: height / 1.3, justifyContent: "center", alignItems: "center"}}>
+            <MaterialIcons name="sentiment-dissatisfied" size={82} color="#636363"></MaterialIcons>
+            <Text style={{fontSize: 36, textAlign: "center", color: "#636363"}}>{erro}.</Text>
+          </View>
+        }
     </View>
     </ScrollView>
   );
@@ -132,8 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   image: {
-    width: "100%",
-    maxHeight: "50%",
+    height: height/2.5,
     borderRadius: 12,
   },
   imageProfile: {

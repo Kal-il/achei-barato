@@ -13,7 +13,7 @@ class PostagemPromocaoBase(BaseModel):
 class PostagemPromocaoOutput(PostagemPromocaoBase):
     autor: str
     imagem: bytes
-    data_postagem: datetime.datetime
+    created_at: datetime.datetime
     
 
 

@@ -14,7 +14,6 @@ export class ApiClient {
   async _callApiWithToken(url, method, data, params, token, multipart) {
     // Função que realiza a chamada da API em si,
     // adicionando o token de acess à header do request.
-
     if (multipart) {
       headers = {
         Authorization: `Bearer ${token}`,
@@ -25,6 +24,7 @@ export class ApiClient {
         Authorization: `Bearer ${token}`,
       };
     }
+
     try {
       var response = await axios({
         url: url,
@@ -36,6 +36,7 @@ export class ApiClient {
 
       return response.data;
     } catch (err) {
+		console.log("deu erro: " + err)
       throw err;
     }
   }
@@ -167,7 +168,13 @@ export class ApiClient {
     return await this._callApi({
       path: "api/v1/usuario/postagem_promocao/consultar",
       method: "GET",
-      multipart: false
 	});
   }
+
+  async getPostData(postId) { 
+	return await this._callApi({
+		path:`api/v1/usuario/postagem_promocao/consultar/${postId}`,
+		method: "GET",
+	})
+  } 
 }

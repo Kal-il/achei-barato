@@ -51,7 +51,7 @@ class PostagemPromocaoUseCases:
             )
             _postagem_promocao_usuario = []
             for postagem in _postagens:
-                postagem.imagem = await postagem_promocao_manager.get_postagem_promocao(
+                postagem.imagem = await postagem_promocao_manager.get_foto_postagem(
                     postagem.imagem
                 )
                 _postagem_promocao_usuario.append(postagem)
@@ -72,7 +72,7 @@ class PostagemPromocaoUseCases:
             _postagens = await postagem_promocao_manager.get_all_promocao_all()
             _postagem_promocao = []
             for postagem in _postagens:
-                postagem.imagem = await postagem_promocao_manager.get_postagem_promocao(
+                postagem.imagem = await postagem_promocao_manager.get_foto_postagem(
                     postagem.imagem
                 )
                 _postagem_promocao.append(postagem)
@@ -122,6 +122,32 @@ class PostagemPromocaoUseCases:
             )
 
         return _postagem
+
+    @staticmethod
+    async def get_postagem(db: AsyncSession, id_postagem: uuid.UUID):
+        postagem_promocao_manager = PostagemPromocaoManager(db)
+
+        try:
+            postagem = await postagem_promocao_manager.get_postagem_by_id(id_postagem)
+            if postagem is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Postagem não encontrada",
+                )
+            postagem.imagem = await postagem_promocao_manager.get_foto_postagem(
+                postagem.imagem
+            )
+            postagem.autor = await postagem_promocao_manager.get_nome_autor(
+                postagem.usuario_id
+            )
+            return postagem
+        except HTTPException as err:
+            raise err
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao consultar postagem: {e}",
+            )
 
 
 postagem_promocao_usecases = PostagemPromocaoUseCases()

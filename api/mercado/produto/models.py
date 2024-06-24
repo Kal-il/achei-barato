@@ -143,7 +143,6 @@ class ProdutoManager:
             query = select(Produto.id_produto_erp).where(Produto.promocao_id == promocao.id)
             id_produtos = await self.db.execute(query)
             id_produtos = id_produtos.scalars().all()
-            breakpoint()
 
         for produto_id in id_produtos:
             query = (

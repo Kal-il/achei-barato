@@ -17,6 +17,8 @@ const { width, height } = Dimensions.get("window"); //essa função retorna o ta
 export default function CriarPost() {
   const [titulo, setTitulo] = useState("");
   const [legenda, setLegenda] = useState("");
+  const [preco, setPreco] = useState("");
+  const [produto, setProduto] = useState("");
   const [imagem, setImagem] = useState(null);
   const api = new ApiClient();
 
@@ -44,7 +46,7 @@ export default function CriarPost() {
     let erros;
     const parametros = await api.getParametrosRequisicao({
       imagem: imagem,
-      formulario: { legenda: legenda, denuncia: true },
+      formulario: { titulo: titulo, legenda: legenda, preco: preco, produto: produto },
     });
 
     try {
@@ -58,6 +60,7 @@ export default function CriarPost() {
   const imageToParent = (childData) => {
     setImagem(childData);
   };
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -124,6 +127,29 @@ export default function CriarPost() {
               onChangeText={(text) => setLegenda(text)}
             />
           </View>
+          <View style={{justifyContent: "flex-start", width: "80%", marginBottom: 10}}>
+            <Text>Informações opcionais:</Text>
+          </View>
+          <View style={{flexDirection: "row", gap: 20}}>
+            <View style={styles.inputSmallView}>
+              <TextInput 
+              style={styles.inputText} 
+              placeholder="Nome do produto"
+              placeholderTextColor="#7E48CC"
+              value={produto}
+              onChangeText={(text) => setProduto(text)}
+              />
+            </View>
+            <View style={styles.inputSmallView}>
+              <TextInput 
+              style={styles.inputText} 
+              placeholder="Preço do produto"
+              placeholderTextColor="#7E48CC"
+              value={preco}
+              onChangeText={(text) => setPreco(text)}
+              />
+            </View>
+          </View>
           <View style={styles.imageInputView}>
             <ImageInput
               ButtonText={"Selecione a foto"}
@@ -186,6 +212,15 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: "90%",
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    height: "8%",
+    marginBottom: "5%",
+    justifyContent: "center",
+    padding: 20,
+  },
+  inputSmallView: {
+    width: "40%",
     backgroundColor: "#fff",
     borderRadius: 24,
     height: "8%",
