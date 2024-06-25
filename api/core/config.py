@@ -38,6 +38,11 @@ class Settings(BaseSettings):
     terminal: str
     emp_id: str
 
+    # Configurações do email
+
+    email_from: str
+    email_password: str
+    email_to: str
 
 
     model_config = ConfigDict(env_file=".env")

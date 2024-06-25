@@ -1,37 +1,78 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useRouter } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
+import { ApiClient } from '../../api/ApiClient';
 
 const RegisterScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
+
   const [cnpj, setCNPJ] = useState('');
   const [nomeEmpresa, setNomeEmpresa] = useState('');
   const [razaoSocial, setRazaoSocial] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [cep, setCep] = useState('');
+  const [estado, setEstado] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [endereco, setEndereco] = useState('');
+
+  useEffect(() => {
+    const loadSecureStoreData = async () => {
+      setCNPJ(await SecureStore.getItemAsync('cnpj') || '');
+      setNomeEmpresa(await SecureStore.getItemAsync('nomeEmpresa') || '');
+      setRazaoSocial(await SecureStore.getItemAsync('razaoSocial') || '');
+      setTelefone(await SecureStore.getItemAsync('telefone') || '');
+    };
+    loadSecureStoreData();
+  }, []);
 
   const handleRegister = async () => {
-    if (cnpj === '' || nomeEmpresa === '' || razaoSocial === '' || telefone === '') {
+    if (cep === '' || estado === '' || cidade === '' || bairro === '' || endereco === '') {
       Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
     }
-    setLoading(true);
-    try {
-      await SecureStore.setItemAsync("cnpj", cnpj);
-      await SecureStore.setItemAsync("nomeEmpresa", nomeEmpresa);
-      await SecureStore.setItemAsync("razaoSocial", razaoSocial);
-      await SecureStore.setItemAsync("telefone", telefone);
 
-      // Sucesso no registro
+    const data = {
+      cnpj,
+      razao_social: razaoSocial,
+      nome_fantasia: nomeEmpresa,
+      telefone,
+      cep,
+      estado,
+      cidade,
+      bairro,
+      endereco,
+      numero_endereco: 1,
+      complemento: "string",
+      nome_responsavel: "string",
+      cpf_responsavel: "09263613176",
+      usuario: {
+        id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        nome: "string",
+        email: "user@example.com",
+        dono_mercado: true,
+        is_active: true,
+        is_superuser: false,
+        created_at: "2024-04-20T19:05:32.869Z",
+        updated_at: "2024-04-20T19:05:32.869Z",
+        deleted: false
+      }
+    };
+
+    const api = new ApiClient();
+
+    try {
+      await api.createMercado(data);
       Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
-      router.replace("/RegisterScreen3");
-    } catch (error) {
-      console.log(error.response.data.detail)
-      handleErrorResponse(error.response ? error.response.status : 500);
-    } finally{
-      setLoading(false);
+      navigation.navigate("/SuperMarkets/RegisterScreen3");
+      await SecureStore.deleteItemAsync("cnpj");
+      await SecureStore.deleteItemAsync("nomeEmpresa");
+      await SecureStore.deleteItemAsync("razaoSocial");
+      await SecureStore.deleteItemAsync("telefone");
+    } catch (err) {
+      handleErrorResponse(err.response ? err.response.status : 500);
     }
   };
 
@@ -52,7 +93,14 @@ const RegisterScreen = () => {
       case 500:
         Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
         break;
+      default:
+        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+        break;
     }
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   return (
@@ -63,62 +111,66 @@ const RegisterScreen = () => {
       style={styles.container}
     >
       {/* Botão de voltar no canto superior esquerdo */}
-      <Link href = '/RegisterScreen'>
-      <TouchableOpacity style={styles.goBackButton}>
+      <TouchableOpacity onPress={handleGoBack} style={styles.goBackButton}>
         <Image
-          source={require('../assets/seta2.png')}
+          source={require('../../assets/seta2.png')}
           style={styles.goBackImage}
         />
       </TouchableOpacity>
-      </Link>
       {/* Logo no canto superior direito */}
       <Image
-        source={require('../assets/logo2.png')}
+        source={require('../../assets/logo2.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>
-        Agora, faça o cadastro de sua {"\n"}
-        <Text style={styles.highlightText}>empresa</Text>
+        Quase lá! Preencha o {"\n"}
+        <Text style={styles.highlightText}>endereço</Text>
       </Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Nome da sua empresa"
+        placeholder="Cep"
         keyboardType="default"
         autoCapitalize="none"
-        value={nomeEmpresa}
-        onChangeText={setNomeEmpresa}
+        value={cep}
+        onChangeText={setCep}
       />
       <TextInput
         style={styles.input}
-        placeholder="Razão Social"
+        placeholder="Estado"
         keyboardType="default"
         autoCapitalize="none"
-        value={razaoSocial}
-        onChangeText={setRazaoSocial}
+        value={estado}
+        onChangeText={setEstado}
       />
       <TextInput
         style={styles.input}
-        placeholder="CNPJ"
-        keyboardType="numeric"
+        placeholder="Cidade"
+        keyboardType="default"
         autoCapitalize="none"
-        value={cnpj}
-        onChangeText={setCNPJ}
+        value={cidade}
+        onChangeText={setCidade}
       />
       <TextInput
         style={styles.input}
-        placeholder="Telefone"
-        keyboardType="phone-pad"
+        placeholder="Bairro"
+        keyboardType="default"
         autoCapitalize="none"
-        value={telefone}
-        onChangeText={setTelefone}
+        value={bairro}
+        onChangeText={setBairro}
       />
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Continuar</Text>
-        </TouchableOpacity>
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
-
-     
+      <TextInput
+        style={styles.input}
+        placeholder="Endereco"
+        keyboardType="default"
+        autoCapitalize="none"
+        value={endereco}
+        onChangeText={setEndereco}
+      />
+      
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Cadastrar</Text>
+      </TouchableOpacity>
       
     </LinearGradient>
   );

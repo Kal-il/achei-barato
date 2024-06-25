@@ -1,21 +1,21 @@
-
 from email.policy import HTTP
 from typing import List, Union
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from mercado.mercado import schemas
+from mercado.promocao.schemas import ProdutoPromocaoErp
+from mercado.erp_requests import ErpRequest
+from mercado.mercado.models import MercadoManager
+from mercado.produto.models import ProdutoManager
+from mercado.promocao.models import ProdutosPromocaoErpManager
 from usuario.usuario.models import Usuario
+from .schemas import ProdutoBase
 
-from mercado.mercado.erp_requests import ErpRequest
-
-from mercado.mercado.managers import MercadoManager, ProdutosPromocaoErpManager, ProdutoManager
-from mercado.mercado.schemas import ProdutoPromocaoErp
 
 
 class ProdutoUseCases:
     async def sync_produtos(
-        self, db: AsyncSession, produtos: List[schemas.ProdutoBase], usuario: Usuario
+        self, db: AsyncSession, produtos: List[ProdutoBase], usuario: Usuario
     ):
         # Método que sincroniza base de produtos do ERP com banco no Redis
         _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
@@ -37,7 +37,7 @@ class ProdutoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
-        _produto = schemas.ProdutoBase(**_produto)
+        _produto = ProdutoBase(**_produto)
         return _produto
 
     async def get_produtos(self, db: AsyncSession, usuario: Usuario):
@@ -51,12 +51,17 @@ class ProdutoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
-        _produtos = [schemas.ProdutoBase(**_produto) for _produto in _produtos]
+        _produtos = [ProdutoBase(**_produto) for _produto in _produtos]
         return _produtos
 
     async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):
         try:
-            lista_produtos_promo = await ErpRequest.get_teste()
+          
+            mercado = await MercadoManager(db=db).get_mercado_by_usuario(usuario.id)
+
+            erp_requests = ErpRequest()
+            erp_requests.get_dados_conexao(db, mercado)
+            lista_produtos_promo = await erp_requests.run_test()
 
             if not lista_produtos_promo:
                 raise HTTPException(
@@ -85,7 +90,7 @@ class ProdutoUseCases:
                     id_produto_erp=str(produto_promo.get("proId")),
                     marca=produto_promo.get("fabricante"),
                 )
-                
+
                 produtos.append(produto_promocao)
 
             produto_manager = ProdutosPromocaoErpManager(db=db)
@@ -100,8 +105,10 @@ class ProdutoUseCases:
 
         except Exception as err:
             raise err
-        
-    async def cadastrar_produto(self, db: AsyncSession, produto: schemas.ProdutoBase, usuario: Usuario):    
+
+    async def cadastrar_produto(
+        self, db: AsyncSession, produto: ProdutoBase, usuario: Usuario
+    ):
         try:
             mercado_manager = MercadoManager(db=db)
             mercado = await mercado_manager.get_mercado_by_usuario(
@@ -123,3 +130,19 @@ class ProdutoUseCases:
             return response
         except Exception as err:
             raise err
+        
+    async def pesquisar_nome(self, db: AsyncSession, nome: str):
+        try:
+            produto_manager = ProdutoManager(db=db)
+            objetos = await produto_manager.get_produtos_or_mercado(nome)
+            if not objetos['mercados'] and not objetos['produtos']:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Produto não encontrado",
+                )
+            
+            return objetos
+        except Exception as err:
+            raise err
+
+use_cases_produtos = ProdutoUseCases()
