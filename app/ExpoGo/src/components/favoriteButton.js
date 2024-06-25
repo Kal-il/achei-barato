@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TouchableOpacity, Animated } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 
-export default function FavoriteButton() {
+export default function FavoriteButton({ tamanho }) {
     const [isFavorited, setIsFavorited] = useState(false);
     const scaleValue = new Animated.Value(0);
 
@@ -27,7 +27,7 @@ export default function FavoriteButton() {
                 inputRange: [0, 1],
                 outputRange: [1, 1.2]
             }) }] }}>
-                <MaterialIcons name={isFavorited ? "favorite" : "favorite-outline"} size={28} color={isFavorited ? '#FF5F5F' : '#FF5F5F'} />
+                <MaterialIcons name={isFavorited ? "favorite" : "favorite-outline"} size={tamanho ? tamanho : 28} color={isFavorited ? '#FF5F5F' : '#FF5F5F'} />
             </Animated.View>
         </TouchableOpacity>
     );

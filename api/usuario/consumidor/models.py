@@ -19,10 +19,12 @@ async def upload_foto_consumidor(foto: UploadFile):
         return store_name
 
 async def get_foto_consumidor(url_foto: str):
-    async with aiofiles.open(url_foto, "rb") as foto:
-        foto_consumidor = await foto.read()
-        foto_consumidor = base64.b64encode(foto_consumidor)
-        return foto_consumidor
+    if url_foto:
+        async with aiofiles.open(url_foto, "rb") as foto:
+            foto_consumidor = await foto.read()
+            foto_consumidor = base64.b64encode(foto_consumidor)
+            return foto_consumidor
+    return b""
 
 
 class Consumidor(Usuario):
