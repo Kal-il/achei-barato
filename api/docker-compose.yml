@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db_achei_barato
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+ 
+  api:
+    build: .
+    command: bash -c "uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+    environment:
+      DB_ENGINE: postgresql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: db_achei_barato
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      ASYNC_DB_ENGINE: postgresql
+      ASYNC_DB_HOST: db
+      ASYNC_DB_PORT: 5432
+      ASYNC_DB_NAME: db_achei_barato
+      ASYNC_DB_USER: postgres
+      ASYNC_DB_PASSWORD: postgres
+      REDIS_CACHE_URL: redis://localhost:6379
+      GOOGLE_CLIENT_ID: 765762436702-f7bkfd387j9iqb5bqv6ci2cs0gk8k97j.apps.googleusercontent.com
+      TERMINAL: d41d8cd98f00b204e9800998ecf8427e
+      EMP_ID: 1
+      URL_ERP: http://rds.maxdata.com.br:9000/
+    volumes:
+      - ./:/api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+ 
