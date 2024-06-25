@@ -5,6 +5,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import ImageInput from "../components/ImageInput";
 import { LinearGradient } from "expo-linear-gradient";
@@ -35,6 +36,12 @@ export default function CriarPost() {
       return false;
     }
 
+	if (preco && isNaN(preco)) {
+		console.log(preco)
+		setErroFormulario("O preço deve ser um número");
+		return false;
+	}
+
     return true;
   };
 
@@ -44,9 +51,10 @@ export default function CriarPost() {
     }
 
     let erros;
+	
     const parametros = await api.getParametrosRequisicao({
       imagem: imagem,
-      formulario: { titulo: titulo, legenda: legenda, preco: preco, produto: produto },
+      formulario: { titulo: titulo, legenda: legenda, preco: parseFloat(preco), produto: produto },
     });
 
     try {
@@ -78,7 +86,8 @@ export default function CriarPost() {
         }}
       ></LinearGradient>
 
-      <View style={styles.formContainer}>
+	  <ScrollView>
+<View style={styles.formContainer}>
         <View style={styles.titleAreaContainer}>
           <View style={styles.titleArea}>
             <Text style={styles.title}>Compartilhe uma {"\n"}promoção</Text>
@@ -145,6 +154,7 @@ export default function CriarPost() {
               style={styles.inputText} 
               placeholder="Preço do produto"
               placeholderTextColor="#7E48CC"
+			  keyboardType="numeric"
               value={preco}
               onChangeText={(text) => setPreco(text)}
               />
@@ -170,7 +180,9 @@ export default function CriarPost() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+
+	  </ScrollView>
+          </View>
   );
 }
 

@@ -54,7 +54,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchPosts = async () => {
       const api = new ApiClient();
-      let posts, erro, postsData;
+      let posts, erro;
 
       try {
         posts = await api.getTodosPosts();
@@ -79,13 +79,17 @@ export default function Dashboard() {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+		console.log(list)
+  }, [list])
+
   const renderItem = ({ item }) => {
     if (item.type === "post") {
       return (<PostCard
         postId={item.id}
         imagem={item.imagem}
-        titulo={item.legenda}
-        preco="10,00"
+        titulo={item.titulo}
+        preco={item.preco}
         autor={item.autor}
       />);
     }
@@ -162,9 +166,9 @@ export default function Dashboard() {
               />
             </ScrollView>
 
-            <Link href="/login">Login</Link>
+			{/* <Link href="/login">Login</Link> */}
             {/* <Link href="register-client/register-user-1">Cadastrar Consumidor</Link> */}
-            <Link href="/createPost">Criar Post</Link>
+			{/* <Link href="/createPost">Criar Post</Link> */}
 
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
