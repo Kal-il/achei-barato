@@ -15,11 +15,11 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import PromotionCard from "../../components/PromotionCard.js";
-import GradientBackground from "../../components/gradient.js";
-import { Authenticator } from "../../api/Authenticator.js";
-import PostCard from "../../components/PostCard.js";
-import { ApiClient } from "../../api/ApiClient.js";
+import PromotionCard from "../../../components/PromotionCard.js";
+import GradientBackground from "../../../components/gradient.js";
+import { Authenticator } from "../../../api/Authenticator.js";
+import PostCard from "../../../components/PostCard.js";
+import { ApiClient } from "../../../api/ApiClient.js";
 
 const windowDimensions = Dimensions.get("window");
 const windowWidth = windowDimensions.width;
@@ -158,15 +158,15 @@ export default function Dashboard() {
               horizontal={true}
             >
               <Image
-                source={require("../../assets/promodebatata.jpeg")}
+                source={require("../../../assets/promodebatata.jpeg")}
                 style={{ width: windowWidth, height: Height, flex: 1 }}
               />
               <Image
-                source={require("../../assets/promodebatata.jpeg")}
+                source={require("../../../assets/promodebatata.jpeg")}
                 style={{ width: windowWidth, height: Height }}
               />
               <Image
-                source={require("../../assets/logo.png")}
+                source={require("../../../assets/logo.png")}
                 style={{ width: windowWidth, height: Height }}
               />
             </ScrollView>

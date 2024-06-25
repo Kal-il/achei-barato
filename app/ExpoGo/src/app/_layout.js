@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slot, useRouter } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
+import { Slot, useRouter, Stack } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
 import { SessionProvider, useSession } from '../contexts/ctx'; // Importe o hook useSession
 
 export default function Root() {
@@ -106,7 +106,7 @@ export default function Root() {
         }}
       />
       <Stack.Screen
-        name="ProductsAndPromotions"
+        name="(user-app)/ProductsAndPromotions"
         options={{
           title: "Produtos",
           headerTransparent: true,
