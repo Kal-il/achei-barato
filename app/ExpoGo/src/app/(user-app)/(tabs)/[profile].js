@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, Button} from "react-native";
 import { Link } from "expo-router";
-import ImagesPicker from "../../components/ImagesPicker.js";
-import ProfileScreenButton  from "../../components/ProfileSreenButton.js";
-import { ApiClient } from "../../api/ApiClient.js";
+import ImagesPicker from "../../../components/ImagesPicker.js";
+import ProfileScreenButton  from "../../../components/ProfileSreenButton.js";
+import { ApiClient } from "../../../api/ApiClient.js";
 import { useEffect, useState } from "react";
 
 const { width, height } = Dimensions.get('window');
@@ -40,7 +40,7 @@ export default function Perfil() {
      <View style={styles.ProfileImage}>
 		  { loading && <ImagesPicker 
           imageSize={0.16}
-          ImageHolder={require('../../assets/profile.png')}
+          ImageHolder={require('../../../assets/profile.png')}
           ImageBorderRadius={100}>
           </ImagesPicker>}
 	      {fotoPerfil && <ImagesPicker 

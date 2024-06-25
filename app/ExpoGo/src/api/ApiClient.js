@@ -20,6 +20,12 @@ export class ApiClient {
 		return await this._authenticator.authenticateUser(formData);
 	}
 
+	async logoutUser () {
+		// Função que chama endpoint para deslogar o usuário do sistema
+		console.log("chegou aqui - deslogando usuário")
+		return await this._authenticator.cleanUserState();
+	}
+
 	async createUser (formData) {
 		return await this._authenticator.createAndAuthenticateUser(formData);
 	}
@@ -29,6 +35,7 @@ export class ApiClient {
 	}
 
 	async createCostumer (formData) {
+		console.log("chegou aqui - criando consumidor")
 		return await this._authenticator.createCostumer(formData);
 	}
 
@@ -44,6 +51,7 @@ export class ApiClient {
 		// Função genérica que faz um chamado à API
         const url = `${this._apiBaseUrl}${path}`;
         let token = this._authenticator.fetchAccessToken();
+		console.log("token:::; " + token);
         
 		try {
 			var response = await this._callApiWithToken(url, method, data, params, token, multipart);

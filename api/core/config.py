@@ -36,7 +36,7 @@ class Settings(BaseSettings):
 
     url_erp: str
     terminal: str
-    emp_id: int
+    emp_id: str
 
     # Configurações do email
 

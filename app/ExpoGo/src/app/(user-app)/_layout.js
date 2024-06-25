@@ -1,27 +1,54 @@
-import { Stack } from 'expo-router';
-import GradientBackground from '../../components/gradient';
+import { Stack, Redirect, useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSession } from '../../contexts/ctx';
+import { Text } from 'react-native';
+import SignIn from '../sign-in';
+import { ApiClient } from '../../api/ApiClient';
 
+export default function AppLayout() {
+  const { session, isLoading } = useSession();
+  const router = useRouter();
+  // const {erro, setErro} = useState("");
 
-export default function StackLayout() {
-    return (<Stack screenOptions={{
-        headerTintColor: '#fff', //  isso define a cor do botão de voltar e do título para branco
-        headerShadowVisible: false,
-      }}>
-        <Stack.Screen name = "RegisterScreen"  options={{headerTransparent: true, title: ""}} />
+  // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
+  if (isLoading) {
+    console.log("Carregando...");
+  }
 
-        <Stack.Screen name = "RegisterScreen2" options={{ headerTransparent: true, title: "" }} />
+  // Se o usuário não estiver autenticado, redirecione-o para a página de login
+  useEffect(() => {
+    const asyncChecaUsuario = async () => {
+      const api = new ApiClient();
+      let usuario, erro;
+      try {
+        usuario = await api.getUserDetail();
+      } catch (e) {
+        console.log("erro at: " + e);
+        erro = e.response.data.detail;
+      }
 
-        <Stack.Screen name = "RegisterScreen3" options={{ headerTransparent: true, title: "" }} />
+      console.log("usuario:" + usuario);
 
-        <Stack screenOptions={{
-      headerTintColor: '#fff', //  isso define a cor do botão de voltar e do título para branco
+      if (erro) {
+        console.log('replacing')
+        router.replace("/sign-in")
+      }
+    }
+
+    asyncChecaUsuario();
+  }, []);
+
+  // if (erro.current) {
+  //   console.log('redirecionando')
+  //   return <Redirect href="/sign-in" />;
+  // }
+
+  return (
+    <Stack screenOptions={{
+      headerTintColor: '#fff', // isso define a cor do botão de voltar e do título para branco
       headerShadowVisible: false,
     }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="register-client" options={{ headerShown: false }} />
-      <Stack.Screen name="SuperMarkets" options={{headerShown: false}} />
-      <Stack.Screen name="login" options={{headerShown: false}} />
-
       <Stack.Screen name="promotion" options={{
         title: "promoção",
         headerBackground: () => (
@@ -37,7 +64,7 @@ export default function StackLayout() {
       <Stack.Screen name="store-profile" options={{
         title: "perfil do mercado",
         headerTransparent: true,
-      }} />    
+      }}/>    
       <Stack.Screen
         name="edit-location"
         options={{
@@ -101,5 +128,5 @@ export default function StackLayout() {
           headerTransparent: true,
         }} />
     </Stack>
-      </Stack>)
+  );
 }

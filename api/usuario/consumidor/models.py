@@ -61,6 +61,7 @@ class ConsumidorManager:
             complemento=data.complemento,
             numero_endereco=data.numero_endereco,
             telefone=data.telefone,
+            url_foto="",
         )
 
         self.db.add(_consumidor)

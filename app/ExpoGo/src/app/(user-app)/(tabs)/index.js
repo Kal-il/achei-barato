@@ -11,12 +11,15 @@ import {
   Platform,
   KeyboardAvoidingView,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import { Link } from "expo-router";
 import { Feather, FontAwesome } from '@expo/vector-icons';
-import PromotionCard from "../../components/PromotionCard.js";
-import GradientBackground from "../../components/gradient.js";
-import { Authenticator } from "../../api/Authenticator.js";
+import PromotionCard from "../../../components/PromotionCard.js";
+import GradientBackground from "../../../components/gradient.js";
+import { ApiClient } from "../../../api/ApiClient.js";
+import { Ionicons } from '@expo/vector-icons'; // Importe isso se você estiver usando expo, ou use a biblioteca de ícones correspondente
+
 
 const windowDimensions = Dimensions.get('window');
 const windowWidth = windowDimensions.width;
@@ -25,15 +28,19 @@ const Height = '100%';
 
 export default function Dashboard() {
 
-  const auth = new Authenticator();
-  if (!auth.validateToken()) {
-    // Lógica para redirecionar para tela de login
+  const api = new ApiClient();
+
+  const func = async () => {
+    const consumidor = await api.getConsumidorData();
+
+  console.log(consumidor);
   }
+
 
   const [data, setData] = useState([
     {
-      imageSource: require('../../assets/apple.png'),
-      MarketImageProfile: require('../../assets/supermercado.png'),
+      imageSource: require('../../../assets/apple.png'),
+      MarketImageProfile: require('../../../assets/supermercado.png'),
       MarketName: "Supermercado Central",
       OldPrice: "R$ 15,99",
       Price: "R$ 10,49",
@@ -87,6 +94,13 @@ export default function Dashboard() {
         </GradientBackground>
       </View>
 
+      <TouchableOpacity 
+      style={styles.floatingButton}
+      onPress={func}
+    >
+      <Ionicons name="add" size={30} color="#FFF" />
+    </TouchableOpacity>
+
 
       <FlatList
         data={data}
@@ -96,13 +110,10 @@ export default function Dashboard() {
           <ScrollView style={{ zIndex: 0 }}>
 
             <ScrollView style={[styles.Scrolpromocoes, { height: 180 }]} horizontal={true}>
-              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
-              <Image source={require('../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
-              <Image source={require('../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
+              <Image source={require('../../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height, flex: 1 }} />
+              <Image source={require('../../../assets/promodebatata.jpeg')} style={{ width: windowWidth, height: Height }} />
+              <Image source={require('../../../assets/logo.png')} style={{ width: windowWidth, height: Height }} />
             </ScrollView>
-
-            <Link href="/login">Login</Link>
-            <Link href="register-client/register-user-1">Cadastrar Consumidor</Link>
 
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
@@ -126,6 +137,17 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  floatingButton: {
+    aspectRatio: 1,
+    width: width * 0.15,  
+    borderRadius: 30,            
+    backgroundColor: '#ee6e73',                                    
+    position: 'absolute',                                          
+    bottom: 10,                                                    
+    right: 10, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
   },
   header: {
     height: '11%',

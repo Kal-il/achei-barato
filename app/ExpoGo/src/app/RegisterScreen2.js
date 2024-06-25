@@ -1,46 +1,37 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useNavigation } from "expo-router";
-import { ApiClient } from "../../api/ApiClient.js";
+import { Link, useRouter } from "expo-router";
+import * as SecureStore from 'expo-secure-store';
 
 const RegisterScreen = () => {
-  const navigation = useNavigation();
-
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+  const [cnpj, setCNPJ] = useState('');
+  const [nomeEmpresa, setNomeEmpresa] = useState('');
+  const [razaoSocial, setRazaoSocial] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (username === '' || email === '' || password === '' || confirmPassword === '') {
+    if (cnpj === '' || nomeEmpresa === '' || razaoSocial === '' || telefone === '') {
       Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
     }
-
-    if (password !== confirmPassword) {
-      Alert.alert("Erro", "As senhas não coincidem.");
-      return;
-    }
-
-    const api = new ApiClient();
-
-    const data = {
-      nome: username,
-      email: email,
-      password: password
-    };
-
+    setLoading(true);
     try {
-      const response = await api.createUser(data);
+      await SecureStore.setItemAsync("cnpj", cnpj);
+      await SecureStore.setItemAsync("nomeEmpresa", nomeEmpresa);
+      await SecureStore.setItemAsync("razaoSocial", razaoSocial);
+      await SecureStore.setItemAsync("telefone", telefone);
 
-      if (response.status === 201) {
-        navigation.navigate("/SuperMarkets/RegisterScreen2");
-      } else {
-        handleErrorResponse(response.status);
-      }
+      // Sucesso no registro
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+      router.replace("/RegisterScreen3");
     } catch (error) {
+      console.log(error.response.data.detail)
       handleErrorResponse(error.response ? error.response.status : 500);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -61,14 +52,7 @@ const RegisterScreen = () => {
       case 500:
         Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
         break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
     }
-  };
-
-  const handleGoBack = () => {
-    navigation.goBack();
   };
 
   return (
@@ -78,46 +62,64 @@ const RegisterScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
+      {/* Botão de voltar no canto superior esquerdo */}
+      <Link href = '/RegisterScreen'>
+      <TouchableOpacity style={styles.goBackButton}>
+        <Image
+          source={require('../assets/seta2.png')}
+          style={styles.goBackImage}
+        />
+      </TouchableOpacity>
+      </Link>
+      {/* Logo no canto superior direito */}
       <Image
-        source={require('../../assets/logo2.png')}
+        source={require('../assets/logo2.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>
-        Primeiro, seu cadastro {"\n"}
-        <Text style={styles.highlightText}>pessoal</Text>
+        Agora, faça o cadastro de sua {"\n"}
+        <Text style={styles.highlightText}>empresa</Text>
       </Text>
+
       <TextInput
         style={styles.input}
-        placeholder="Seu nome"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Seu e-mail"
+        placeholder="Nome da sua empresa"
+        keyboardType="default"
         autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
+        value={nomeEmpresa}
+        onChangeText={setNomeEmpresa}
       />
       <TextInput
         style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        placeholder="Razão Social"
+        keyboardType="default"
+        autoCapitalize="none"
+        value={razaoSocial}
+        onChangeText={setRazaoSocial}
       />
       <TextInput
         style={styles.input}
-        placeholder="Confirme a senha"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
+        placeholder="CNPJ"
+        keyboardType="numeric"
+        autoCapitalize="none"
+        value={cnpj}
+        onChangeText={setCNPJ}
       />
-      <Link href="/SuperMarkets/RegisterScreen2" asChild>
+      <TextInput
+        style={styles.input}
+        placeholder="Telefone"
+        keyboardType="phone-pad"
+        autoCapitalize="none"
+        value={telefone}
+        onChangeText={setTelefone}
+      />
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Continuar</Text>
         </TouchableOpacity>
-      </Link>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
+     
+      
     </LinearGradient>
   );
 };
@@ -131,7 +133,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#5A6BA9',
     width: '100%',
     height: '100%',
   },
