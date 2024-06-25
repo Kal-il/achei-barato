@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Button } from 'react-native';
+import { View, Button, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
 import { Authenticator } from '../api/Authenticator';
+import {useRouter} from "expo-router";
+
+const router = useRouter();
+
+const {width, height} = Dimensions.get('window');
 
 export const GoogleManager = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -30,6 +35,7 @@ export const GoogleManager = () => {
     try {
       await GoogleSignin.hasPlayServices();
       userInfoGoogle = await GoogleSignin.signIn();
+      router.replace("/");
     
     } catch (error) {
 
@@ -63,14 +69,12 @@ export const GoogleSignInScreen = () => {
 
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{justifyContent: 'center', alignItems: 'center' }}>
       <View style={{ alignItems: 'center' }}>
-        <GoogleSigninButton
-          style={{ width: 192, height: 48 }}
-          size={GoogleSigninButton.Size.Wide}
-          color={GoogleSigninButton.Color.Dark}
-          onPress={signIn}
-        />
+
+        <TouchableOpacity onPress={signIn}>
+        <Image source={require('../assets/google.png')} style={{ width: width*0.1, height: height*0.05, aspectRatio: 1 }} />
+        </TouchableOpacity>
       </View>
     </View>
 

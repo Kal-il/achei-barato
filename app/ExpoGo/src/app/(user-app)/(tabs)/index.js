@@ -27,15 +27,20 @@ const { height, width } = Dimensions.get("window");
 const Height = "100%";
 
 export default function Dashboard() {
-  const auth = new Authenticator();
-  if (!auth.validateToken()) {
-    // Lógica para redirecionar para tela de login
+
+  const api = new ApiClient();
+
+  const func = async () => {
+    const consumidor = await api.getConsumidorData();
+
+  console.log(consumidor);
   }
+
 
   const [data, setData] = useState([
     {
-      imageSource: require("../../assets/apple.png"),
-      MarketImageProfile: require("../../assets/supermercado.png"),
+      imageSource: require('../../../assets/apple.png'),
+      MarketImageProfile: require('../../../assets/supermercado.png'),
       MarketName: "Supermercado Central",
       OldPrice: "R$ 15,99",
       Price: "R$ 10,49",
@@ -191,6 +196,17 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  floatingButton: {
+    aspectRatio: 1,
+    width: width * 0.15,  
+    borderRadius: 30,            
+    backgroundColor: '#ee6e73',                                    
+    position: 'absolute',                                          
+    bottom: 10,                                                    
+    right: 10, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
   },
   header: {
     height: "11%",

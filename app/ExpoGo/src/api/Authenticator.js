@@ -12,9 +12,11 @@ export class Authenticator {
     }
 	
 	fetchAccessToken() {
-		return SecureStore.getItem('access-token');
+		token = SecureStore.getItem('access-token');
+		console.log(token)
+		return token
 	}
-
+ 
 	fetchRefreshToken() {
 		return SecureStore.getItem('refresh-token');
 	}
@@ -92,6 +94,7 @@ export class Authenticator {
 		// Função que chama endpoint de Login
         path = `api/v1/usuario/auth/login`;
         url = `${this._apiBaseUrl}${path}`;
+		let returnToken;
 
 		// OBS.: lembrar de utilizar o 'await' antes de chamar funções assíncronas, como
 		// as do axios, para garantir o funcionamento correto das chamadas à API.
@@ -101,11 +104,14 @@ export class Authenticator {
             if (response.data.access_token) {
 				this._setAccessToken(response.data.access_token);
 				this._setRefreshToken(response.data.refresh_token);
+				returnToken = response.data.access_token;
             }
         })
         .catch(function (error) {
-            console.error("erro ao logar usuário:", error)
+            console.error("erro ao logar usuário:", error);
+			throw error;
         });
+		return returnToken;
 	}
 
 	async googleAuthenticateUser(userData) {

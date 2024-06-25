@@ -10,17 +10,17 @@ import { StyleSheet,
   Platform,
   Dimensions } from 'react-native';
 import { Link } from 'expo-router';
-import GradientBackground from '../../components/gradient.js';
-import ProductCategory from '../../components/ProductCategory.js';
+import GradientBackground from '../../../components/gradient.js';
+import ProductCategory from '../../../components/ProductCategory.js';
 
 const { width, height } = Dimensions.get('window'); //essa função retorna o tamanho da tela do dispositivo
 
 export default function Dashboard() {
   const [data] = useState([
-    { Name: 'Alimentos', Image: require('../../assets/food.png'), id: '1' },
-    { Name: 'Higiene', Image: require('../../assets/personClean.png'), id: '2' },
-    { Name: 'Limpeza', Image: require('../../assets/clean.png'), id: '3' },
-    { Name: 'Pet', Image: require('../../assets/pet.png'), id: '4' },
+    { Name: 'Alimentos', Image: require('../../../assets/food.png'), id: '1' },
+    { Name: 'Higiene', Image: require('../../../assets/personClean.png'), id: '2' },
+    { Name: 'Limpeza', Image: require('../../../assets/clean.png'), id: '3' },
+    { Name: 'Pet', Image: require('../../../assets/pet.png'), id: '4' },
   ]);
 
   const renderCategory = ({ item }) => (

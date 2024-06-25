@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,43 +6,56 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Button,
+  Alert,
   ActivityIndicator,
-  Alert
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter, Link, Redirect } from 'expo-router'; // Importa o useRouter
+import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
+
+const { height, width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useSession();
+  const router = useRouter();
+  const [erro, setErro] = useState("");
+
+  const handleRedirect = async () => {
+    router.replace("/register-user-1")
+  }
 
   const handleLogin = async () => {
+    console.log("handleLogin chamado"); // Log para depuração
     if (!username || !password) {
       Alert.alert("Erro", "Usuário ou senha inválidos");
       return;
     }
 
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('password', password);
-
-    const api = new ApiClient();
+    setLoading(true);
     try {
-      const response = await api.loginUser(formData);
-
-      if (response.status === 200) {
-        const data = await response.json();
-        await AsyncStorage.setItem("access-token", data["access"]);
-      } else {
-        handleErrorResponse(response.status);
-      }
+      await signIn(username, password);
+      console.log("funciona carai"); 
     } catch (error) {
-      Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
+      setErro(error)
+      Alert.alert("otário: " + error.message);
+    } finally {
+      setLoading(false);
     }
+
+    if (!erro) {
+      console.log('tentando redirecionar')
+      router.replace("/")
+    }
+
   };
+
 
   const handleErrorResponse = (status) => {
     switch (status) {
@@ -75,7 +88,7 @@ export default function Dashboard() {
       style={styles.container}
     >
       <View style={styles.innerContainer}>
-        <Image source={require('../assets/logo.png')} />
+        <Image source={require('../assets/logo.png')} style = {styles.image} />
         <Text style={styles.logo}>
           <Text style={{ color: "#FF5C00" }}>Achei</Text>
           {' '}
@@ -110,46 +123,22 @@ export default function Dashboard() {
           <Text style={styles.loginText}>Fazer Login</Text>
         </TouchableOpacity>
 
-        <Text style={styles.loginText}>Ou</Text>
+        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
+        <View style={styles.lineContainer}>
+          <View style={styles.line} />
+          <Text style={styles.loginText}>Ou</Text>
+          <View style={styles.line} />
+        </View>
 
         <GoogleSignInScreen style={{ margin: 2 }} />
 
-        <TouchableOpacity>
+        <View style={styles.separator} />
+        
+        <TouchableOpacity onPress={handleRedirect}>
           <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
         </TouchableOpacity>
       </View>
-    </LinearGradient>
-  );
-}
-
-const TesteScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  const fetchUsername = async () => {
-    const api = new ApiClient();
-    const usuario = await api.getUserDetail("api/v1/usuario/usuario/eu");
-    setUsername(usuario["nome"]);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchUsername();
-  }, []);
-
-  if (loading) {
-    return (
-      <View>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Button title="teste" onPress={() => navigation.navigate('HomeScreen')} />
-      </View>
-    );
-  }
-
-  return (
-    <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
-      <Text> {username} </Text>
-      <Button title="teste" onPress={() => navigation.navigate('HomeScreen')} />
     </LinearGradient>
   );
 }
@@ -164,6 +153,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
+  image: {
+    width: width * 0.5,
+    height: height * 0.25,
+    marginBottom: '5%',
+  },
   logo: {
     fontWeight: "bold",
     fontSize: 50,
@@ -171,13 +165,21 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   inputView: {
-    width: '80%',
+    width: width * 0.8,
     backgroundColor: '#fff',
     borderRadius: 24,
-    height: '8%',
+    height: height * 0.07,
     marginBottom: '5%',
     justifyContent: 'center',
     padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
   },
   inputText: {
     height: 50,
@@ -185,6 +187,8 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: "white",
+    marginHorizontal: "3%",
+    fontWeight: "bold", 
   },
   button: {
     width: '40%',
@@ -203,5 +207,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
     elevation: 6,
+  },
+  lineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: '3%',
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "white",
+  },
+  separator: {
+    borderBottomColor: '#fff',
+    borderBottomWidth: 1,
+    width: width,
+    alignSelf: 'center',
+    marginTop: '3%',
+    marginBottom: '5%',
   },
 });

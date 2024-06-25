@@ -43,13 +43,12 @@ class ConsumidorUseCase:
                 detail=erros,
             )
 
-        try:
-            _consumidor = await consumidor_manager.create_consumidor(data)
-        except Exception as err:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro ao cadastrar consumidor: {err}",
-            )
+        _consumidor = await consumidor_manager.create_consumidor(data)
+        # except Exception as err:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #         detail=f"Erro ao cadastrar consumidor: {err}",
+        #     )
 
         return _consumidor
 
