@@ -5,6 +5,10 @@ import uuid
 from usuario.postagem_promocao.manager import PostagemPromocaoManager
 from usuario.postagem_promocao.schemas import PostagemPromocaoCreate
 from usuario.usuario.schemas import UsuarioAuth
+import smtplib
+from core.config import settings
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 class PostagemPromocaoUseCases:
@@ -100,10 +104,61 @@ class PostagemPromocaoUseCases:
         return _postagem
 
     @staticmethod
-    async def denunciar_postagem_promocao(
-        db: AsyncSession, id_postagem: uuid.UUID, background_tasks: BackgroundTasks
-    ):
+    def enviar_email_denuncia(id_postagem: uuid.UUID):
+        try:
+            email_from = settings.email_from
+            email_to = settings.email_to  
+            email_password = str(settings.email_password)
+            
+            mensagem = MIMEMultipart()
+            mensagem['From'] = email_from
+            mensagem['To'] = email_to
+            mensagem['Subject'] = 'Denúncia de Postagem'
 
+            corpo_email = f'A postagem com ID {id_postagem} recebeu uma denúncia.'
+            mensagem.attach(MIMEText(corpo_email, 'plain'))
+
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(email_from, email_password)
+            server.send_message(mensagem)
+            server.quit()
+        except smtplib.SMTPAuthenticationError as auth_err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro de autenticação ao enviar email de denuncia: {auth_err.smtp_code}, {auth_err.smtp_error.decode('utf-8')}. Por favor, verifique suas credenciais e as configurações de segurança da conta Google.",
+            )
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao enviar email de denuncia: {err}",
+            )
+
+    @staticmethod
+    async def denunciar_postagem_promocao(db: AsyncSession, id_postagem: uuid.UUID, background_tasks: BackgroundTasks):
+        postagem_promocao_manager = PostagemPromocaoManager(db=db)
+
+        try:
+            _postagem = await postagem_promocao_manager.get_postagem_by_id(id_postagem)
+
+            if _postagem is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Postagem não encontrada",
+                )
+
+
+            background_tasks.add_task(PostagemPromocaoUseCases.enviar_email_denuncia, id_postagem)
+
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao denunciar postagem promocao: {err}",
+            )
+        
+    
+    @staticmethod
+    async def marcar_postagem_denuncia(db: AsyncSession, id_postagem:uuid.UUID):
         postagem_promocao_manager = PostagemPromocaoManager(db=db)
 
         try:
@@ -113,12 +168,13 @@ class PostagemPromocaoUseCases:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Postagem não encontrada",
                 )
-            # background_tasks.add_task(postagem_promocao_manager.denunciar_postagem_promocao, id_postagem)
 
+            await postagem_promocao_manager.marcar_denuncia_postagem(id_postagem)
+            
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro ao denunciar postagem promocao: {err}",
+                detail=f"Erro ao marcar denúncia na postagem: {err}",
             )
 
         return _postagem
@@ -148,6 +204,5 @@ class PostagemPromocaoUseCases:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao consultar postagem: {e}",
             )
-
 
 postagem_promocao_usecases = PostagemPromocaoUseCases()

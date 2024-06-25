@@ -72,4 +72,8 @@ async def denunciar_postagem(
     )
 
 
+@model_router.post("/marcar/denuncia/{id_postagem}", summary="Marcar denúncia na postagem pelo ID")
+async def denunciar_postagem(id_postagem: str, db: AsyncDBDependency):
+    return await postagem_promocao_usecases.marcar_postagem_denuncia(db, id_postagem)
+
 router.include_router(model_router)
