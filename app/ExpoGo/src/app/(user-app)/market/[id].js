@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     height: height * 0.05,
     width: "90%",
     backgroundColor: "#fff",
-    borderRadius: 1,
+    borderRadius: 8,
     elevation: 5,
     paddingHorizontal: "4%",
   },
