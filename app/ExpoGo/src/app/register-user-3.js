@@ -41,19 +41,12 @@ const CadastroScreen = ({ navigation }) => {
       console.log('try');
 
       nome = await SecureStore.getItemAsync("nome");
-
       email = await SecureStore.getItemAsync("email");
-     
       telefone = await SecureStore.getItemAsync("telefone");
-  
       cep = await SecureStore.getItemAsync("cep");
-     
       estado = await SecureStore.getItemAsync("estado");
-     
       cidade = await SecureStore.getItemAsync("cidade");
-
       bairro = await SecureStore.getItemAsync("bairro");
-     
       endereco = await SecureStore.getItemAsync("endereco");
 
     } catch (error) {

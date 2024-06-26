@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, List
+import uuid
 
 from fastapi import APIRouter, Depends
 
@@ -7,7 +8,7 @@ from core.database import AsyncDBDependency
 from core.security import get_current_active_user
 from usuario.usuario.models import Usuario
 from .use_cases import use_cases_produtos
-from .schemas import ProdutoBase
+from .schemas import ProdutoBase, ProdutoOutput, ProdutoPromocaoOutput
 router = APIRouter()
 
 MODEL_NAME = "produto"
@@ -16,6 +17,12 @@ model_router = APIRouter(
     prefix=f"/{MODEL_NAME}",
     tags=[f"{MODEL_NAME}"],
 )
+
+
+@model_router.get("/todos", summary="Retorna todos os produtos em promoção", response_model=List[ProdutoOutput])
+async def get_todos_produtos(db: AsyncDBDependency):
+    return await use_cases_produtos.get_todos_produtos(db)
+
 
 
 @model_router.post(
@@ -65,7 +72,7 @@ async def get_produtos(
 
 @model_router.get(
     "/{id_produto}",
-    summary="Obtém produto através do ID",
+    summary="Obtém produto através do ID dentro do ERP da empresa",
     response_model=ProdutoBase,
 )
 async def sync_produtos(
@@ -76,6 +83,10 @@ async def sync_produtos(
     return await use_cases_produtos.get_produto_by_id(
         db=db, id_produto=id_produto, usuario=usuario
     )
+
+@model_router.get("/uuid/{id_produto}", summary="Obtém produto pelo seu UUID", response_model=ProdutoOutput)
+async def get_produto_por_uuid(db: AsyncDBDependency, id_produto: uuid.UUID):
+    return await use_cases_produtos.get_produto_by_uuid(db, id_produto)
 
 
 @model_router.get(
@@ -92,6 +103,5 @@ async def pesquisar_nome_produto_mercado(
     usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency, nome:str
 ):
     return await use_cases_produtos.pesquisar_nome(db=db, nome=nome)
-
 
 router.include_router(model_router)

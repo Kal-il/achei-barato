@@ -1,5 +1,6 @@
 from email.policy import HTTP
 from typing import List, Union
+import uuid
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,7 +10,7 @@ from mercado.mercado.models import MercadoManager
 from mercado.produto.models import ProdutoManager
 from mercado.promocao.models import ProdutosPromocaoErpManager
 from usuario.usuario.models import Usuario
-from .schemas import ProdutoBase
+from .schemas import ProdutoBase, ProdutoOutput
 
 
 
@@ -38,6 +39,24 @@ class ProdutoUseCases:
             )
 
         _produto = ProdutoBase(**_produto)
+        return _produto
+
+    async def get_produto_by_uuid(
+        self, db: AsyncSession, id_produto: uuid.UUID
+    ):
+        # Método que obtém produto através de seu ID.
+        produto_manager = ProdutoManager(db=db)
+        _produto = await produto_manager.get_produto_by_uuid(id_produto)
+
+        mercado_manager = MercadoManager(db)
+        _mercado = await mercado_manager.get_mercado_by_id(_produto.mercado_id)
+
+        if not _produto:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
+            )
+
+        _produto = ProdutoOutput(**_produto.__dict__, nome_mercado=_produto.mercado.nome_fantasia)
         return _produto
 
     async def get_produtos(self, db: AsyncSession, usuario: Usuario):
@@ -144,5 +163,14 @@ class ProdutoUseCases:
             return objetos
         except Exception as err:
             raise err
+
+    async def get_todos_produtos(self, db: AsyncSession):
+        produto_manager = ProdutoManager(db)
+        mercado_manager = MercadoManager(db)
+        produtos = await produto_manager.get_todos_produtos()
+        for produto in produtos:
+            produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+
+        return [ProdutoOutput(**produto.__dict__) for produto in produtos] 
 
 use_cases_produtos = ProdutoUseCases()

@@ -190,3 +190,9 @@ class MercadoManager:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao restaurar mercado: {err}",
             )
+
+    async def get_mercado_nome(self, mercado_id: uuid.UUID) -> str:
+        query = select(Mercado.nome_fantasia).where(Mercado.id == mercado_id)
+        nome_mercado = await self.db.execute(query)
+        return nome_mercado.scalar()
+

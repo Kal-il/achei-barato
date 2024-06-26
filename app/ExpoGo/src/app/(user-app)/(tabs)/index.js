@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Link } from "expo-router";
 import { Feather, FontAwesome } from "@expo/vector-icons";
@@ -27,15 +28,8 @@ const { height, width } = Dimensions.get("window");
 const Height = "100%";
 
 export default function Dashboard() {
-
+  const [loading, setLoading] = useState(true);
   const api = new ApiClient();
-
-  const func = async () => {
-    const consumidor = await api.getConsumidorData();
-
-  console.log(consumidor);
-  }
-
 
   const [data, setData] = useState([
     {
@@ -58,26 +52,30 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const api = new ApiClient();
-      let posts, erro;
+      let posts, produtos, erro;
 
       try {
         posts = await api.getTodosPosts();
+        posts.forEach(post => {
+          post.imagem = `data:image/jpg;base64,${post.imagem}`
+        });
       } catch (e) {
-        console.log("erro");
         erro = e;
       }
 
-      posts.forEach(post => {
-        post.imagem = `data:image/jpg;base64,${post.imagem}`
-      });
+      try {
+        produtos = await api.getProdutosPromocao();
+      } catch (e) {
+        erro = e
+      }
 
       if (posts) {
         const lista = [
-            ...data.map((item) => ({ ...item, type: "promocao" })),
+            ...produtos.map((item) => ({ ...item, type: "promocao" })),
             ...posts.map((item) => ({ ...item, type: "post" })),
           ] 
         setList(lista);
+        setLoading(false);
       }
     };
 
@@ -85,7 +83,6 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-		console.log(list)
   }, [list])
 
   const renderItem = ({ item }) => {
@@ -101,17 +98,17 @@ export default function Dashboard() {
 
     if (item.type === "promocao") {
       return (<PromotionCard
-        MarketImageProfile={item.MarketImageProfile}
-        imageSource={item.imageSource}
-        MarketName={item.MarketName}
-        OldPrice={item.OldPrice}
-        Price={item.Price}
-        PromotionLink={item.PromotionLink}
-        PromotionName={item.PromotionName}
-        tag={item.tag}
-        CommentsNumber={item.CommentsNumber}
-        LikesNumber={item.LikesNumber}
-        MarketProfileLink={item.MarketProfileLink}
+        MarketImageProfile={require('../../../assets/supermercado.png')}
+        imageSource={require('../../../assets/apple.png')}
+        MarketName={item.nome_mercado}
+        OldPrice={item.preco}
+        Price={item.preco_promocional}
+        PromotionLink={item.id}
+        PromotionName={item.nome}
+        tag="Promoção"
+        CommentsNumber={15}
+        LikesNumber={15}
+        MarketProfileLink="/promotion"
       />);
     }
 
@@ -171,24 +168,15 @@ export default function Dashboard() {
               />
             </ScrollView>
 
-			{/* <Link href="/login">Login</Link> */}
-            {/* <Link href="register-client/register-user-1">Cadastrar Consumidor</Link> */}
-			{/* <Link href="/createPost">Criar Post</Link> */}
-
             <View style={styles.viewLocalizacao}>
               <Text style={styles.textLocalization}>Localização</Text>
             </View>
+
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
           </ScrollView>
         }
       />}
-      {/* <FlatList
-        data={posts}
-        renderItem={renderPost}
-        ListHeaderComponent={
-          <ScrollView>
-          </ScrollView>
-        }
-      /> */}
+
     </KeyboardAvoidingView>
   );
 }
