@@ -19,6 +19,7 @@ const PromotionCard = ({
   MarketImageProfile,
   MarketName,
   MarketProfileLink,
+  marketId,
   PromotionName,
   OldPrice,
   Price,
@@ -29,17 +30,18 @@ const PromotionCard = ({
   const formatPrice = ({ price }) => {
     price = String(price);
     if (price.indexOf(".") == -1) {
-      return price + ".00";
+      return price + ",00";
     }
-    return price;
+    return price.replace(".", ",");
   };
   return (
     <View style={styles.Card}>
       <View style={styles.UpperCard}>
         <Link
           href={{
-            pathname: "/promotion/[id]", 
-            params: { id: promotionId } }}
+            pathname: "/promotion/[id]",
+            params: { id: promotionId },
+          }}
           asChild
         >
           <TouchableOpacity>
@@ -48,15 +50,23 @@ const PromotionCard = ({
         </Link>
         <View style={styles.PromotionInfos}>
           <View style={styles.MarketInfos}>
-            <TouchableOpacity>
-              <Text>{MarketName}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={MarketImageProfile}
-                style={styles.marketProfile}
-              />
-            </TouchableOpacity>
+            <Link
+              href={{ 
+                pathname: "market/[id]", 
+                params: { id: marketId },
+              }}
+              asChild
+            >
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              >
+                <Text>{MarketName}</Text>
+                <Image
+                  source={MarketImageProfile}
+                  style={styles.marketProfile}
+                />
+              </TouchableOpacity>
+            </Link>
           </View>
           <Text style={styles.promotionName}>{PromotionName}</Text>
           <View style={styles.PricesAndTag}>
@@ -151,7 +161,8 @@ const styles = StyleSheet.create({
   },
   MarketInfos: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 10,
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   PricesAndTag: {

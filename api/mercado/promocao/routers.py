@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
-from mercado.produto.schemas import ProdutoBase
+from mercado.produto.schemas import ProdutoBase, ProdutoOutput
 from mercado.promocao import schemas
 from .use_cases import use_cases_promocoes
 from usuario.usuario.models import Usuario
@@ -83,13 +83,13 @@ async def deletar_promocao(
 @model_router.get(
     "/{id_mercado}/promocoes/",
     summary="Retorna todas as promoções de um mercado pelo seu ID",
-    response_model=List[schemas.PromocaoSchema],
+    response_model=List[ProdutoOutput],
 )
 async def promocoes_mercado_por_id(
     db: AsyncDBDependency,
     id_mercado: uuid.UUID,
 ):
-    return await use_cases_promocoes.get_promocoes_mercado(db, id_mercado)
+    return await use_cases_promocoes.get_produtos_promocoes_mercado(db, id_mercado)
 
 
 @model_router.get(

@@ -115,19 +115,19 @@ class MercadoCreate(MercadoSchema):
 
 
 class MercadoUpdate(BaseModel):
-    razao_social: Optional[str] = Field(..., description="Razão social")
-    nome_fantasia: Optional[str] = Field(..., description="Nome fantasia")
-    telefone: Optional[int] = Field(..., description="Telefone")
+    razao_social: Optional[str] = Field("", description="Razão social")
+    nome_fantasia: Optional[str] = Field("", description="Nome fantasia")
+    telefone: Optional[int] = Field(0, description="Telefone")
     descricao: Optional[str] = Field(
-        ..., max_length=500, description="Descrição do mercado"
+        "", max_length=500, description="Descrição do mercado"
     )
-    cep: Optional[str] = Field(..., max_length=9, description="CEP")
-    estado: Optional[str] = Field(..., max_length=255, description="Estado")
-    cidade: Optional[str] = Field(..., max_length=255, description="Cidade")
-    bairro: Optional[str] = Field(..., max_length=255, description="Bairro")
-    endereco: Optional[str] = Field(..., max_length=255, description="Endereço")
-    numero_endereco: Optional[int] = Field(..., description="Número")
-    complemento: Optional[str] = Field(..., max_length=255, description="Complemento")
+    cep: Optional[str] = Field("", max_length=9, description="CEP")
+    estado: Optional[str] = Field("", max_length=255, description="Estado")
+    cidade: Optional[str] = Field("", max_length=255, description="Cidade")
+    bairro: Optional[str] = Field("", max_length=255, description="Bairro")
+    endereco: Optional[str] = Field("", max_length=255, description="Endereço")
+    numero_endereco: Optional[int] = Field(0, description="Número")
+    complemento: Optional[str] = Field("", max_length=255, description="Complemento")
 
     def validar_campos(self):
         erros = {}

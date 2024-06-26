@@ -33,8 +33,8 @@ export default function Dashboard() {
 
   const [data, setData] = useState([
     {
-      imageSource: require('../../../assets/apple.png'),
-      MarketImageProfile: require('../../../assets/supermercado.png'),
+      imageSource: require("../../../assets/apple.png"),
+      MarketImageProfile: require("../../../assets/supermercado.png"),
       MarketName: "Supermercado Central",
       OldPrice: "R$ 15,99",
       Price: "R$ 10,49",
@@ -56,8 +56,8 @@ export default function Dashboard() {
 
       try {
         posts = await api.getTodosPosts();
-        posts.forEach(post => {
-          post.imagem = `data:image/jpg;base64,${post.imagem}`
+        posts.forEach((post) => {
+          post.imagem = `data:image/jpg;base64,${post.imagem}`;
         });
       } catch (e) {
         erro = e;
@@ -65,15 +65,16 @@ export default function Dashboard() {
 
       try {
         produtos = await api.getProdutosPromocao();
+        console.log(produtos);
       } catch (e) {
-        erro = e
+        erro = e;
       }
 
       if (posts) {
         const lista = [
-            ...produtos.map((item) => ({ ...item, type: "promocao" })),
-            ...posts.map((item) => ({ ...item, type: "post" })),
-          ] 
+          ...produtos.map((item) => ({ ...item, type: "promocao" })),
+          ...posts.map((item) => ({ ...item, type: "post" })),
+        ];
         setList(lista);
         setLoading(false);
       }
@@ -82,34 +83,38 @@ export default function Dashboard() {
     fetchPosts();
   }, []);
 
-  useEffect(() => {
-  }, [list])
+  useEffect(() => {}, [list]);
 
   const renderItem = ({ item }) => {
     if (item.type === "post") {
-      return (<PostCard
-        postId={item.id}
-        imagem={item.imagem}
-        titulo={item.titulo}
-        preco={item.preco}
-        autor={item.autor}
-      />);
+      return (
+        <PostCard
+          postId={item.id}
+          imagem={item.imagem}
+          titulo={item.titulo}
+          preco={item.preco}
+          autor={item.autor}
+        />
+      );
     }
 
     if (item.type === "promocao") {
-      return (<PromotionCard
-        MarketImageProfile={require('../../../assets/supermercado.png')}
-        imageSource={require('../../../assets/apple.png')}
-        MarketName={item.nome_mercado}
-        OldPrice={item.preco}
-        Price={item.preco_promocional}
-        promotionId={item.id}
-        PromotionName={item.nome}
-        tag="Promoção"
-        CommentsNumber={15}
-        LikesNumber={15}
-        MarketProfileLink="/"
-      />);
+      return (
+        <PromotionCard
+          MarketImageProfile={require("../../../assets/supermercado.png")}
+          imageSource={require("../../../assets/apple.png")}
+          MarketName={item.nome_mercado}
+          OldPrice={item.preco}
+          Price={item.preco_promocional}
+          promotionId={item.id}
+          PromotionName={item.nome}
+          tag="Promoção"
+          CommentsNumber={15}
+          marketId={item.mercado_id}
+          LikesNumber={15}
+          MarketProfileLink="/"
+        />
+      );
     }
 
     return null;
@@ -123,13 +128,9 @@ export default function Dashboard() {
       <View style={styles.header}>
         <GradientBackground>
           <View style={styles.innerHeader}>
-            <View style={styles.inputView}>
-              <TextInput
-                style={styles.inputText}
-                placeholder="Pesquise no achei barato"
-                placeholderTextColor="grey"
-              />
-            </View>
+            <Text style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
+              Achei Barato
+            </Text>
 
             <View style={styles.notification}>
               <Link href={"/notification"}>
@@ -145,38 +146,47 @@ export default function Dashboard() {
         </GradientBackground>
       </View>
 
-      {list && <FlatList
-        data={list}
-        renderItem={renderItem}
-        ListHeaderComponent={
-          <ScrollView style={{ zIndex: 0 }}>
-            <ScrollView
-              style={[styles.Scrolpromocoes, { height: 180 }]}
-              horizontal={true}
-            >
-              <Image
-                source={require("../../../assets/promodebatata.jpeg")}
-                style={{ width: windowWidth, height: Height, flex: 1 }}
-              />
-              <Image
-                source={require("../../../assets/promodebatata.jpeg")}
-                style={{ width: windowWidth, height: Height }}
-              />
-              <Image
-                source={require("../../../assets/logo.png")}
-                style={{ width: windowWidth, height: Height }}
-              />
+      {list && (
+        <FlatList
+          data={list}
+          renderItem={renderItem}
+          ListHeaderComponent={
+            <ScrollView style={{ zIndex: 0 }}>
+              <ScrollView
+                style={[styles.Scrolpromocoes, { height: 180 }]}
+                horizontal={true}
+              >
+                <Image
+                  source={require("../../../assets/promodebatata.jpeg")}
+                  style={{ width: windowWidth, height: Height, flex: 1 }}
+                />
+                <Image
+                  source={require("../../../assets/promodebatata.jpeg")}
+                  style={{ width: windowWidth, height: Height }}
+                />
+                <Image
+                  source={require("../../../assets/logo.png")}
+                  style={{ width: windowWidth, height: Height }}
+                />
+              </ScrollView>
+
+              <View style={styles.viewLocalizacao}>
+                <Text style={styles.textLocalization}>Localização</Text>
+              </View>
+
+              {loading && (
+                <View
+                  style={{
+                    marginTop: "40%",
+                  }}
+                >
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+              )}
             </ScrollView>
-
-            <View style={styles.viewLocalizacao}>
-              <Text style={styles.textLocalization}>Localização</Text>
-            </View>
-
-            {loading && <ActivityIndicator size="large" color="#0000ff" />}
-          </ScrollView>
-        }
-      />}
-
+          }
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -187,14 +197,14 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     aspectRatio: 1,
-    width: width * 0.15,  
-    borderRadius: 30,            
-    backgroundColor: '#ee6e73',                                    
-    position: 'absolute',                                          
-    bottom: 10,                                                    
-    right: 10, 
-    justifyContent: 'center', 
-    alignItems: 'center' 
+    width: width * 0.15,
+    borderRadius: 30,
+    backgroundColor: "#ee6e73",
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     height: "11%",

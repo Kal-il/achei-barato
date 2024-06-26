@@ -80,9 +80,9 @@ export default function PromotionPage({
   const formatPrice = ({ price }) => {
     price = String(price);
     if (price.indexOf(".") == -1) {
-      return "R$" + price + ".00";
+      return "R$" + price + ",00";
     }
-    return "R$" + price;
+    return "R$" + price.replace(".", ",");
   };
 
   const api = new ApiClient();
@@ -93,7 +93,6 @@ export default function PromotionPage({
   };
 
   useEffect(() => {
-    console.log(id);
     const fetchPromotionData = async () => {
       let produtoData, mercadoData, promocaoData;
       try {
@@ -234,7 +233,14 @@ export default function PromotionPage({
               </ScrollView>
             </View>
           )}
-          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+          {loading && 
+            <View style={{
+                marginTop: "40%",
+              }}
+            >
+              <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+          }
           {erro && (
             <View
               style={{

@@ -209,4 +209,20 @@ export class ApiClient {
 			method: "GET",
 		})
 	}
+
+  async getProdutosMercadosQuery(query) {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/pesquisar/nome/`,
+      method: "POST",
+      params: query,
+    })
+  }
+
+  async getPromocoesMercado(mercadoId) {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/${mercadoId}/promocoes`,
+      method: "GET",
+    })
+  }
+
 }

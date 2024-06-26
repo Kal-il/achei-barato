@@ -139,6 +139,14 @@ export default function AppLayout() {
       <Stack.Screen
         name="promotion/[id]"
         options={{
+          title: "Promoção",
+          headerTransparent: true,
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
+      <Stack.Screen
+        name="market/[id]"
+        options={{
           title: "",
           headerTransparent: true,
           headerBackground: () => <GradientBackground></GradientBackground>,
