@@ -53,7 +53,7 @@ class PromocaoUseCases:
 
             promocao = await promocao_manager.save_promocao(promocao, mercado_id)
             await produto_manager.update_produto_promocao(
-                produtos, promocao, mercado_id
+                id_produtos=produtos, promocao=promocao, mercado_id=mercado_id
             )
         except Exception as e:
             print(e)

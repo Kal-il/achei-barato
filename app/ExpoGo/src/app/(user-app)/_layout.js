@@ -128,6 +128,22 @@ export default function AppLayout() {
           headerTransparent: true,
         }}
       />
+      <Stack.Screen
+        name="post/[id]"
+        options={{
+          title: "",
+          headerTransparent: true,
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
+      <Stack.Screen
+        name="promotion/[id]"
+        options={{
+          title: "",
+          headerTransparent: true,
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
     </Stack>
   );
 }

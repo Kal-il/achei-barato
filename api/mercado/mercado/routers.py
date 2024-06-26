@@ -23,6 +23,11 @@ model_router = APIRouter(
 async def get_mercado_by_nome(db: AsyncDBDependency, nome: str):
     return await use_cases_mercado.get_mercado_by_nome(db=db, nome=nome)
 
+@model_router.get(
+    "/{id_mercado}", summary="Pesquisar mercados por ID", response_model=schemas.MercadoSchema
+)
+async def get_mercado_by_nome(db: AsyncDBDependency, id_mercado: str):
+    return await use_cases_mercado.get_mercado_by_id(db=db, mercado_id=id_mercado)
 
 @model_router.post("/cadastrar", summary="Cadastrar mercado.")
 async def cadastrar_mercado(

@@ -103,12 +103,12 @@ export default function Dashboard() {
         MarketName={item.nome_mercado}
         OldPrice={item.preco}
         Price={item.preco_promocional}
-        PromotionLink={item.id}
+        promotionId={item.id}
         PromotionName={item.nome}
         tag="Promoção"
         CommentsNumber={15}
         LikesNumber={15}
-        MarketProfileLink="/promotion"
+        MarketProfileLink="/"
       />);
     }
 

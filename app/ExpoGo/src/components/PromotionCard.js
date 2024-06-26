@@ -36,20 +36,25 @@ const PromotionCard = ({
   return (
     <View style={styles.Card}>
       <View style={styles.UpperCard}>
-        <Link href={{
-                pathname: "/test/[id]",
-                params: { id: promotionId },
-              }} asChild>
+        <Link
+          href={{
+            pathname: "/promotion/[id]", 
+            params: { id: promotionId } }}
+          asChild
+        >
           <TouchableOpacity>
             <Image source={imageSource} style={styles.promotionImage} />
           </TouchableOpacity>
         </Link>
         <View style={styles.PromotionInfos}>
           <View style={styles.MarketInfos}>
-            <Link href={{
+            <Link
+              href={{
                 pathname: "/promotion/[id]",
                 params: { id: promotionId },
-              }} asChild>
+              }}
+              asChild
+            >
               <TouchableOpacity>
                 <Text>{MarketName}</Text>
               </TouchableOpacity>
@@ -86,10 +91,13 @@ const PromotionCard = ({
         </View>
       </View>
       <View style={styles.BottonCard}>
-        <Link href={{
-                pathname: "/promotion/[id]",
-                params: { id: promotionId },
-              }} asChild>
+        <Link
+          href={{
+            pathname: "/promotion/[id]",
+            params: { id: promotionId },
+          }}
+          asChild
+        >
           <TouchableOpacity>
             <View style={styles.button}>
               <MaterialIcons name="share" size={24} color="grey" />
@@ -99,10 +107,13 @@ const PromotionCard = ({
 
         <View style={styles.button}>
           <MaterialIcons name="expand-more" size={24} color="grey" />
-          <Link href={{
-                pathname: "/promotion/[id]",
-                params: { id: promotionId },
-              }} asChild>
+          <Link
+            href={{
+              pathname: "/promotion/[id]",
+              params: { id: promotionId },
+            }}
+            asChild
+          >
             <TouchableOpacity>
               <Text>Ver mais</Text>
             </TouchableOpacity>

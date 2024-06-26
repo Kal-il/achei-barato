@@ -1,4 +1,5 @@
 from typing import Union
+import uuid
 from fastapi import HTTPException, status, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -143,5 +144,9 @@ class MercadoUseCases:
         if _erros:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=_erros)
 
+    async def get_mercado_by_id(self, db: AsyncSession, mercado_id: uuid.UUID):
+        mercado_manager = MercadoManager(db)
+        mercado = await mercado_manager.get_mercado_by_id(mercado_id)
+        return schemas.MercadoSchema(**mercado.__dict__)
 
 use_cases_mercado = MercadoUseCases()
