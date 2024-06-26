@@ -198,7 +198,7 @@ export default function PromotionPage({
                       <Text style={{ ...styles.text, fontWeight: "bold" }}>
                         No mercado {produto.nome_mercado}
                       </Text>
-                      <Text style={{ ...styles.textMercado }}>
+                      <Text style={{ ...styles.textMercado, maxWidth: "90%", textAlign: "right" }}>
                         {mercado.endereco}, {mercado.bairro}, {mercado.cidade},{" "}
                         {mercado.estado}
                       </Text>

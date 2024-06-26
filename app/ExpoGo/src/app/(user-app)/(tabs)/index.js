@@ -112,7 +112,6 @@ export default function Dashboard() {
           CommentsNumber={15}
           marketId={item.mercado_id}
           LikesNumber={15}
-          MarketProfileLink="/"
         />
       );
     }

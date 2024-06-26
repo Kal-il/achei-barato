@@ -81,7 +81,7 @@ async def deletar_promocao(
 
 
 @model_router.get(
-    "/{id_mercado}/promocoes/",
+    "/promocoes/{id_mercado}",
     summary="Retorna todas as promoções de um mercado pelo seu ID",
     response_model=List[ProdutoOutput],
 )

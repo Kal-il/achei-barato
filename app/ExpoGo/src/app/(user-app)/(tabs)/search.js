@@ -58,7 +58,7 @@ export default function Dashboard() {
         tag="Promoção"
         CommentsNumber={15}
         LikesNumber={15}
-        MarketProfileLink="/"
+        marketId={item.mercado_id}
       />
     );
   };
@@ -183,20 +183,20 @@ export default function Dashboard() {
               <MaterialIcons name="arrow-back" size={18}></MaterialIcons>
               <Text style={{ fontSize: 18 }}>Voltar</Text>
             </TouchableOpacity>
-            <View style={{ alignSelf: "center" }}>
-              <FlatList
+              {resultado.produtos && (
+              <View>
+                <FlatList
+                  data={resultado.produtos}
+                  renderItem={renderProduto}
+                  keyExtractor={(item) => item.id}
+                />
+              </View>
+              )}
+              {resultado.mercados && <FlatList
                 data={resultado.mercados}
                 renderItem={renderMercado}
                 keyExtractor={(item) => item.id}
-              />
-            </View>
-            <View style={{ alignSelf: "center" }}>
-              <FlatList
-                data={resultado.produtos}
-                renderItem={renderProduto}
-                keyExtractor={(item) => item.id}
-              />
-            </View>
+              />}
           </View>
         )}
       </View>

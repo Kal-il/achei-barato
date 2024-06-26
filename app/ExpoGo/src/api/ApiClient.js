@@ -32,7 +32,7 @@ export class ApiClient {
         data: data,
         params: params,
         headers: headers,
-        timeout: 5000,
+        timeout: 10000,
       });
 
       return response.data;
@@ -220,7 +220,7 @@ export class ApiClient {
 
   async getPromocoesMercado(mercadoId) {
     return await this._callApi({
-      path: `api/v1/mercado/promocao/${mercadoId}/promocoes`,
+      path: `api/v1/mercado/promocao/promocoes/${mercadoId}`,
       method: "GET",
     })
   }

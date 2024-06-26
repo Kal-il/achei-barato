@@ -7,6 +7,8 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
+  FlatListComponent,
+  FlatList,
 } from "react-native";
 import ImagesPicker from "../../../components/ImagesPicker.js";
 import Button from "../../../components/Button.js";
@@ -14,6 +16,8 @@ import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { ApiClient } from "../../../api/ApiClient.js";
+import PromotionCard from "../../../components/PromotionCard.js";
+import { ScrollView } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,9 +32,27 @@ export default function Dashboard() {
   const { id } = useLocalSearchParams();
   const api = new ApiClient();
 
+  const renderPromocao = ({ item }) => {
+    return (
+      <PromotionCard
+        MarketImageProfile={require("../../../assets/supermercado.png")}
+        imageSource={require("../../../assets/apple.png")}
+        MarketName={item.nome_mercado}
+        OldPrice={item.preco}
+        Price={item.preco_promocional}
+        promotionId={item.id}
+        PromotionName={item.nome}
+        tag="Promoção"
+        CommentsNumber={15}
+        LikesNumber={15}
+        MarketProfileLink="/"
+      />
+    );
+  };
+
   useEffect(() => {
     const fetchMercadoData = async () => {
-      let mercadoData;
+      let mercadoData, promocoesData;
       try {
         mercadoData = await api.getMercadoPorUUID(id);
         promocoesData = await api.getPromocoesMercado(id);
@@ -48,6 +70,7 @@ export default function Dashboard() {
   return (
     <View style={styles.container}>
       <StatusBar translucent={true} barStyle="light-content" />
+      <ScrollView>
       <View style={styles.header}>
         <ImageBackground
           style={styles.backgroundImage}
@@ -80,13 +103,23 @@ export default function Dashboard() {
             <Ionicons name="search-outline" size={28} color={"grey"} />
             <TextInput
               style={styles.inputText}
-              placeholder="pesquisar"
+              placeholder="Pesquisar"
               placeholderTextColor="grey"
             />
           </View>
+          <ScrollView>
+            <View style={{ alignSelf: "center" }}>
+              <FlatList
+                data={promocoes}
+                renderItem={renderPromocao}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
+          </ScrollView>
           <View style={styles.line} />
         </View>
       )}
+      </ScrollView>
     </View>
   );
 }
@@ -134,15 +167,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: "2%",
+    marginBottom: 10,
     height: height * 0.05,
-    width: "50%",
+    width: "90%",
     backgroundColor: "#fff",
-    borderRadius: 16,
+    borderRadius: 1,
     elevation: 5,
     paddingHorizontal: "4%",
   },
   inputText: {
-    marginLeft: "10%", // para dar um espaço entre o ícone e o texto
+    marginLeft: 10, // para dar um espaço entre o ícone e o texto
     color: "grey",
     flex: 1,
   },

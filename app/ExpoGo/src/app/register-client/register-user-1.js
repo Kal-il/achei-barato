@@ -12,7 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link } from "expo-router";
 import * as SecureStore from 'expo-secure-store'
-import RegisterScreen from "../SuperMarkets/RegisterScreen/";
+import RegisterScreen from "../RegisterScreen";
 import GoogleSignInScreen from "../../components/GoogleSignIn";
 import { ApiClient } from "../../api/ApiClient";
 
