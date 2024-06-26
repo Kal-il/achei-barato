@@ -48,31 +48,15 @@ const PromotionCard = ({
         </Link>
         <View style={styles.PromotionInfos}>
           <View style={styles.MarketInfos}>
-            <Link
-              href={{
-                pathname: "/promotion/[id]",
-                params: { id: promotionId },
-              }}
-              asChild
-            >
-              <TouchableOpacity>
-                <Text>{MarketName}</Text>
-              </TouchableOpacity>
-            </Link>
-            <Link
-              href={{
-                pathname: "/promotion/[id]",
-                params: { id: promotionId },
-              }}
-              asChild
-            >
-              <TouchableOpacity>
-                <Image
-                  source={MarketImageProfile}
-                  style={styles.marketProfile}
-                />
-              </TouchableOpacity>
-            </Link>
+            <TouchableOpacity>
+              <Text>{MarketName}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                source={MarketImageProfile}
+                style={styles.marketProfile}
+              />
+            </TouchableOpacity>
           </View>
           <Text style={styles.promotionName}>{PromotionName}</Text>
           <View style={styles.PricesAndTag}>

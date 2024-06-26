@@ -152,8 +152,8 @@ class ProdutoManager:
                 .values(
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
-                    preco_promocional=(
-                        Produto.preco - (Produto.preco * promocao.percentual_desconto)
+                    preco_promocional=round((
+                        Produto.preco - (Produto.preco * promocao.percentual_desconto)), 2
                     ),
                 )
             )

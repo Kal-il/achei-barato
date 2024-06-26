@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import {
   GestureHandlerRootView,
@@ -19,6 +20,7 @@ import CommentCard from "../../../components/CommentCard.js";
 import MapView from "react-native-maps";
 import { ApiClient } from "../../../api/ApiClient.js";
 
+import { MaterialIcons } from "@expo/vector-icons";
 const { height, width } = Dimensions.get("window");
 
 export default function PromotionPage({
@@ -53,11 +55,27 @@ export default function PromotionPage({
     () => [height / 2.2, height / 2.2, height],
     [],
   );
-  console.log("teste");
   const { id } = useLocalSearchParams();
   const [produto, setProduto] = useState(null);
   const [promocao, setPromocao] = useState(null);
   const [mercado, setMercado] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
+
+  const meses = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
 
   const formatPrice = ({ price }) => {
     price = String(price);
@@ -69,44 +87,41 @@ export default function PromotionPage({
 
   const api = new ApiClient();
   const formatDate = ({ date }) => {
-		date = new Date(date * 1000);
-		console.log('data: ' + date);
-		return date;
-	}
+    date = new Date(date);
+    (dia = date.getDate().toString().padStart(2, "0")), (mes = date.getMonth()); //+1 pois no getMonth Janeiro começa com zero.
+    return dia + " de " + meses[mes];
+  };
 
   useEffect(() => {
     console.log(id);
     const fetchPromotionData = async () => {
-      let produtoData, mercadoData;
+      let produtoData, mercadoData, promocaoData;
       try {
         produtoData = await api.getProdutoPorUUID(id);
-        setProduto(produtoData);
 
         mercadoData = await api.getMercadoPorUUID(produtoData.mercado_id);
+        promocaoData = await api.getPromocaoPorUUID(produtoData.promocao_id);
+
+        promocaoData.percentual_desconto =
+          promocaoData.percentual_desconto * 100 + "%";
+
+        promocaoData.data_inicial = formatDate({
+          date: promocaoData.data_inicial,
+        });
+        promocaoData.data_final = formatDate({ date: promocaoData.data_final });
+
+        setProduto(produtoData);
         setMercado(mercadoData);
-
-
+        setPromocao(promocaoData);
+        setLoading(false);
       } catch (e) {
-        console.log(e)
+        setErro("Ocorreu um erro ao carregar a promoção.");
+        setLoading(false);
       }
     };
 
     fetchPromotionData();
   }, []);
-
-  useEffect(() => {
-	const fetchPromocaoData = async () => {
-		console.log('oisisog')
-		const promocaoData = await api.getPromocaoPorUUID(produtoData.promocao_id);
-        console.log(JSON.stringify(promocaoData));
-		setPromocao(promocaoData);
-		let dataInicio, dataFim;
-		dataInicio = new Date(promocaoData.data_inicial * 1000);
-		dataFim = new Date(promocaoData.data_final * 1000);
-	}
-	
-		fetchPromocaoData();
-	}, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -125,62 +140,120 @@ export default function PromotionPage({
           handleStyle={styles.handle}
           handleHeight={0}
         >
-          {produto && 
-          <View style={styles.container}>
-            <View style={{justifyContent: "center", paddingHorizontal: "5%"}}>
-              <Text style={styles.title}>{produto.nome}</Text>
-              <View style={styles.PricesAndTag}>
-                <View style={styles.Prices}>
-                  <Text style={styles.OldPrice}>{formatPrice({price: produto.preco})}</Text>
-                  <Text style={styles.Price}>{formatPrice({price: produto.preco_promocional})}</Text>
-                </View>
-                <Text style={styles.Tag}>{tag}</Text>
-              </View>
-              <View style={{margin: 15}}>
-                <Text style={styles.text}>{produto.descricao}</Text>
-              </View>
-            </View>
-            <View style={styles.location}>
-              <Text style={styles.text}>Rotas para {produto.nome_mercado}</Text>
-              <Link
-                href={
-                  "https://www.google.com/maps/place/UFT+-+Campus+Palmas/@-10.1784032,-48.3622366,17z/data=!3m1!4b1!4m6!3m5!1s0x9324cafd50dab483:0xf471612c2e3c89db!8m2!3d-10.1784085!4d-48.3596617!16s%2Fg%2F11b8_nrwwp?entry=ttu"
-                }
-                asChild
-              >
-                <TouchableOpacity>
-                  <View style={styles.locationMap}>
-                    <View>
-                      {/* <MapView style={styles.map}/>*/}
-                      <Image
-                        source={require("../../../assets/maps.jpg")}
-                        style={styles.map}
-                      />
+          {!loading && !erro && produto && (
+            <View style={styles.container}>
+              <View style={styles.titleContainer}>
+                <View style={styles.topInfoContainer}>
+                  <View style={{ width: "50%" }}>
+                    <Text style={styles.title}>{produto.nome}</Text>
+                    <Text style={styles.marca}>{produto.marca}</Text>
+                  </View>
+                  <View style={styles.PricesAndTag}>
+                    <View style={styles.Prices}>
+                      <View style={styles.oldPriceContainer}>
+                        <Text style={{ fontSize: 24 }}>De </Text>
+                        <Text style={styles.OldPrice}>
+                          {formatPrice({ price: produto.preco })}
+                        </Text>
+                      </View>
+                      <View style={styles.priceContainer}>
+                        <Text style={{ fontSize: 32 }}>Por </Text>
+                        <Text style={styles.Price}>
+                          {formatPrice({ price: produto.preco_promocional })}
+                        </Text>
+                      </View>
+                      {promocao && (
+                        <Text style={styles.Tag}>
+                          {promocao.percentual_desconto} de desconto!
+                        </Text>
+                      )}
                     </View>
                   </View>
-                </TouchableOpacity>
-              </Link>
+                </View>
+                <View style={{ paddingVertical: 20, width: "93%", gap: 5 }}>
+                  <View style={styles.descriptionRow}>
+                    <MaterialIcons
+                      name="info"
+                      size={26}
+                      style={{ marginTop: 3 }}
+                      color="#f0a356"
+                    ></MaterialIcons>
+                    <Text style={styles.text}>{produto.descricao}</Text>
+                  </View>
+                  {promocao && (
+                    <View style={styles.dateRow}>
+                      <MaterialIcons
+                        name="calendar-month"
+                        size={26}
+                        color="#f0a356"
+                      ></MaterialIcons>
+                      <Text style={styles.text}>
+                        Até o dia {promocao.data_inicial}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+                {mercado && (
+                  <View style={styles.infoMercado}>
+                    <View style={styles.dadosMercado}>
+                      <Text style={{ ...styles.text, fontWeight: "bold" }}>
+                        No mercado {produto.nome_mercado}
+                      </Text>
+                      <Text style={{ ...styles.textMercado }}>
+                        {mercado.endereco}, {mercado.bairro}, {mercado.cidade},{" "}
+                        {mercado.estado}
+                      </Text>
+                    </View>
+                    <TouchableOpacity>
+                      <Image
+                        source={MarketImageProfile}
+                        style={styles.perfilMercado}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+              <ScrollView style={styles.commentsArea}>
+                <Text style={styles.commentsTitle}>Comentários</Text>
+                <CommentCard
+                  commentAuthor={"String dos Santos"}
+                  commentDate={"05/05/24"}
+                  commentText={
+                    "As maçãs estavam ótimas, e pelo preço que paguei valeu muito a pena!"
+                  }
+                  commentAuthorImage={require("../../../assets/profile.png")}
+                />
+                <CommentCard
+                  commentAuthor={"String dos Santos"}
+                  commentDate={"05/05/24"}
+                  commentText={
+                    "As maçãs estavam ótimas, e pelo preço que paguei valeu muito a pena!"
+                  }
+                  commentAuthorImage={require("../../../assets/profile.png")}
+                />
+              </ScrollView>
             </View>
-            <ScrollView style={styles.commentsArea}>
-              <Text style={styles.commentsTitle}>Comentários</Text>
-              <CommentCard
-                commentAuthor={"String dos Santos"}
-                commentDate={"05/05/24"}
-                commentText={
-                  "As maçãs estavam ótimas, e pelo preço que paguei valeu muito a pena!"
-                }
-                commentAuthorImage={require("../../../assets/profile.png")}
-              />
-              <CommentCard
-                commentAuthor={"String dos Santos"}
-                commentDate={"05/05/24"}
-                commentText={
-                  "As maçãs estavam ótimas, e pelo preço que paguei valeu muito a pena!"
-                }
-                commentAuthorImage={require("../../../assets/profile.png")}
-              />
-            </ScrollView>
-          </View>}
+          )}
+          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+          {erro && (
+            <View
+              style={{
+                fontSize: 20,
+                paddingHorizontal: "10%",
+                marginTop: 80,
+                gap: 10,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <MaterialIcons
+                name="error"
+                size={52}
+                color="#878787"
+              ></MaterialIcons>
+              <Text style={{ fontSize: 20, textAlign: "center", color: "#878787" }}>{erro}</Text>
+            </View>
+          )}
         </BotomSheet>
       </View>
     </GestureHandlerRootView>
@@ -191,32 +264,79 @@ const styles = StyleSheet.create({
     flex: 1,
     // alignItems: 'center',
   },
+  infoMercado: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginTop: 5,
+    gap: 10,
+  },
+  perfilMercado: {
+    width: width * 0.15,
+    height: height * 0.07,
+    aspectRatio: 1,
+    borderWidth: 1,
+  },
+  dadosMercado: {
+    alignItems: "flex-end",
+  },
+  descriptionRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  dateRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  titleContainer: {
+    justifyContent: "center",
+    paddingHorizontal: "5%",
+    maxWidth: "100%",
+  },
+  marca: {
+    flexWrap: "wrap",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  oldPriceContainer: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    marginBottom: -12,
+  },
+  topInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  priceContainer: { flexDirection: "row", alignItems: "baseline" },
   PricesAndTag: {
     marginTop: 20,
     flexDirection: "row",
-    justifyContent: "space-evenly",
     alignItems: "center",
+    justifyContent: "space-between",
+    width: "50%",
   },
   Prices: {
     flexDirection: "column",
-    justifyContent: "center",
   },
   Tag: {
     fontSize: 16,
     color: "#FFF",
     fontWeight: "bold",
     backgroundColor: "#F67439",
-    borderRadius: 16,
-    padding: "2%",
+    borderRadius: 8,
+    textAlign: "center",
+    paddingHorizontal: 15,
+    paddingVertical: 3,
   },
   OldPrice: {
     fontSize: 24,
     color: "red",
     textDecorationLine: "line-through",
-    marginBottom: -12,
   },
   Price: {
-    fontSize: 38,
+    fontSize: 32,
     color: "green",
     fontWeight: "bold",
   },
@@ -224,14 +344,16 @@ const styles = StyleSheet.create({
     color: "#F57136",
     fontSize: 32,
     fontWeight: "bold",
-    alignSelf: "center",
-    borderBottomWidth: 2,
-    borderBottomColor: "#F67439",
+    alignSelf: "flex-start",
   },
   text: {
-    fontSize: 16,
+    fontSize: 20,
     color: "#38434D",
-    textAlign: "justify",
+    flexWrap: "wrap",
+  },
+  textMercado: {
+    fontSize: 18,
+    color: "#38434D",
     flexWrap: "wrap",
   },
   commentsTitle: {
@@ -269,6 +391,6 @@ const styles = StyleSheet.create({
   description: {
     width: "90%",
     justifyContent: "center",
-    backgroundColor: "red"
-  }
+    backgroundColor: "red",
+  },
 });
