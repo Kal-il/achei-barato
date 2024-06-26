@@ -67,11 +67,17 @@ export default function PromotionPage({
     return "R$" + price;
   };
 
+  const api = new ApiClient();
+  const formatDate = ({ date }) => {
+		date = new Date(date * 1000);
+		console.log('data: ' + date);
+		return date;
+	}
+
   useEffect(() => {
     console.log(id);
     const fetchPromotionData = async () => {
-      const api = new ApiClient();
-      let produtoData;
+      let produtoData, mercadoData;
       try {
         produtoData = await api.getProdutoPorUUID(id);
         setProduto(produtoData);
@@ -79,17 +85,28 @@ export default function PromotionPage({
         mercadoData = await api.getMercadoPorUUID(produtoData.mercado_id);
         setMercado(mercadoData);
 
-        console.log(JSON.stringify(produto));
-        console.log(JSON.stringify(mercado));
+
       } catch (e) {
         console.log(e)
       }
-
-
     };
 
     fetchPromotionData();
   }, []);
+
+  useEffect(() => {
+	const fetchPromocaoData = async () => {
+		console.log('oisisog')
+		const promocaoData = await api.getPromocaoPorUUID(produtoData.promocao_id);
+        console.log(JSON.stringify(promocaoData));
+		setPromocao(promocaoData);
+		let dataInicio, dataFim;
+		dataInicio = new Date(promocaoData.data_inicial * 1000);
+		dataFim = new Date(promocaoData.data_final * 1000);
+	}
+	
+		fetchPromocaoData();
+	}, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

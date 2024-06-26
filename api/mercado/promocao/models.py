@@ -72,10 +72,10 @@ class PromocaoManager:
             raise e
 
     async def get_promocao(
-        self, id_mercado: uuid.UUID, id_promocao: uuid.UUID
+        self, id_promocao: uuid.UUID
     ) -> Promocao | None:
         query = select(Promocao).where(
-            Promocao.mercado_id == id_mercado, Promocao.id == id_promocao
+            Promocao.id == id_promocao
         )
         promocao = await self.db.execute(query)
         return promocao.scalar()

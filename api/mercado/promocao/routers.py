@@ -45,14 +45,14 @@ async def promocoes_mercado(
 
 
 @model_router.get(
-    "/{id_mercado}/{id_promocao}",
+    "/{id_promocao}",
     summary="Retorna os dados de uma promoção de um mercado, junto com os produtos em promoção",
     response_model=schemas.PromocaoComProdutos,
 )
 async def get_promocao(
-    db: AsyncDBDependency, id_promocao: uuid.UUID, id_mercado: uuid.UUID
+    db: AsyncDBDependency, id_promocao: uuid.UUID
 ):
-    return await use_cases_promocoes.get_promocao(db, id_promocao, id_mercado)
+    return await use_cases_promocoes.get_promocao(db, id_promocao)
 
 
 @model_router.delete("/{id_promocao}", summary="Deleta uma promoção")

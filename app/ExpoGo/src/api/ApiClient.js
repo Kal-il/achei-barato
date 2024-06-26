@@ -202,4 +202,11 @@ export class ApiClient {
       method: "GET",
     })
   }
+
+	async getPromocaoPorUUID(promocaoId) {
+		return await this._callApi({
+			path: `api/v1/mercado/promocao/${promocaoId}`,
+			method: "GET",
+		})
+	}
 }

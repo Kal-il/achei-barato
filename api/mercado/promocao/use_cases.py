@@ -63,11 +63,11 @@ class PromocaoUseCases:
             )
 
     async def get_promocao(
-        self, db: AsyncSession, id_promocao: uuid.UUID, id_mercado: uuid.UUID
+        self, db: AsyncSession, id_promocao: uuid.UUID
     ):
         promocao_manager = PromocaoManager(db)
         produto_manager = ProdutoManager(db)
-        promocao = await promocao_manager.get_promocao(id_mercado, id_promocao)
+        promocao = await promocao_manager.get_promocao(id_promocao)
 
         if not promocao:
             return JSONResponse(
