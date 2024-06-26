@@ -32,11 +32,11 @@ export class ApiClient {
         data: data,
         params: params,
         headers: headers,
+        timeout: 10000,
       });
 
       return response.data;
     } catch (err) {
-		console.log("deu erro: " + err)
       throw err;
     }
   }
@@ -46,8 +46,8 @@ export class ApiClient {
     const url = `${this._apiBaseUrl}${path}`;
     let token = this._authenticator.fetchAccessToken();
 
-	// Define multipart como false por padrão
-	multipart = multipart ? multipart : false
+    // Define multipart como false por padrão
+    multipart = multipart ? multipart : false;
 
     try {
       var response = await this._callApiWithToken(
@@ -56,28 +56,32 @@ export class ApiClient {
         data,
         params,
         token,
-        multipart
+        multipart,
       );
     } catch (err) {
       // Caso o erro retornado seja um erro de autorização (de código 401),
       // nós atualizamos o token de acesso pela função refresh() e realizamos
       // a chamada novamente.
-      if (err.response.status == 401) {
-        try {
-          await this._authenticator.refreshAccessToken();
+      if (err.response) {
+        if (err.response.status == 401) {
+          try {
+            await this._authenticator.refreshAccessToken();
 
-          token = this._authenticator.fetchAccessToken();
-          response = await this._callApiWithToken(
-            url,
-            method,
-            data,
-            params,
-            token,
-            multipart
-          );
-        } catch (err) {
-          // Caso a atualização do token de acesso falhe, o usuário é deslogado.
-          this._authenticator.cleanUserState();
+            token = this._authenticator.fetchAccessToken();
+            response = await this._callApiWithToken(
+              url,
+              method,
+              data,
+              params,
+              token,
+              multipart,
+            );
+          } catch (err) {
+            // Caso a atualização do token de acesso falhe, o usuário é deslogado.
+            this._authenticator.cleanUserState();
+            throw err;
+          }
+        } else {
           throw err;
         }
       } else {
@@ -106,7 +110,7 @@ export class ApiClient {
       return { imagem: imageData, formulario: formulario, multipart: true };
     }
     return { formulario: formulario };
-  };
+  }
 
   async getUserDetail() {
     // Função que chama endpoint de teste
@@ -130,7 +134,7 @@ export class ApiClient {
       path: "api/v1/mercado/mercado/cadastrar",
       method: "POST",
       data: formData,
-	});
+    });
   }
 
   async createCostumer(formData) {
@@ -141,7 +145,7 @@ export class ApiClient {
     return await this._callApi({
       path: "api/v1/usuario/consumidor/consultar",
       method: "GET",
-	});
+    });
   }
 
   async updateConsumidorData(userData, params, multipart) {
@@ -150,8 +154,8 @@ export class ApiClient {
       method: "PUT",
       data: userData,
       params: params,
-      multipart: multipart
-	});
+      multipart: multipart,
+    });
   }
 
   async createPost(parametros) {
@@ -168,13 +172,57 @@ export class ApiClient {
     return await this._callApi({
       path: "api/v1/usuario/postagem_promocao/consultar",
       method: "GET",
-	});
+    });
   }
 
-  async getPostData(postId) { 
-	return await this._callApi({
-		path:`api/v1/usuario/postagem_promocao/consultar/${postId}`,
-		method: "GET",
-	})
-  } 
+  async getPostData(postId) {
+    return await this._callApi({
+      path: `api/v1/usuario/postagem_promocao/consultar/${postId}`,
+      method: "GET",
+    });
+  }
+
+  async getProdutosPromocao() {
+    return await this._callApi({
+      path: "api/v1/mercado/produto/todos",
+      method: "GET",
+    });
+  }
+
+  async getProdutoPorUUID(produtoId) {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/uuid/${produtoId}`,
+      method: "GET",
+    })
+  }
+
+  async getMercadoPorUUID(mercadoId) {
+    return await this._callApi({
+      path: `api/v1/mercado/mercado/${mercadoId}`,
+      method: "GET",
+    })
+  }
+
+	async getPromocaoPorUUID(promocaoId) {
+		return await this._callApi({
+			path: `api/v1/mercado/promocao/${promocaoId}`,
+			method: "GET",
+		})
+	}
+
+  async getProdutosMercadosQuery(query) {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/pesquisar/nome/`,
+      method: "POST",
+      params: query,
+    })
+  }
+
+  async getPromocoesMercado(mercadoId) {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/promocoes/${mercadoId}`,
+      method: "GET",
+    })
+  }
+
 }

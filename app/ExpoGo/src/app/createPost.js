@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { ApiClient } from "../api/ApiClient";
+import ErrorMessage from "../components/ErrorMessage";
 
 const { width, height } = Dimensions.get("window"); //essa função retorna o tamanho da tela do dispositivo
 
@@ -36,11 +37,11 @@ export default function CriarPost() {
       return false;
     }
 
-	if (preco && isNaN(preco)) {
-		console.log(preco)
-		setErroFormulario("O preço deve ser um número");
-		return false;
-	}
+    if (preco && isNaN(preco)) {
+      console.log(preco);
+      setErroFormulario("O preço deve ser um número");
+      return false;
+    }
 
     return true;
   };
@@ -51,10 +52,15 @@ export default function CriarPost() {
     }
 
     let erros;
-	
+
     const parametros = await api.getParametrosRequisicao({
       imagem: imagem,
-      formulario: { titulo: titulo, legenda: legenda, preco: parseFloat(preco), produto: produto },
+      formulario: {
+        titulo: titulo,
+        legenda: legenda,
+        preco: parseFloat(preco),
+        produto: produto,
+      },
     });
 
     try {
@@ -86,103 +92,89 @@ export default function CriarPost() {
         }}
       ></LinearGradient>
 
-	  <ScrollView>
-<View style={styles.formContainer}>
-        <View style={styles.titleAreaContainer}>
-          <View style={styles.titleArea}>
-            <Text style={styles.title}>Compartilhe uma {"\n"}promoção</Text>
+      <ScrollView>
+        <View style={styles.formContainer}>
+          <View style={styles.titleAreaContainer}>
+            <View style={styles.titleArea}>
+              <Text style={styles.title}>Compartilhe uma {"\n"}promoção</Text>
+            </View>
+            {erroFormulario && (
+              <ErrorMessage mensagem={erroFormulario}></ErrorMessage>
+            )}
           </View>
-          {erroFormulario && (
+          <View style={styles.formArea}>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Insira o título do seu post"
+                placeholderTextColor="#7E48CC"
+                value={titulo}
+                onChangeText={(text) => setTitulo(text)}
+              />
+            </View>
+            <View style={styles.inputLongTextView}>
+              <TextInput
+                style={styles.inputLongText}
+                placeholder="Insira a legenda do seu post"
+                placeholderTextColor="#7E48CC"
+                multiline={true}
+                numberOfLines={6}
+                value={legenda}
+                onChangeText={(text) => setLegenda(text)}
+              />
+            </View>
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-                marginBottom: 20,
-                backgroundColor: "white",
-                padding: 8,
-                borderRadius: 8,
-                backgroundColor: "#F9EEEE",
+                justifyContent: "flex-start",
+                width: "80%",
+                marginBottom: 10,
               }}
             >
-              <MaterialIcons
-                name="error"
-                size={24}
-                style={styles.icons}
-                color={"#d83933"}
-              />
-              <Text>{erroFormulario}</Text>
+              <Text>Informações opcionais:</Text>
             </View>
-          )}
-        </View>
-        <View style={styles.formArea}>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.inputText}
-              placeholder="Insira o título do seu post"
-              placeholderTextColor="#7E48CC"
-              value={titulo}
-              onChangeText={(text) => setTitulo(text)}
-            />
-          </View>
-          <View style={styles.inputLongTextView}>
-            <TextInput
-              style={styles.inputLongText}
-              placeholder="Insira a legenda do seu post"
-              placeholderTextColor="#7E48CC"
-              multiline={true}
-              numberOfLines={6}
-              value={legenda}
-              onChangeText={(text) => setLegenda(text)}
-            />
-          </View>
-          <View style={{justifyContent: "flex-start", width: "80%", marginBottom: 10}}>
-            <Text>Informações opcionais:</Text>
-          </View>
-          <View style={{flexDirection: "row", gap: 20}}>
-            <View style={styles.inputSmallView}>
-              <TextInput 
-              style={styles.inputText} 
-              placeholder="Nome do produto"
-              placeholderTextColor="#7E48CC"
-              value={produto}
-              onChangeText={(text) => setProduto(text)}
-              />
+            <View style={{ flexDirection: "row", gap: 20 }}>
+              <View style={styles.inputSmallView}>
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Nome do produto"
+                  placeholderTextColor="#7E48CC"
+                  value={produto}
+                  onChangeText={(text) => setProduto(text)}
+                />
+              </View>
+              <View style={styles.inputSmallView}>
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Preço do produto"
+                  placeholderTextColor="#7E48CC"
+                  keyboardType="numeric"
+                  value={preco}
+                  onChangeText={(text) => setPreco(text)}
+                />
+              </View>
             </View>
-            <View style={styles.inputSmallView}>
-              <TextInput 
-              style={styles.inputText} 
-              placeholder="Preço do produto"
-              placeholderTextColor="#7E48CC"
-			  keyboardType="numeric"
-              value={preco}
-              onChangeText={(text) => setPreco(text)}
+            <View style={styles.imageInputView}>
+              <ImageInput
+                ButtonText={"Selecione a foto"}
+                ButtonIcon={"camera-alt"}
+                ButtonIconColor={"#7E48CC"}
+                imageToParent={imageToParent}
               />
             </View>
           </View>
-          <View style={styles.imageInputView}>
-            <ImageInput
-              ButtonText={"Selecione a foto"}
-              ButtonIcon={"camera-alt"}
-              ButtonIconColor={"#7E48CC"}
-              imageToParent={imageToParent}
-            />
+          <View>
+            <TouchableOpacity
+              onPress={handleCriarPost}
+              style={{ width: "95%", alignItems: "flex-end" }}
+            >
+              <View style={[styles.button, { backgroundColor: "#659BFF" }]}>
+                <Text style={styles.text}>Postar</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
-        <View>
-          <TouchableOpacity
-            onPress={handleCriarPost}
-            style={{ width: "95%", alignItems: "flex-end" }}
-          >
-            <View style={[styles.button, { backgroundColor: "#659BFF" }]}>
-              <Text style={styles.text}>Postar</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-	  </ScrollView>
-          </View>
+      </ScrollView>
+    </View>
   );
 }
 

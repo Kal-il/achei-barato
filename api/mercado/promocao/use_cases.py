@@ -2,9 +2,8 @@ from datetime import datetime
 import uuid
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
-from mercado import produto
 from mercado.produto.models import ProdutoManager
-from mercado.produto.schemas import ProdutoBase
+from mercado.produto.schemas import ProdutoBase, ProdutoOutput
 from mercado.mercado.models import MercadoManager
 from mercado.promocao.models import PromocaoManager
 from mercado.promocao.schemas import (
@@ -53,7 +52,7 @@ class PromocaoUseCases:
 
             promocao = await promocao_manager.save_promocao(promocao, mercado_id)
             await produto_manager.update_produto_promocao(
-                produtos, promocao, mercado_id
+                id_produtos=produtos, promocao=promocao, mercado_id=mercado_id
             )
         except Exception as e:
             print(e)
@@ -63,11 +62,11 @@ class PromocaoUseCases:
             )
 
     async def get_promocao(
-        self, db: AsyncSession, id_promocao: uuid.UUID, id_mercado: uuid.UUID
+        self, db: AsyncSession, id_promocao: uuid.UUID
     ):
         promocao_manager = PromocaoManager(db)
         produto_manager = ProdutoManager(db)
-        promocao = await promocao_manager.get_promocao(id_mercado, id_promocao)
+        promocao = await promocao_manager.get_promocao(id_promocao)
 
         if not promocao:
             return JSONResponse(
@@ -104,6 +103,32 @@ class PromocaoUseCases:
 
             promocoes = await promocao_manager.get_promocoes(id_mercado)
             return [PromocaoSchema.model_validate(promocao) for promocao in promocoes]
+
+        except Exception as e:
+            print(e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro interno no servidor",
+            )
+
+    async def get_produtos_promocoes_mercado(self, db: AsyncSession, id_mercado: uuid.UUID):
+        try:
+            promocao_manager = PromocaoManager(db=db)
+            produto_manager = ProdutoManager(db)
+            mercado_manager = MercadoManager(db)
+
+            resultado = []
+            nome_mercado = await mercado_manager.get_mercado_nome(id_mercado)
+            promocoes = await promocao_manager.get_promocoes(id_mercado)
+            for promocao in promocoes:
+                produtos = await produto_manager.get_produtos_promocao(promocao.id)
+                produtos = [
+                    ProdutoOutput(**produto.__dict__, nome_mercado=nome_mercado)
+                    for produto in produtos
+                ]
+                resultado.extend(produtos)
+
+            return resultado
 
         except Exception as e:
             print(e)

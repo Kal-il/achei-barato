@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
-from mercado.produto.schemas import ProdutoBase
+from mercado.produto.schemas import ProdutoBase, ProdutoOutput
 from mercado.promocao import schemas
 from .use_cases import use_cases_promocoes
 from usuario.usuario.models import Usuario
@@ -45,14 +45,14 @@ async def promocoes_mercado(
 
 
 @model_router.get(
-    "/{id_mercado}/{id_promocao}",
+    "/{id_promocao}",
     summary="Retorna os dados de uma promoção de um mercado, junto com os produtos em promoção",
     response_model=schemas.PromocaoComProdutos,
 )
 async def get_promocao(
-    db: AsyncDBDependency, id_promocao: uuid.UUID, id_mercado: uuid.UUID
+    db: AsyncDBDependency, id_promocao: uuid.UUID
 ):
-    return await use_cases_promocoes.get_promocao(db, id_promocao, id_mercado)
+    return await use_cases_promocoes.get_promocao(db, id_promocao)
 
 
 @model_router.delete("/{id_promocao}", summary="Deleta uma promoção")
@@ -81,15 +81,15 @@ async def deletar_promocao(
 
 
 @model_router.get(
-    "/{id_mercado}/promocoes/",
+    "/promocoes/{id_mercado}",
     summary="Retorna todas as promoções de um mercado pelo seu ID",
-    response_model=List[schemas.PromocaoSchema],
+    response_model=List[ProdutoOutput],
 )
 async def promocoes_mercado_por_id(
     db: AsyncDBDependency,
     id_mercado: uuid.UUID,
 ):
-    return await use_cases_promocoes.get_promocoes_mercado(db, id_mercado)
+    return await use_cases_promocoes.get_produtos_promocoes_mercado(db, id_mercado)
 
 
 @model_router.get(

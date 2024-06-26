@@ -3,16 +3,14 @@ import { useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
-  ImageBackground,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { ApiClient } from "../../api/ApiClient";
-import FavoriteButton from "../../components/favoriteButton";
+import { ApiClient } from "../../../api/ApiClient";
+import FavoriteButton from "../../../components/favoriteButton";
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -62,7 +60,7 @@ export default function PostDetail() {
               <View style={styles.postAuthor}>
                 <Image
                   style={styles.imageProfile}
-                  source={require("../../assets/profile.png")}
+                  source={require("../../../assets/profile.png")}
                 />
                 <View>
                   <Text style={styles.textAuthor}>{post.autor}</Text>

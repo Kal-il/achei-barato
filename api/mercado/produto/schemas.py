@@ -1,5 +1,6 @@
 import datetime
-from typing import Optional
+from typing import Optional, Any
+import uuid
 from pydantic import BaseModel, Field, validator
 
 
@@ -26,3 +27,15 @@ class ProdutoBase(BaseModel):
     @validator("data_validade")
     def data_validar(cls, data):
         return data.replace(tzinfo=None)
+
+class ProdutoOutput(ProdutoBase):
+    id: uuid.UUID
+    mercado_id: uuid.UUID
+    promocao_id: uuid.UUID
+    nome_mercado: str
+
+    class Config:
+        from_attributes = True
+
+class ProdutoPromocaoOutput(ProdutoOutput):
+    mercado: Any

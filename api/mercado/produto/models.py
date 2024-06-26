@@ -152,8 +152,8 @@ class ProdutoManager:
                 .values(
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
-                    preco_promocional=(
-                        Produto.preco - (Produto.preco * promocao.percentual_desconto)
+                    preco_promocional=round((
+                        Produto.preco - (Produto.preco * promocao.percentual_desconto)), 2
                     ),
                 )
             )
@@ -186,3 +186,12 @@ class ProdutoManager:
             print(f"Erro ao buscar os produtos: {e}")
             return None
         
+    async def get_todos_produtos(self) -> List[Produto]:
+        query = select(Produto)
+        produtos = await self.db.execute(query)
+        return produtos.scalars().all()
+
+    async def get_produto_by_uuid(self, produto_id: uuid.UUID) -> Produto:
+        query = select(Produto).where(Produto.id == produto_id)
+        produto = await self.db.execute(query)
+        return produto.scalar()

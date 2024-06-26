@@ -13,72 +13,55 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, Link, Redirect } from 'expo-router'; // Importa o useRouter
 import { useSession } from '../contexts/ctx.js'; // Importe o hook useSession
+import ErrorMessage from "../components/ErrorMessage.js";
 
 const { height, width } = Dimensions.get('window');
 
 export default function Dashboard() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn } = useSession();
   const router = useRouter();
   const [erro, setErro] = useState("");
 
+
+  const handleErrorResponse = (error) => {
+    if (error.response) {
+      setErro(error.response.data.detail);
+    } else {
+      setErro("Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.")
+    }
+  };
+
   const handleRedirect = async () => {
     router.replace("/register-user-1")
   }
 
   const handleLogin = async () => {
-    console.log("handleLogin chamado"); // Log para depuração
-    if (!username || !password) {
-      Alert.alert("Erro", "Usuário ou senha inválidos");
+    if (!email || !password) {
+      setErro("Nenhum campo pode estar vazio.");
       return;
     }
 
+    let errorResponse;
     setLoading(true);
     try {
-      await signIn(username, password);
-      console.log("funciona carai"); 
+      await signIn(email, password);
     } catch (error) {
-      setErro(error)
-      Alert.alert("otário: " + error.message);
+      errorResponse = error
+      handleErrorResponse(error)
     } finally {
       setLoading(false);
     }
 
-    if (!erro) {
-      console.log('tentando redirecionar')
+    if (!errorResponse) {
       router.replace("/")
     }
-
   };
 
-
-  const handleErrorResponse = (status) => {
-    switch (status) {
-      case 400:
-        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
-        break;
-      case 403:
-        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
-        break;
-      case 404:
-        Alert.alert("Erro", "Dado não encontrado.");
-        break;
-      case 409:
-        Alert.alert("Erro", "Esta ação já foi realizada.");
-        break;
-      case 500:
-        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
-    }
-  };
 
   return (
     <LinearGradient
@@ -95,19 +78,21 @@ export default function Dashboard() {
           <Text style={{ color: '#7F48CA' }}>Barato</Text>
         </Text>
 
+        {erro && <ErrorMessage mensagem={erro}></ErrorMessage>}
+
         <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
-            placeholder="Nome de Usuário"
+            placeholder="Seu e-mail"
             placeholderTextColor="#7E48CC"
-            value={username}
-            onChangeText={(text) => setUsername(text)}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
         </View>
         <View style={styles.inputView}>
           <TextInput
             style={styles.inputText}
-            placeholder="Senha"
+            placeholder="Sua senha"
             placeholderTextColor="#7E48CC"
             secureTextEntry={true}
             value={password}
