@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,8 @@ import { View } from "react-native";
 import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useState } from "react";
+import { ApiClient } from "../../api/ApiClient";
+import * as SecureStore from "expo-secure-store";
 
 export default function RegisterERP() {
   const [url, setUrl] = useState("");
@@ -21,6 +23,8 @@ export default function RegisterERP() {
   const [erroPorta, setErroPorta] = useState("");
   const [erroEmpId, setErroEmpId] = useState("");
   const [erroTerminal, setErroTerminal] = useState("");
+
+  const router = useRouter();
 
   const validarFormulario = () => {
     if (!url || !porta || !empId || !terminal) {
@@ -44,9 +48,58 @@ export default function RegisterERP() {
     }
     return;
   };
-  const handleRegister = () => {
+
+  const handleErroAPI = (erros) => {
+    if (erros.porta) {
+      setErroPorta(erros.porta);
+    } else {
+      setErroPorta("");
+    }
+
+    if (erros.url_base) {
+      setErroUrl(erros.url_base);
+    } else {
+      setErroUrl("");
+    }
+
+    if (erros.emp_id) {
+      setErroEmpId(erros.emp_id);
+    } else {
+      setErroEmpId("");
+    }
+
+    if (erros.terminal) {
+      setErroTerminal(erros.terminal);
+    } else {
+      setErroTerminal("");
+    }
+  };
+  const handleRegister = async () => {
     validarFormulario();
-    // TODO: Chamar API
+
+    data = {
+      url_base: url,
+      porta: porta,
+      emp_id: empId,
+      terminal: terminal,
+      empresa_erp: 1,
+    };
+
+    const api = new ApiClient();
+    let erros;
+
+    try {
+      // await api.createConexaoERP(data);
+      SecureStore.setItem(
+        "mensagem",
+        "Parabéns! Você cadastrou os dados de conexão com a sua API. Agora, você pode sincronizar sua base de dados com o Achei Barato."
+      );
+      router.replace("/erp");
+    } catch (e) {
+      console.log(e)
+      erros = e.response.data.detail;
+      handleErroAPI(erros);
+    }
   };
   return (
     <View>
@@ -205,13 +258,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 5,
     fontWeight: "bold",
-    color: "#303030",
   },
   button: {
     backgroundColor: "#659BFF",
     paddingHorizontal: 25,
     borderRadius: 12,
-    width: "40%",
+    width: "50%",
     height: 50,
     justifyContent: "center",
     alignItems: "center",

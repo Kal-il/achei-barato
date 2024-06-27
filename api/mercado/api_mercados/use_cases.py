@@ -18,10 +18,11 @@ class ApiMercadosUseCases:
     ):
 
         try:
-            if not api_mercado.validar_campos():
+            if erros := api_mercado.validar_campos():
+                print(erros);
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Campos inválidos",
+                    detail=erros,
                 )
             mercado_manager = MercadoManager(db=db)
             mercado = await mercado_manager.get_mercado_by_usuario(

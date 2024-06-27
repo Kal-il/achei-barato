@@ -42,15 +42,9 @@ export default function Root() {
     asyncChecaUsuario();
   }, []);
 
-    return (
-    <Stack
-      screenOptions={{
-        headerTintColor: "#fff", // isso define a cor do botão de voltar e do título para branco
-        headerShadowVisible: false,
-      }}
-    >
-      <Stack.Screen name="(market-app)" options={{ headerShown: false }} />
-      <Stack.Screen name="(user-app)" options={{ headerShown: false }} />
-    </Stack>
+  return (
+    <SessionProvider>
+      <Slot /> 
+    </SessionProvider>
   );
 }

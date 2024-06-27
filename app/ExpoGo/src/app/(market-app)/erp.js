@@ -2,11 +2,35 @@ import { Link } from "expo-router";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ButtonCard from "../../components/ButtonCard";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 
 export default function ErpManager() {
   const handleSync = async () => {
     console.log("sincronizando produtos...");
   };
+
+  const [mensagem, setMensagem] = useState("");
+
+  useEffect(() => {
+    let mensagemData;
+    mensagemData = SecureStore.getItem("mensagem");
+
+    if (mensagemData) {
+      setMensagem(mensagemData);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    let mensagemData;
+    mensagemData = SecureStore.getItem("mensagem");
+
+    if (mensagemData) {
+      setMensagem(mensagemData);
+    }
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -27,6 +51,16 @@ export default function ErpManager() {
           basta clicar no botão "Cadastrar Dados da API".
         </Text>
       </View>
+
+      {mensagem && (
+        <View style={styles.messageSuccessContainer}>
+          <FontAwesome name="rocket" size={32} />
+          <Text style={styles.message}>
+            Seu sistema de ERP está cadastrado!
+          </Text>
+          <Text style={styles.messageDescription}>{mensagem}</Text>
+        </View>
+      )}
 
       <ButtonCard
         text="Sincronizar promoções"
@@ -62,6 +96,14 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
     padding: 15,
     backgroundColor: "#ffedba",
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  messageSuccessContainer: {
+    marginHorizontal: "5%",
+    padding: 15,
+    backgroundColor: "#b0ffc4",
     borderRadius: 12,
     alignItems: "center",
     marginBottom: 20,

@@ -54,7 +54,7 @@ class ApiMercados(BaseModel):
         if self.url_base == None or self.url_base == "":
             return "URL base inválida"
 
-        if not self.url_base.startswith("http://") or not self.url_base.startswith(
-            "https://"
+        if not (
+            self.url_base.startswith("http://") or self.url_base.startswith("https://")
         ):
             return "URL base inválida, precisa começar com http:// ou https://"

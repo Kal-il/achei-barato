@@ -53,7 +53,7 @@ export class Authenticator {
     try {
       token = JWT.decode(
         token,
-        "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7",
+        "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
       );
       return true;
     } catch (e) {
@@ -102,12 +102,14 @@ export class Authenticator {
     url = `${this._apiBaseUrl}${path}`;
     let returnToken;
 
+    console.log("quase");
     // OBS.: lembrar de utilizar o 'await' antes de chamar funções assíncronas, como
     // as do axios, para garantir o funcionamento correto das chamadas à API.
     await axios
       .post(url, userData, { timeout: 10000 })
       .then(async (response) => {
         if (response.data.access_token) {
+          console.log('foi')
           this._setAccessToken(response.data.access_token);
           this._setRefreshToken(response.data.refresh_token);
           returnToken = response.data.access_token;
