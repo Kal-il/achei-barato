@@ -4,15 +4,11 @@ import {
   Text,
   TextInput,
   TouchableNativeFeedback,
-  TouchableOpacity,
 } from "react-native";
 import { View } from "react-native";
-import Button from "../../../components/Button";
-import ImageInput from "../../../components/ImageInput";
 import ErrorMessage from "../../../components/ErrorMessage";
 import { useState } from "react";
 import { ApiClient } from "../../../api/ApiClient";
-import * as SecureStore from "expo-secure-store";
 
 export default function EditStoreProfile() {
   const [endereco, setEndereco] = useState("");

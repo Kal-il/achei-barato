@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { useAuth } from '../../contexts/ctx.js'; // Importe o hook useSession
 import { Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useState } from "react";
-import { ApiClient } from "../../api/ApiClient.js";
+import { ApiClient } from "../../../api/ApiClient.js";
+import { useAuth } from "../../../contexts/ctx.js";
 
 
 

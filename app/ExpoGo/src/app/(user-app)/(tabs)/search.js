@@ -109,8 +109,8 @@ export default function Dashboard() {
     >
       <View style={styles.header}>
         <StatusBar barStyle="light-content" />
-        <GradientBackground style={{ alignItems: "baseline" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <GradientBackground>
+          <View style={{ flex:1, marginTop: "7%", flexDirection: "row", alignItems: "center" }}>
             <View style={styles.inputView}>
               <TextInput
                 style={styles.inputText}
@@ -123,7 +123,6 @@ export default function Dashboard() {
             <View style={styles.notification}>
               <TouchableOpacity onPress={handleSearch}>
                 <Feather
-                  style={styles.bell}
                   name="search"
                   size={24}
                   color="grey"
@@ -210,8 +209,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: height * 0.11, // Altura do cabeçalho
     marginBottom: 20,
+	height: height * 0.11
   },
   notification: {
     height: height * 0.05,
@@ -220,13 +219,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 100, //é um circulo
-    marginTop: 8,
   },
   inputView: {
-    flex: 0.95,
+	width:"80%",
     marginHorizontal: "2%",
-    marginBottom: 20,
-    paddingTop: StatusBar.currentHeight + 5, // Garante que o conteúdo não seja coberto pelo StatusBar
   },
   inputText: {
     height: height * 0.05,

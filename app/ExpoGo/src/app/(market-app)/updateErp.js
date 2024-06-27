@@ -113,7 +113,6 @@ export default function RegisterERP() {
 
       router.replace("/erp");
     } catch (e) {
-      console.log(e)
       erros = e.response.data.detail;
       handleErroAPI(erros);
     }
@@ -124,7 +123,6 @@ export default function RegisterERP() {
         let conexaoData;
         try {
             conexaoData = await api.getConexaoERP();
-            console.log(conexaoData);
             setConexao(conexaoData);
         } catch (e) {
             console.log(e);

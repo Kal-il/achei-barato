@@ -17,9 +17,12 @@ class FileManager:
 
     @staticmethod
     async def get_foto(url_foto: str):
-        if url_foto:
-            async with aiofiles.open(url_foto, "rb") as foto:
-                foto_consumidor = await foto.read()
-                foto_consumidor = base64.b64encode(foto_consumidor)
-                return foto_consumidor
-        return b""
+        try:
+            if url_foto:
+                async with aiofiles.open(url_foto, "rb") as foto:
+                    foto_consumidor = await foto.read()
+                    foto_consumidor = base64.b64encode(foto_consumidor)
+                    return foto_consumidor
+            return b""
+        except Exception:
+            return b""

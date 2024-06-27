@@ -14,17 +14,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ApiClient } from "../api/ApiClient.js";
 import { GoogleSignInScreen } from "../components/GoogleSignIn.js";
 import { useRouter, Link, Redirect } from "expo-router"; // Importa o useRouter
-import { useSession } from "../contexts/ctx.js"; // Importe o hook useSession
+import { useAuth } from "../contexts/ctx.js"; // Importe o hook useSession
 import ErrorMessage from "../components/ErrorMessage.js";
 
 const { height, width } = Dimensions.get("window");
 
 export default function Dashboard() {
-  console.log("aqui");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn } = useSession();
+  const { signIn } = useAuth();
   const router = useRouter();
   const [erro, setErro] = useState("");
 
@@ -51,7 +50,6 @@ export default function Dashboard() {
     let errorResponse;
     setLoading(true);
     try {
-      console.log("lidando ocm onligff");
       await signIn(email, password);
     } catch (error) {
       errorResponse = error;

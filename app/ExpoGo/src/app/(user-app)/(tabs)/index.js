@@ -65,7 +65,6 @@ export default function Dashboard() {
 
       try {
         produtos = await api.getProdutosPromocao();
-        console.log(produtos);
       } catch (e) {
         erro = e;
       }

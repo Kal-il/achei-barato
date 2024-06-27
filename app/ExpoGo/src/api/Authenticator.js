@@ -92,8 +92,12 @@ export class Authenticator {
         console.log("sucesso");
       })
       .catch(function (error) {
+			console.log("erro: " + error)
+			console.log(JSON.stringify(error))
         throw error;
       });
+
+
   }
 
   async authenticateUser(userData) {
@@ -106,7 +110,7 @@ export class Authenticator {
     // OBS.: lembrar de utilizar o 'await' antes de chamar funções assíncronas, como
     // as do axios, para garantir o funcionamento correto das chamadas à API.
     await axios
-      .post(url, userData, { timeout: 10000 })
+      .post(url, userData, { timeout: 60000 })
       .then(async (response) => {
         if (response.data.access_token) {
           console.log('foi')
@@ -117,6 +121,7 @@ export class Authenticator {
       })
       .catch(function (error) {
         console.error("erro ao logar usuário:", error);
+			console.error(JSON.stringify(error) + ",erro")
         throw error;
       });
     return returnToken;

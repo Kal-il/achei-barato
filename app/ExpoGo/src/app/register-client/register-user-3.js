@@ -52,6 +52,7 @@ const CadastroScreen = ({ navigation }) => {
     const api = new ApiClient();
     
     try {
+			console.log('smdosognfig')
       const response = await api.createCustomer(customer);
 
       if (response.status === 201) {

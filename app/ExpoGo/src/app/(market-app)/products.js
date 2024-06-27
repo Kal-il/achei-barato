@@ -45,7 +45,6 @@ export default function ProductsPage() {
 
       try {
         produtosData = await api.getProdutosMercado();
-        console.log(produtosData);
         setProdutos(produtosData);
         setLoading(false);
       } catch (e) {

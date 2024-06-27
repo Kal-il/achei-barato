@@ -31,7 +31,6 @@ export default function EditStoreLocation() {
   const router = useRouter();
 
   const imageToParent = (childData) => {
-    console.log('child data: ' + childData)
     setImagem(childData);
   };
 
@@ -52,9 +51,7 @@ export default function EditStoreLocation() {
     }
 
     const api = new ApiClient();
-    console.log("imagem: " + imagem);
     const parametros = await api.getParametrosRequisicao({imagem: imagem, formulario: data})
-    console.log(JSON.stringify(parametros))
 
     let erros;
 
@@ -62,9 +59,7 @@ export default function EditStoreLocation() {
       await api.updateMercado(parametros);
       router.replace("/market-profile");
     } catch (e) {
-      console.log(JSON.stringify(e));
       // erros = e.response.data.detail;
-      // console.log(erros)
       // handleErroAPI(erros);
     }
   };

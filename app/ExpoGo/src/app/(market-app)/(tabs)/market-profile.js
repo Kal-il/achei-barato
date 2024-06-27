@@ -94,7 +94,7 @@ export default function Perfil() {
               ButtonIconColor={"#8D8D8D"}
             />
             <ProfileScreenButton
-              ButtonLink={"/logout"}
+              ButtonLink={"/store/logout"}
               ButtonText={"Sair"}
               ButtonIcon={"logout"}
               ButtonIconColor={"#FF6565"}

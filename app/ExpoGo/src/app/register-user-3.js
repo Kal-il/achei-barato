@@ -13,6 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from 'expo-secure-store'
 import { ApiClient } from "../api/ApiClient";
 import {useRouter} from "expo-router";
+import { useAuth } from "../contexts/ctx";
 
 const { height, width } = Dimensions.get('window');
 
@@ -23,9 +24,9 @@ const CadastroScreen = ({ navigation }) => {
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
 
-  const handleCadastrar = async () => {
-    console.log('handleCadastrar foi chamada');
+  const { signIn } = useAuth();
 
+  const handleCadastrar = async () => {
     if (senha === "" || confirmarSenha === "") {
       Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
       return;
@@ -38,7 +39,6 @@ const CadastroScreen = ({ navigation }) => {
     let nome, email, telefone, cep, estado, cidade, bairro, endereco;
 
     try {
-      console.log('try');
 
       nome = await SecureStore.getItemAsync("nome");
       email = await SecureStore.getItemAsync("email");
@@ -73,9 +73,11 @@ const CadastroScreen = ({ navigation }) => {
     
     try {
       console.log(customer);
-      console.log("tentando cadastrar");
       const response = await api.createCostumer(customer);
-      Alert.alert("Sucesso", "Cadastro realizado com sucesso.");
+
+	  console.log('indo logar')
+	  await signIn(customer.email, customer.password);
+	  console.log('logado')
       router.replace("/");
         // Navegar para outra tela ou limpar os campos de entrada, se necessário
     } catch (error) {

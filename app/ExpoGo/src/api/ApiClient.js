@@ -32,7 +32,7 @@ export class ApiClient {
         data: data,
         params: params,
         headers: headers,
-        timeout: 10000,
+			timeout: 60000,
       });
 
       return response.data;

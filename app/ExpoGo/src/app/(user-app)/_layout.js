@@ -1,6 +1,6 @@
 import { Stack, Redirect, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { useSession } from "../../contexts/ctx";
+import { useAuth, useSession } from "../../contexts/ctx";
 import { Text } from "react-native";
 import SignIn from "../sign-in";
 import { ApiClient } from "../../api/ApiClient";
@@ -8,35 +8,16 @@ import GradientBackground from "../../components/gradient";
 
 export default function AppLayout() {
 
-  const router = useRouter();
+	const { isMercado } = useAuth();
+	const router = useRouter()
 
-  useEffect(() => {
-    const asyncChecaUsuario = async () => {
-      const api = new ApiClient();
-      let usuario, erro;
-      try {
-        usuario = await api.getUserDetail();
-        api._authenticator.storeUserData(usuario);
-      } catch (e) {
-        if (e.response) {
-          erro = e.response.data.detail;
-        } else {
-          erro = e;
-        }
-      }
-
-      if (erro) {
-        router.replace("/sign-in");
-      }
-
-      if (usuario.dono_mercado) {
-        console.log('redi')
-        router.push("/market-index");
-      }
-    };
-
-    asyncChecaUsuario();
-  }, []);
+	console.log("valor: " + isMercado)
+	if (isMercado == "mercado") {
+		console.log('é mercado')
+		router.push("/market-index");
+	} else {
+		console.log('é cnsimidor')
+	}
 
   return (
     <Stack

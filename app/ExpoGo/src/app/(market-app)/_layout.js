@@ -142,6 +142,14 @@ export default function AppLayout() {
           ),
         }}
       />
+      <Stack.Screen
+        name="store/logout"
+        options={{
+          title: "",
+          headerTransparent: true,
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
     </Stack>
   );
 }
