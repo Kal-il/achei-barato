@@ -8,7 +8,7 @@ from mercado.mercado.models import MercadoManager
 from usuario.usuario.models import Usuario
 
 
-from mercado.api_mercados.schemas import ApiMercados
+from mercado.api_mercados.schemas import ApiMercados, ApiMercadosUpdate
 
 
 class ApiMercadosUseCases:
@@ -100,14 +100,16 @@ class ApiMercadosUseCases:
             raise err
 
     async def update_dados_conexao(
-        self, db: AsyncSession, api_mercado: ApiMercados, usuario: Usuario
+        self, db: AsyncSession, api_mercado: ApiMercadosUpdate, usuario: Usuario
     ):
         try:
-            if not api_mercado.validar_campos():
+
+            if erros := api_mercado.validar_campos():
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Campos inválidos",
+                    detail=erros,
                 )
+
             mercado_manager = MercadoManager(db=db)
             mercado = await mercado_manager.get_mercado_by_usuario(
                 id_usuario=usuario.id
@@ -119,9 +121,16 @@ class ApiMercadosUseCases:
                 )
 
             api_mercados_manager = ApiMercadosManager(db=db)
-            response = await api_mercados_manager.update_api_mercados(
-                api_mercado, mercado
-            )
+
+            campos = {}
+            for key, value in api_mercado:
+                if value:
+                    campos[key] = value
+            
+            if campos:
+                response = await api_mercados_manager.update_api_mercados(
+                    mercado, campos
+                )
 
             if response:
                 raise HTTPException(

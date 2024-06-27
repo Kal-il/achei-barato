@@ -247,4 +247,19 @@ export class ApiClient {
     })
   }
 
+  async updateConexaoERP(formData) {
+    return await this._callApi({
+      path: `api/v1/mercado/erp/conexao`,
+      method: "PUT",
+      data: formData,
+    })
+  }
+
+  async getConexaoERP() {
+    return await this._callApi({
+      path: `api/v1/mercado/erp/conexao`,
+      method: "GET",
+    })
+  }
+
 }

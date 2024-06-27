@@ -3,31 +3,14 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
-  StatusBar,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableNativeFeedback,
   TouchableOpacity,
   FlatList,
-  ScrollView,
   ActivityIndicator,
 } from "react-native";
 import { Link } from "expo-router";
-import {
-  Feather,
-  FontAwesome5,
-  AntDesign,
-  MaterialIcons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
 import { ApiClient } from "../../api/ApiClient";
-import GradientBackground from "../../components/gradient";
 import Button from "../../components/Button";
 import PromotionCard from "../../components/PromotionCard";
-
-const windowDimensions = Dimensions.get("window");
-const { height, width } = Dimensions.get("window");
 
 export default function SalesPage() {
   const [loading, setLoading] = useState(true);

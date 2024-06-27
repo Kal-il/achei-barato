@@ -4,6 +4,7 @@ import ButtonCard from "../../components/ButtonCard";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import { ApiClient } from "../../api/ApiClient";
 
 export default function ErpManager() {
   const handleSync = async () => {
@@ -11,24 +12,52 @@ export default function ErpManager() {
   };
 
   const [mensagem, setMensagem] = useState("");
+  const [delayComplete, setDelayComplete] = useState(false);
+  const [naoCadastrado, setNaoCadastrado] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchMessage = async (mensagemData) => {
+      setDelayComplete(false);
+      console.log('delay: ' + delayComplete);
+      console.log('mensagem: ' + mensagemData);
+      setMensagem(mensagemData);
+      await SecureStore.deleteItemAsync("mensagem")
+
+      setTimeout(() => {
+        setDelayComplete(true);
+      }, 15000)
+    }
+
     let mensagemData;
     mensagemData = SecureStore.getItem("mensagem");
 
     if (mensagemData) {
-      setMensagem(mensagemData);
+      fetchMessage(mensagemData);
     }
   }, []);
 
 
   useEffect(() => {
-    let mensagemData;
-    mensagemData = SecureStore.getItem("mensagem");
+    const fetchConexaoData = async () => {
+      let conexaoData;
 
-    if (mensagemData) {
-      setMensagem(mensagemData);
+      const api = new ApiClient()
+      try {
+        conexaoData = await api.getConexaoERP();
+      } catch (e) {
+        if (e.response) {
+          if (e.response.status != 404) {
+            erro = e.response.data.detail;
+          } else {
+            setNaoCadastrado(true);
+          }
+        }
+      }
+      setLoading(false);
     }
+
+    fetchConexaoData();
   }, []);
 
   return (
@@ -40,7 +69,7 @@ export default function ErpManager() {
         </Text>
       </View>
 
-      <View style={styles.messageContainer}>
+      {naoCadastrado && <View style={styles.messageContainer}>
         <FontAwesome name="warning" size={32} />
         <Text style={styles.message}>
           Seu sistema de ERP ainda não está sincronizado!
@@ -50,9 +79,9 @@ export default function ErpManager() {
           promoções para os seus clientes. Para inserir os dados de conexão,
           basta clicar no botão "Cadastrar Dados da API".
         </Text>
-      </View>
+      </View>}
 
-      {mensagem && (
+      {mensagem && !delayComplete && (
         <View style={styles.messageSuccessContainer}>
           <FontAwesome name="rocket" size={32} />
           <Text style={styles.message}>
@@ -70,14 +99,22 @@ export default function ErpManager() {
         iconName={"database-sync"}
         onPress={handleSync}
       />
-      <ButtonCard
+      {!loading && naoCadastrado && <ButtonCard
         text="Cadastar dados da API"
         link="/registerErp"
         IconComponent={MaterialCommunityIcons}
         iconSize={32}
         iconName={"api"}
         onPress={handleSync}
-      />
+      />}
+      {!loading && !naoCadastrado && <ButtonCard
+        text="Atualizar dados da API"
+        link="/updateErp"
+        IconComponent={MaterialCommunityIcons}
+        iconSize={32}
+        iconName={"api"}
+        onPress={handleSync}
+      />}
     </View>
   );
 }

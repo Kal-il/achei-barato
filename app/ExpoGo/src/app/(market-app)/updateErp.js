@@ -9,42 +9,47 @@ import {
 import { View } from "react-native";
 import Button from "../../components/Button";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiClient } from "../../api/ApiClient";
 import * as SecureStore from "expo-secure-store";
 
-export default function UpdateERP() {
+export default function RegisterERP() {
   const [url, setUrl] = useState("");
   const [porta, setPorta] = useState(0);
   const [empId, setEmpId] = useState(0);
   const [terminal, setTerminal] = useState("");
+
   const [erro, setErro] = useState("");
   const [erroUrl, setErroUrl] = useState("");
   const [erroPorta, setErroPorta] = useState("");
   const [erroEmpId, setErroEmpId] = useState("");
   const [erroTerminal, setErroTerminal] = useState("");
 
+  const [conexao, setConexao] = useState(null);
+
   const router = useRouter();
+    const api = new ApiClient();
 
   const validarFormulario = () => {
-    if (!url || !porta || !empId || !terminal) {
-      setErro("Todos os campos devem ser preenchidos");
-      return;
+    if (porta) {
+        if (isNaN(porta)) {
+        setErroPorta("A porta deve ser um número");
+        }
+        if (porta.length > 6) {
+        setErroPorta("Esta porta é muito longa");
+        }
     }
 
-    if (isNaN(porta)) {
-      setErroPorta("A porta deve ser um número");
-    }
-    if (porta.length > 6) {
-      setErroPorta("Esta porta é muito longa");
-    }
-
-    if (isNaN(empId)) {
-      setErroEmpId("O ID da empresa deve ser um número");
+    if (empId) {
+        if (isNaN(empId)) {
+        setErroEmpId("O ID da empresa deve ser um número");
+        }
     }
 
-    if (!isNaN(url)) {
-      setErroUrl("Esta URL é inválida");
+    if (url) {
+        if (!isNaN(url)) {
+        setErroUrl("Esta URL é inválida");
+        }
     }
     return;
   };
@@ -74,10 +79,13 @@ export default function UpdateERP() {
       setErroTerminal("");
     }
   };
+
+
   const handleRegister = async () => {
     validarFormulario();
 
-    data = {
+
+    values = {
       url_base: url,
       porta: porta,
       emp_id: empId,
@@ -85,15 +93,24 @@ export default function UpdateERP() {
       empresa_erp: 1,
     };
 
-    const api = new ApiClient();
+    data = {}
+
+	for (const [key, value] of Object.entries(values)){
+		if (value) {
+			data[key] = value;
+		}
+	}
+
     let erros;
 
     try {
-      await api.createConexaoERP(data);
+      await api.updateConexaoERP(data);
+
       SecureStore.setItem(
         "mensagem",
-        "Parabéns! Você cadastrou os dados de conexão com a sua API. Agora, você pode sincronizar sua base de dados com o Achei Barato."
+        "Dados de conexão atualizados."
       );
+
       router.replace("/erp");
     } catch (e) {
       console.log(e)
@@ -101,6 +118,21 @@ export default function UpdateERP() {
       handleErroAPI(erros);
     }
   };
+
+  useEffect(() => {
+    const fetchConexaoData = async () => {
+        let conexaoData;
+        try {
+            conexaoData = await api.getConexaoERP();
+            console.log(conexaoData);
+            setConexao(conexaoData);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    fetchConexaoData();
+  }, [])
   return (
     <View>
       <View style={styles.mainContainer}>
@@ -117,13 +149,14 @@ export default function UpdateERP() {
           </View>
         )}
 
-        <View style={styles.formContainer}>
+        {conexao && <View style={styles.formContainer}>
           <View style={styles.formField}>
             <Text style={styles.subtitle}>Insira a URL da API:</Text>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.inputText}
                 value={url}
+                placeholder={conexao.url_base}
                 onChangeText={(text) => setUrl(text)}
               />
             </View>
@@ -145,6 +178,7 @@ export default function UpdateERP() {
               <TextInput
                 style={styles.inputText}
                 keyboardType="numeric"
+                placeholder={String(conexao.porta)}
                 value={porta ? String(porta) : ""}
                 onChangeText={(text) => setPorta(parseInt(text))}
               />
@@ -168,6 +202,7 @@ export default function UpdateERP() {
               <TextInput
                 style={styles.inputText}
                 keyboardType="numeric"
+                placeholder={String(conexao.emp_id)}
                 value={empId ? String(empId) : ""}
                 onChangeText={(text) => setEmpId(parseInt(text))}
               />
@@ -189,6 +224,7 @@ export default function UpdateERP() {
               <TextInput
                 style={styles.inputText}
                 value={terminal}
+                placeholder={conexao.terminal}
                 onChangeText={(text) => setTerminal(text)}
               />
             </View>
@@ -210,7 +246,7 @@ export default function UpdateERP() {
               </View>
             </TouchableNativeFeedback>
           </View>
-        </View>
+        </View>}
       </View>
     </View>
   );
@@ -238,7 +274,6 @@ const styles = StyleSheet.create({
     height: "8%",
     justifyContent: "center",
     padding: 20,
-    elevation: 2,
   },
   mainContainer: {
     paddingTop: "5%",
@@ -275,3 +310,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+

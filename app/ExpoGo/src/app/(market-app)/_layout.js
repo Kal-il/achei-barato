@@ -43,6 +43,13 @@ export default function AppLayout() {
           headerBackground: () => <GradientBackground></GradientBackground>,
         }}
       />
+      <Stack.Screen
+        name="updateErp"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
     </Stack>
   );
 }
