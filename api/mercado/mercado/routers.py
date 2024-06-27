@@ -1,6 +1,6 @@
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends, BackgroundTasks, File, UploadFile
 
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
@@ -22,6 +22,17 @@ model_router = APIRouter(
 )
 async def get_mercado_by_nome(db: AsyncDBDependency, nome: str):
     return await use_cases_mercado.get_mercado_by_nome(db=db, nome=nome)
+
+@model_router.get(
+    "/obter",
+    summary="Obter mercado pelo token do usuário autenticado",
+    response_model=schemas.MercadoOutput,
+)
+async def get_mercado(
+    db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
+):
+    return await use_cases_mercado.get_mercado_by_usuario(db=db, usuario=usuario)
+
 
 @model_router.get(
     "/{id_mercado}", summary="Pesquisar mercados por ID", response_model=schemas.MercadoSchema
@@ -59,25 +70,15 @@ async def cadastrar_mercado(
     )
 
 
-@model_router.get(
-    "/obter",
-    summary="Obter mercado pelo token do usuário autenticado",
-    response_model=schemas.MercadoSchema,
-)
-async def get_mercado(
-    db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
-):
-    return await use_cases_mercado.get_mercado_by_usuario(db=db, usuario=usuario)
-
-
 @model_router.put("/editar", summary="Editar dados do mercado")
 async def update_mercado(
     db: AsyncDBDependency,
-    mercado: schemas.MercadoUpdate,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
+    mercado: schemas.MercadoUpdate = Depends(),
+    foto: UploadFile = File(None)
 ):
     return await use_cases_mercado.update_mercado(
-        db=db, novo_mercado=mercado, usuario=usuario
+        db=db, novo_mercado=mercado, usuario=usuario, imagem=foto
     )
 
 

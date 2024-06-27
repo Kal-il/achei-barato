@@ -18,9 +18,10 @@ const { width, height } = Dimensions.get("window");
 
 export default function ProfileScreenButton({
   ButtonText,
-  ButtonIcon,
   ButtonIconColor,
   imageToParent,
+  width,
+  borderRadius,
 }) {
   const [image, setImage] = useState(null);
   const pickImage = async () => {
@@ -40,7 +41,13 @@ export default function ProfileScreenButton({
 
   return (
     <TouchableNativeFeedback onPress={pickImage} style={{ borderRadius: 12 }}>
-      <View style={styles.Button}>
+      <View
+        style={{
+          ...styles.Button,
+          width: width ? width : "90%",
+          borderRadius: borderRadius ? borderRadius : 24,
+        }}
+      >
         {!image && (
           <MaterialIcons
             name="camera-alt"
@@ -68,7 +75,6 @@ export default function ProfileScreenButton({
 }
 const styles = StyleSheet.create({
   Button: {
-    width: "90%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -76,7 +82,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: "5%",
     paddingHorizontal: "5%",
-    borderRadius: 24,
     shadowColor: "#B3B3B3", // Suaviza a cor da sombra
     elevation: 5,
   },

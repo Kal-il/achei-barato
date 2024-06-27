@@ -30,7 +30,7 @@ export default function SalesPage() {
         tag="Promoção"
         CommentsNumber={15}
         LikesNumber={15}
-        MarketProfileLink="/"
+        pathname={"sale"}
       />
     );
   };
@@ -74,7 +74,9 @@ export default function SalesPage() {
       {loading && (
         <View
           style={{
-            marginTop: "40%",
+            height: "60%",
+            justifyContent: "center",
+            alignItems: "center"
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />

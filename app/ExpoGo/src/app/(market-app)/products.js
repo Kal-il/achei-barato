@@ -65,7 +65,7 @@ export default function ProductsPage() {
           ListHeaderComponent={
             <View style={styles.mainContainer}>
               <View style={styles.headerContainer}>
-                <Text style={styles.title}>Seus produtos</Text>
+                <Text style={styles.title}>Seus Produtos</Text>
                 <Link href="/products" asChild>
                   <TouchableOpacity>
                     <Button title="Cadastrar" ButtonColor={"#FF0F7B"} />
@@ -79,7 +79,9 @@ export default function ProductsPage() {
       {loading && (
         <View
           style={{
-            marginTop: "40%",
+            height: "60%",
+            justifyContent: "center",
+            alignItems: "center"
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />

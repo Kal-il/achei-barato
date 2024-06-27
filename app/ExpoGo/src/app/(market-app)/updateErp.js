@@ -137,7 +137,7 @@ export default function RegisterERP() {
     <View>
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
-          <Text style={styles.title}>Registre sua API</Text>
+          <Text style={styles.title}>Atualizar dados da API</Text>
           <Text style={styles.subtitle}>
             Conecte seu sistema de ERP com o Achei Barato.
           </Text>

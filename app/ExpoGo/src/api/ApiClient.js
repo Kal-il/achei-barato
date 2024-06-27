@@ -56,7 +56,7 @@ export class ApiClient {
         data,
         params,
         token,
-        multipart,
+        multipart
       );
     } catch (err) {
       // Caso o erro retornado seja um erro de autorização (de código 401),
@@ -74,7 +74,7 @@ export class ApiClient {
               data,
               params,
               token,
-              multipart,
+              multipart
             );
           } catch (err) {
             // Caso a atualização do token de acesso falhe, o usuário é deslogado.
@@ -193,50 +193,57 @@ export class ApiClient {
     return await this._callApi({
       path: `api/v1/mercado/produto/uuid/${produtoId}`,
       method: "GET",
-    })
+    });
   }
 
   async getMercadoPorUUID(mercadoId) {
     return await this._callApi({
       path: `api/v1/mercado/mercado/${mercadoId}`,
       method: "GET",
-    })
+    });
   }
 
-	async getPromocaoPorUUID(promocaoId) {
-		return await this._callApi({
-			path: `api/v1/mercado/promocao/${promocaoId}`,
-			method: "GET",
-		})
-	}
+  async getMercadoUsuario() {
+    return await this._callApi({
+      path: `api/v1/mercado/mercado/obter`,
+      method: "GET",
+    });
+  }
+
+  async getPromocaoPorUUID(promocaoId) {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/${promocaoId}`,
+      method: "GET",
+    });
+  }
 
   async getProdutosMercadosQuery(query) {
     return await this._callApi({
       path: `api/v1/mercado/produto/pesquisar/nome/`,
       method: "POST",
       params: query,
-    })
+    });
   }
 
   async getPromocoesMercado(mercadoId) {
     return await this._callApi({
       path: `api/v1/mercado/promocao/promocoes/${mercadoId}`,
       method: "GET",
-    })
+    });
   }
 
   async getPromocoesUsuario() {
     return await this._callApi({
       path: `api/v1/mercado/promocao/`,
       method: "GET",
-    })
+    });
   }
 
   async getProdutosMercado() {
     return await this._callApi({
       path: `api/v1/mercado/produto/produtos`,
       method: "GET",
-    })
+    });
   }
 
   async createConexaoERP(formData) {
@@ -244,7 +251,7 @@ export class ApiClient {
       path: `api/v1/mercado/erp/conexao`,
       method: "POST",
       data: formData,
-    })
+    });
   }
 
   async updateConexaoERP(formData) {
@@ -252,14 +259,23 @@ export class ApiClient {
       path: `api/v1/mercado/erp/conexao`,
       method: "PUT",
       data: formData,
-    })
+    });
   }
 
   async getConexaoERP() {
     return await this._callApi({
       path: `api/v1/mercado/erp/conexao`,
       method: "GET",
-    })
+    });
   }
 
+  async updateMercado(parametros) {
+    return await this._callApi({
+      path: `api/v1/mercado/mercado/editar`,
+      method: "PUT",
+      data: parametros.imagem,
+      params: parametros.formulario,
+      multipart: true,
+    });
+  }
 }

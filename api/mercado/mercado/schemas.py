@@ -104,6 +104,7 @@ class MercadoSchema(MercadoBase):
 
 class MercadoOutput(MercadoSchema):
     model_config = ConfigDict(from_attributes=True)
+    foto: bytes
 
     created_at: Optional[datetime.datetime] = Field(..., description="Data de cadastro")
     pass

@@ -37,13 +37,8 @@ export default function TabRoutesLayout() {
         name="market-profile"
         options={{
           title: "",
-          headerTitleAlign: "center",
-          headerTintColor: "#fff",
           tabBarShowLabel: false,
-          headerStyle: {
-            backgroundColor: "#ABC6FD", // Defina a cor que você deseja aqui
-            elevation: 0,
-          },
+          headerShown: false,
           tabBarIcon: ({ size, color, focused }) => {
             return focused == false ? (
               <Ionicons name="person-outline" size={28} color={color} />

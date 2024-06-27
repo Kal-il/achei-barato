@@ -58,17 +58,6 @@ export default function Dashboard() {
             <Text style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
               Achei Barato
             </Text>
-
-            <View style={styles.notification}>
-              <Link href={"/notification"}>
-                <Feather
-                  style={styles.bell}
-                  name="bell"
-                  size={24}
-                  color="grey"
-                />
-              </Link>
-            </View>
           </View>
         </GradientBackground>
       </View>
@@ -136,7 +125,9 @@ export default function Dashboard() {
       {loading && (
         <View
           style={{
-            marginTop: "40%",
+            height: "90%",
+            justifyContent: "center",
+            alignItems: "center"
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />

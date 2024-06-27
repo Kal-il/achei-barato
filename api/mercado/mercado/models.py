@@ -50,6 +50,7 @@ class Mercado(Base):
     complemento: Mapped[str] = mapped_column(String(255), nullable=True)
     nome_responsavel: Mapped[str] = mapped_column(String(255), nullable=False)
     cpf_responsavel: Mapped[str] = mapped_column(String(11), nullable=False)
+    url_foto: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
     )
