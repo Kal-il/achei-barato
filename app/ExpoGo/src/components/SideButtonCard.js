@@ -3,23 +3,22 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   Dimensions,
-  TouchableOpacity,
+  TouchableNativeFeedback,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
 const { height, width } = Dimensions.get("window");
 
-const SideButtonCard = ({ text, IconComponent, iconSize, iconName}) => {
+const SideButtonCard = ({ text, link, IconComponent, iconSize, iconName }) => {
   return (
+    <Link href={link} asChild>
+      <TouchableNativeFeedback>
         <View style={styles.cardHorizontal}>
           <View style={styles.horizontalCardContent}>
             <View style={styles.horizontalNameIconContaier}>
               <IconComponent name={iconName} size={iconSize} />
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                {text}
-              </Text>
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>{text}</Text>
             </View>
             <AntDesign
               style={{ alignSelf: "flex-end" }}
@@ -28,6 +27,8 @@ const SideButtonCard = ({ text, IconComponent, iconSize, iconName}) => {
             />
           </View>
         </View>
+      </TouchableNativeFeedback>
+    </Link>
   );
 };
 
@@ -52,6 +53,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignSelf: "center",
   },
-})
+});
 
 export default SideButtonCard;

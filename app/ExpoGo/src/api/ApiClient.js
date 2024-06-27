@@ -225,4 +225,18 @@ export class ApiClient {
     })
   }
 
+  async getPromocoesUsuario() {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/`,
+      method: "GET",
+    })
+  }
+
+  async getProdutosMercado() {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/produtos`,
+      method: "GET",
+    })
+  }
+
 }

@@ -35,6 +35,14 @@ export class Authenticator {
     SecureStore.setItem("refresh-token", tokenData);
   }
 
+  storeUserData(userData) {
+    SecureStore.setItem("user-data", userData);
+  }
+
+  fetchUserData() {
+    return SecureStore.getItem("user-data");
+  }
+
   validateToken(tokenData) {
     let token = this.fetchAccessToken();
 

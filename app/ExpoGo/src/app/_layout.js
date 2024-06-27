@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Slot, useRouter } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
+import { Slot, Stack, useRouter } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
 import { SessionProvider, useSession } from '../contexts/ctx'; // Importe o hook useSession
 import { ApiClient } from '../api/ApiClient';
 
@@ -34,7 +34,8 @@ export default function Root() {
       }
 
       if (usuario.dono_mercado) {
-        router.replace("/(market-app)/(tabs)/index");
+        console.log('redi')
+        router.push("/market-index");
       }
     };
 
@@ -42,8 +43,14 @@ export default function Root() {
   }, []);
 
     return (
-    <SessionProvider>
-      <Slot /> 
-    </SessionProvider>
+    <Stack
+      screenOptions={{
+        headerTintColor: "#fff", // isso define a cor do botão de voltar e do título para branco
+        headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="(market-app)" options={{ headerShown: false }} />
+      <Stack.Screen name="(user-app)" options={{ headerShown: false }} />
+    </Stack>
   );
 }

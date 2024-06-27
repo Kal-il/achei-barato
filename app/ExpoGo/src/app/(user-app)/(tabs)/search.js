@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,13 +12,14 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import GradientBackground from "../../../components/gradient.js";
 import ProductCategory from "../../../components/ProductCategory.js";
 import { Feather, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { ApiClient } from "../../../api/ApiClient.js";
 import PromotionCard from "../../../components/PromotionCard.js";
 import MercadoCard from "../../../components/MercadoCard.js";
+import { Authenticator } from "../../../api/Authenticator.js";
 
 const { width, height } = Dimensions.get("window"); //essa função retorna o tamanho da tela do dispositivo
 

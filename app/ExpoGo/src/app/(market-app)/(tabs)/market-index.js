@@ -7,6 +7,7 @@ import {
   StatusBar,
   Platform,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { Link } from "expo-router";
 import {
@@ -28,7 +29,23 @@ const Height = "100%";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
+  const [usuario, setUsuario] = useState(null);
   const api = new ApiClient();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      let usuarioData;
+      try {
+        usuarioData = await api.getUserDetail();
+        setUsuario(usuarioData);
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -55,54 +72,76 @@ export default function Dashboard() {
           </View>
         </GradientBackground>
       </View>
-      <View
-        style={{
-          width: "93%",
-          alignSelf: "center",
-          marginTop: 20,
-          marginBottom: 20,
-        }}
-      >
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-          Seja bem-vindo(a), <Text style={{ color: "#FF0F7B" }}>Fulano</Text>!
-        </Text>
-        <Text
+      {!loading && (
+        <View>
+          <View
+            style={{
+              width: "93%",
+              alignSelf: "center",
+              marginTop: 20,
+              marginBottom: 20,
+            }}
+          >
+            {usuario && (
+              <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+                Seja bem-vindo,{" "}
+                <Text style={{ color: "#FF0F7B" }}>{usuario.nome}</Text>!
+              </Text>
+            )}
+            <Text
+              style={{
+                fontSize: 18,
+                marginTop: 5,
+                fontWeight: "bold",
+                color: "#303030",
+              }}
+            >
+              Aqui, você encontra tudo sobre o seu mercado.
+            </Text>
+          </View>
+          <View style={styles.horizontalCardContainer}>
+            <SideButtonCard
+              text={"Suas\nPromoções"}
+              IconComponent={FontAwesome5}
+              iconName="store"
+              link="/sales"
+              iconSize={36}
+              hasArrow={true}
+            />
+            <SideButtonCard
+              text={"Seus\nProdutos"}
+              IconComponent={MaterialIcons}
+              iconName="local-grocery-store"
+              iconSize={42}
+              link="/products"
+              hasArrow={true}
+            />
+          </View>
+          <ButtonCard
+            text="Sistema ERP"
+            IconComponent={MaterialIcons}
+            iconSize={42}
+            link="/erp"
+            iconName="computer"
+          />
+          <ButtonCard
+            text="Novidades"
+            IconComponent={MaterialCommunityIcons}
+            iconSize={42}
+            link="/notifications"
+            iconName="bell"
+          />
+        </View>
+      )}
+      {loading && (
+        <View
           style={{
-            fontSize: 18,
-            marginTop: 5,
-            fontWeight: "bold",
-            color: "#303030",
+            marginTop: "40%",
           }}
         >
-          Aqui, você pode ver tudo sobre o seu mercado.
-        </Text>
-      </View>
-      <View style={styles.horizontalCardContainer}>
-        <SideButtonCard
-          text={"Suas\nPromoções"}
-          IconComponent={FontAwesome5}
-          iconName="store"
-          iconSize={36}
-        />
-        <SideButtonCard
-          text={"Seus\nProdutos"}
-          IconComponent={MaterialIcons}
-          iconName="local-grocery-store"
-          iconSize={42}
-        />
-      </View>
-      <ButtonCard
-        text="Sistema ERP"
-        IconComponent={MaterialIcons}
-        iconSize={42}
-        iconName="computer"
-      />
-      <ButtonCard
-        text="Novidades"
-        IconComponent={MaterialCommunityIcons}
-        iconSize={42}
-        iconName="bell"
-      />
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </KeyboardAvoidingView>
   );
 }

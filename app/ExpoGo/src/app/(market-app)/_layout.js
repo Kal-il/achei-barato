@@ -15,7 +15,34 @@ export default function AppLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="sales"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
+      <Stack.Screen
+        name="products"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
+      <Stack.Screen
+        name="erp"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
+      <Stack.Screen
+        name="registerErp"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+        }}
+      />
     </Stack>
   );
 }
-

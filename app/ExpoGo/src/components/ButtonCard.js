@@ -3,28 +3,28 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   Dimensions,
-  TouchableOpacity,
+  TouchableNativeFeedback,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import FavoriteButton from "./favoriteButton.js";
 const { height, width } = Dimensions.get("window");
 
-const ButtonCard = ({ text, IconComponent, iconSize, iconName}) => {
+const ButtonCard = ({ text, link, IconComponent, iconSize, iconName, onPress }) => {
   return (
-      <View style={styles.card}>
-        <View style={styles.cardContent}>
-          <View style={styles.nameIconContaier}>
-            <IconComponent name={iconName} size={iconSize} />
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-              {text}
-            </Text>
+    <Link href={link} asChild>
+      <TouchableNativeFeedback onPress={onPress}>
+        <View style={styles.card}>
+          <View style={styles.cardContent}>
+            <View style={styles.nameIconContaier}>
+              <IconComponent name={iconName} size={iconSize} />
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>{text}</Text>
+            </View>
           </View>
-          <AntDesign name="arrowright" size={36}/>
         </View>
-      </View>
+      </TouchableNativeFeedback>
+    </Link>
   );
 };
 
@@ -38,15 +38,15 @@ const styles = StyleSheet.create({
   horizontalCardContent: {
     gap: 20,
   },
-  horizontalNameIconContaier: { 
+  horizontalNameIconContaier: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
   },
-  nameIconContaier: { 
-    flexDirection: "row", 
-    alignItems: "center", 
-    gap: 20 
+  nameIconContaier: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
   },
   card: {
     width: "93%",
@@ -60,6 +60,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignSelf: "center",
   },
-})
+});
 
 export default ButtonCard;

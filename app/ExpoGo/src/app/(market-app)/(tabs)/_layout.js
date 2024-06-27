@@ -19,7 +19,7 @@ export default function TabRoutesLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="market-index"
         options={{
           title: "Home",
           tabBarIcon: ({ size, color, focused = false }) => {
@@ -34,7 +34,7 @@ export default function TabRoutesLayout() {
         }}
       />
       <Tabs.Screen
-        name="[profile]"
+        name="market-profile"
         options={{
           title: "",
           headerTitleAlign: "center",

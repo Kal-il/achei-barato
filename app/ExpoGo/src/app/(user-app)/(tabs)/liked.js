@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, StatusBar, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, router } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
 import GradientBackground from "../../../components/gradient";
+import { useEffect } from "react";
+import { Authenticator } from "../../../api/Authenticator";
 
 const { width, height } = Dimensions.get("window");
 

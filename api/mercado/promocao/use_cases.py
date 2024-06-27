@@ -88,14 +88,28 @@ class PromocaoUseCases:
             )
 
         try:
-            mercado_manager = MercadoManager(db=db)
             promocao_manager = PromocaoManager(db=db)
+            produto_manager = ProdutoManager(db)
+            mercado_manager = MercadoManager(db)
 
+            resultado = []
             mercado = await mercado_manager.get_mercado_by_usuario(usuario.id)
             promocoes = await promocao_manager.get_promocoes(mercado.id)
-            return [PromocaoSchema(**promocao.__dict__) for promocao in promocoes]
+            for promocao in promocoes:
+                produtos = await produto_manager.get_produtos_promocao(promocao.id)
+                produtos = [
+                    ProdutoOutput(**produto.__dict__, nome_mercado=mercado.nome_fantasia)
+                    for produto in produtos
+                ]
+                resultado.extend(produtos)
+
+            return resultado
         except Exception as e:
             print(e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro interno no servidor",
+            )
 
     async def get_promocoes_mercado(self, db: AsyncSession, id_mercado: uuid.UUID):
         try:
@@ -129,7 +143,6 @@ class PromocaoUseCases:
                 resultado.extend(produtos)
 
             return resultado
-
         except Exception as e:
             print(e)
             raise HTTPException(

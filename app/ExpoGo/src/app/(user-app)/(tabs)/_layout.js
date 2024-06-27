@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Tabs } from "expo-router";
+import React, {useEffect, useState} from "react";
+import { Tabs, useRouter } from "expo-router";
 import {
   MaterialIcons,
   MaterialCommunityIcons,
@@ -7,8 +7,40 @@ import {
 } from "@expo/vector-icons";
 import { StyleSheet, View } from "react-native";
 import GradientBackground from "../../../components/gradient";
+import { Authenticator } from "../../../api/Authenticator";
+import { ApiClient } from "../../../api/ApiClient";
 
 export default function TabRoutesLayout() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const asyncChecaUsuario = async () => {
+      const api = new ApiClient();
+      let usuario, erro;
+      try {
+        usuario = await api.getUserDetail();
+        api._authenticator.storeUserData(usuario);
+      } catch (e) {
+        if (e.response) {
+          erro = e.response.data.detail;
+        } else {
+          erro = e;
+        }
+      }
+
+      if (erro) {
+        router.replace("/sign-in");
+      }
+
+      if (usuario.dono_mercado) {
+        console.log('redi')
+        router.push("/market-index");
+      }
+    };
+
+    asyncChecaUsuario();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{
