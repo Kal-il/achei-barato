@@ -60,6 +60,7 @@ class UsuarioManager:
             nome=data.nome,
             email=data.email,
             hashed_password=get_hashed_password(data.password),
+            dono_mercado=data.dono_mercado,
         )
 
         self.db.add(_usuario)

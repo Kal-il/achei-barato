@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { ApiClient } from "../api/ApiClient";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 const CadastroScreen = () => {
   const [cep, setCep] = useState("");
@@ -19,6 +19,7 @@ const CadastroScreen = () => {
   const [cidade, setCidade] = useState("");
   const [bairro, setBairro] = useState("");
   const [endereco, setEndereco] = useState("");
+  const [erro, setErro] = useState("");
   const router = useRouter();
 
   const handleCadastrar = async () => {
@@ -39,45 +40,27 @@ const CadastroScreen = () => {
     await SecureStore.setItemAsync("bairro", bairro);
     await SecureStore.setItemAsync("endereco", endereco);
 
-    try {
-      router.replace("/register-user-3");
-    } catch (error) {
-      handleErrorResponse(error.response ? error.response.status : 500);
-    }
+    router.push("/auth/user-register/register-user-3");
   };
 
-  const handleErrorResponse = (status) => {
-    switch (status) {
-      case 400:
-        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
-        break;
-      case 403:
-        Alert.alert(
-          "Erro",
-          "Você não tem permissão para acessar este recurso."
-        );
-        break;
-      case 404:
-        Alert.alert("Erro", "Dado não encontrado.");
-        break;
-      case 409:
-        Alert.alert("Erro", "Esta ação já foi realizada.");
-        break;
-      case 500:
-        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
-    }
-  };
+  useEffect(() => {
+    const fetchErro = async () => {
+      let erroData = SecureStore.getItem("erro");
+      if (erroData) {
+        setErro(erroData);
+        await SecureStore.deleteItemAsync("erro");
+      }
+    };
+
+    fetchErro();
+  }, []);
 
   return (
     <LinearGradient colors={["#FF0F7B", "#F89B29"]} style={styles.container}>
       <View style={styles.innerContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../assets/logo.png")}
+            source={require("../../../assets/acheibarato.png")}
             style={{ width: 85, height: 85, marginTop: "10%" }}
           />
           <Text style={styles.logo}>
@@ -98,6 +81,10 @@ const CadastroScreen = () => {
               você.
             </Text>
           </View>
+
+          {erro && (
+            <ErrorMessage mensagem={erro} maxWidth={"100%"}></ErrorMessage>
+          )}
 
           <View style={styles.formContainer}>
             <View style={styles.inputView}>

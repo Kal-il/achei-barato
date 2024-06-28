@@ -10,37 +10,37 @@ const AuthContext = React.createContext({
 });
 
 const useStorageState = (key) => {
-	const [state, setState] = useState("");
-	const [valor, setValor] = useState('');
+  const [state, setState] = useState("");
+  const [valor, setValor] = useState("");
 
-	useEffect(() => {
-		const fetchValor = () => {
-			let value;
-			value = SecureStore.getItem(key)
-			if (value) {
-				setValor(value);
-			}
-		}
+  useEffect(() => {
+    const fetchValor = () => {
+      let value;
+      value = SecureStore.getItem(key);
+      if (value) {
+        setValor(value);
+      }
+    };
 
-		fetchValor();
+    fetchValor();
+  }, [key]);
 
-	}, [key])
+  useEffect(() => {
+    setState(valor);
+  }, [valor]);
 
+  const setValue = useCallback(
+    (valor) => {
+      if (valor) {
+        setState(valor);
+        SecureStore.setItem(key, valor);
+      }
+    },
+    [key]
+  );
 
-	useEffect(() => {
-		setState(valor)
-	}, [valor]);
-
-	const setValue = useCallback((valor) => {
-		if (valor) {
-			setState(valor);
-			SecureStore.setItem(key, valor);
-		}
-	}, [key]);
-
-	return [state, setValue]
-
-}
+  return [state, setValue];
+};
 
 export function useAuth() {
   const value = React.useContext(AuthContext);
@@ -61,22 +61,22 @@ export function AuthProvider({ children }) {
     const auth = new Authenticator();
     let token = auth.fetchAccessToken();
 
-
     const api = new ApiClient();
     try {
       await api.loginUser(formData);
-		usuario = await api.getUserDetail();
+      usuario = await api.getUserDetail();
+      console.log(JSON.stringify(usuario));
 
-		if (usuario) {
-			if (usuario.dono_mercado) {
-				setIsMercado("mercado")
-			} else {
-				setIsMercado("consumidor");
-			}
-		}
+      if (usuario) {
+        if (usuario.dono_mercado) {
+          setIsMercado("mercado");
+        } else {
+          setIsMercado("consumidor");
+        }
+      }
     } catch (error) {
       setIsMercado("deslogado");
-      throw error
+      throw error;
     }
   };
 
@@ -84,9 +84,9 @@ export function AuthProvider({ children }) {
     try {
       const api2 = new ApiClient();
       await api2._authenticator.cleanUserState();
-		setIsMercado("deslogado");
+      setIsMercado("deslogado");
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 

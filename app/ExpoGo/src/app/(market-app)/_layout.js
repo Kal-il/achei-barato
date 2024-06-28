@@ -3,21 +3,49 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth, useSession } from "../../contexts/ctx";
 import GradientBackground from "../../components/gradient";
 import { AntDesign } from "@expo/vector-icons";
+import { ApiClient } from "../../api/ApiClient";
+import * as SecureStore from "expo-secure-store";
 
 export default function AppLayout() {
   const { isMercado } = useAuth();
   const router = useRouter();
+  const api = new ApiClient();
+
+  const checkMercadoIsCreated = async () => {
+    console.log("checando");
+    try {
+      let mercado = await api.getMercadoUsuario();
+      console.log(JSON.stringify(mercado));
+    } catch (e) {
+      if (e.response) {
+        if (e.response.status == 404) {
+          console.log("usuario existe, mas mercado não.");
+          SecureStore.setItem(
+            "mensagem",
+            "Você ainda não finalizou o seu cadastro!"
+          );
+          router.replace("/auth/store-register/RegisterScreen2");
+        } else if (e.response.status == 401) {
+          router.replace("/sign-in");
+        }
+      }
+    }
+  };
 
   console.log("valor: " + isMercado);
 
   if (isMercado == "consumidor") {
     console.log("é consumidor");
-    router.push("/index");
+    router.replace("/index");
   }
 
   if (isMercado == "deslogado") {
     console.log("deslogado");
-    router.push("/sign-in");
+    router.replace("/sign-in");
+  }
+
+  if (isMercado == "mercado") {
+    checkMercadoIsCreated();
   }
 
   return (

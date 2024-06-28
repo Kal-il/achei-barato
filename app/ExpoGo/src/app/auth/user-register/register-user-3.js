@@ -11,9 +11,10 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from "expo-secure-store";
-import { ApiClient } from "../api/ApiClient";
+import { ApiClient } from "../../../api/ApiClient";
 import { useRouter } from "expo-router";
-import { useAuth } from "../contexts/ctx";
+import { useAuth } from "../../../contexts/ctx";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,6 +22,7 @@ const CadastroScreen = () => {
   const router = useRouter();
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [erro, setErro] = useState("");
 
   console.log("oi");
 
@@ -28,11 +30,11 @@ const CadastroScreen = () => {
 
   const handleCadastrar = async () => {
     if (senha === "" || confirmarSenha === "") {
-      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+      setErro("Todos os campos devem ser preenchidos.");
       return;
     }
     if (senha !== confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem.");
+      setErro("As senhas não coincidem.");
       return;
     }
 
@@ -75,37 +77,32 @@ const CadastroScreen = () => {
       console.log("indo logar");
       await signIn(customer.email, customer.password);
       console.log("logado");
-      router.replace("/");
+      await SecureStore.deleteItemAsync("nome");
+      await SecureStore.deleteItemAsync("email");
+      await SecureStore.deleteItemAsync("telefone");
+      await SecureStore.deleteItemAsync("cep");
+      await SecureStore.deleteItemAsync("estado");
+      await SecureStore.deleteItemAsync("cidade");
+      await SecureStore.deleteItemAsync("bairro");
+      await SecureStore.deleteItemAsync("endereco");
+      router.replace("/index");
       // Navegar para outra tela ou limpar os campos de entrada, se necessário
     } catch (error) {
-      console.log(error);
-      handleErrorResponse(error.response ? error.response.status : 500);
-    }
-  };
-
-  const handleErrorResponse = (status) => {
-    switch (status) {
-      case 400:
-        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
-        break;
-      case 403:
-        Alert.alert(
-          "Erro",
-          "Você não tem permissão para acessar este recurso."
-        );
-        break;
-      case 404:
-        Alert.alert("Erro", "Dado não encontrado.");
-        break;
-      case 409:
-        Alert.alert("Erro", "Esta ação já foi realizada.");
-        break;
-      case 500:
-        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
+      if (error.response) {
+        if (error.response.status != 500) {
+          let erroData = error.response.data.detail;
+          SecureStore.setItem("erro", erroData);
+          if (erroData.includes("e-mail")) {
+            router.replace("/auth/user-register/register-user-1");
+          } else {
+            router.back();
+          }
+        } else {
+          setErro(
+            "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
+          );
+        }
+      }
     }
   };
 
@@ -114,7 +111,7 @@ const CadastroScreen = () => {
       <View style={styles.innerContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../assets/logo.png")}
+            source={require("../../../assets/acheibarato.png")}
             style={{ width: 85, height: 85, marginTop: "20%" }}
           />
           <Text style={styles.logo}>
@@ -134,6 +131,9 @@ const CadastroScreen = () => {
               Insira a sua senha.
             </Text>
           </View>
+          {erro && (
+            <ErrorMessage mensagem={erro} maxWidth={"100%"}></ErrorMessage>
+          )}
           <View style={styles.inputView}>
             <TextInput
               style={styles.inputText}

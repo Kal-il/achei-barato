@@ -163,7 +163,7 @@ export default function Dashboard() {
                   style={{ width: windowWidth, height: Height }}
                 />
                 <Image
-                  source={require("../../../assets/logo.png")}
+                  source={require("../../../assets/acheibarato.png")}
                   style={{ width: windowWidth, height: Height }}
                 />
               </ScrollView>

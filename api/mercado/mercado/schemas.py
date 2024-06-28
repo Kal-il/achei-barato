@@ -69,6 +69,36 @@ class MercadoBase(BaseModel):
         return _erros
 
 
+class MercadoCreateSchema(MercadoBase):
+    cnpj: str = Field(..., max_length=18, description="CNPJ")
+    nome_responsavel: str = Field(
+        ..., max_length=255, description="Nome do responsável"
+    )
+    cpf_responsavel: str = Field(..., max_length=14, description="CPF do responsável")
+
+    def validar_campos(self):
+        erros = super().validar_campos()
+
+        if erro := self._validar_cpf_responsavel():
+            erros["cpf_responsavel"] = erro
+
+        if erro := self._validar_cnpj():
+            erros["cnpj"] = erro
+
+        return erros
+
+    def _validar_cpf_responsavel(self):
+        self.cpf_responsavel = digitos_doc(self.cpf_responsavel)
+        if not self.cpf_responsavel.isdigit() or len(self.cpf_responsavel) > 11:
+            return "Insira um CPF válido."
+
+    def _validar_cnpj(self):
+        validador = CNPJ()
+        self.cnpj = digitos_doc(self.cnpj)
+        if len(self.cnpj) > 14 or not validador.validate(self.cnpj):
+            return "Insira um CNPJ válido."
+
+
 class MercadoSchema(MercadoBase):
     """Schema acrescenta campos de CNPJ, nome e CPF do responsável."""
 
@@ -110,7 +140,7 @@ class MercadoOutput(MercadoSchema):
     pass
 
 
-class MercadoCreate(MercadoSchema):
+class MercadoCreate(MercadoCreateSchema):
     usuario: Optional[UsuarioBase]
     pass
 

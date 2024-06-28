@@ -31,7 +31,7 @@ class ConsumidorUseCase:
     ) -> Optional[Consumidor]:
         consumidor_manager = ConsumidorManager(db=db)
 
-        if await consumidor_manager.get_consumidor_by_email(data.email):
+        if erro := await consumidor_manager.get_consumidor_by_email(data.email):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Este e-mail já está sendo usado",
@@ -44,12 +44,13 @@ class ConsumidorUseCase:
                 detail=erros,
             )
 
-        _consumidor = await consumidor_manager.create_consumidor(data)
-        # except Exception as err:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         detail=f"Erro ao cadastrar consumidor: {err}",
-        #     )
+        try:
+            _consumidor = await consumidor_manager.create_consumidor(data)
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao cadastrar consumidor: {err}",
+            )
 
         return _consumidor
 
@@ -156,13 +157,16 @@ class ConsumidorUseCase:
 
     @staticmethod
     async def update_consumidor_data(
-        db: AsyncSession, id_consumidor: UUID, new_consumidor: ConsumidorUpdate, foto: Optional[UploadFile]
+        db: AsyncSession,
+        id_consumidor: UUID,
+        new_consumidor: ConsumidorUpdate,
+        foto: Optional[UploadFile],
     ):
 
         update_fields = {}
         if foto:
             url_foto = await FileManager.upload_foto(foto)
-            update_fields['url_foto'] = url_foto
+            update_fields["url_foto"] = url_foto
 
         for campo in new_consumidor:
             if campo[1]:

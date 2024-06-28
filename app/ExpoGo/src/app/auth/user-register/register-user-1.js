@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,10 @@ import {
   Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
 import { Link, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import GoogleSignInScreen from "../components/GoogleSignIn";
-import { ApiClient } from "../api/ApiClient";
-import ErrorMessage from "../components/ErrorMessage";
+import GoogleSignInScreen from "../../../components/GoogleSignIn";
+import ErrorMessage from "../../../components/ErrorMessage";
 
 const { height, width } = Dimensions.get("window");
 
@@ -34,13 +32,15 @@ const CadastroScreen = () => {
       return;
     }
 
-    await SecureStore.setItemAsync("nome", nome);
-    await SecureStore.setItemAsync("email", email);
-    await SecureStore.setItemAsync("telefone", telefone);
+    console.log("emial: " + email);
+
+    SecureStore.setItem("nome", nome);
+    SecureStore.setItem("email", email);
+    SecureStore.setItem("telefone", telefone);
 
     setLoading(true);
     try {
-      router.replace("/register-user-2");
+      router.push("/auth/user-register/register-user-2");
     } catch (error) {
       console.log(error);
     } finally {
@@ -53,6 +53,31 @@ const CadastroScreen = () => {
     setTelefone(formattedInput);
   };
 
+  useEffect(() => {
+    const fetchErro = async () => {
+      let erroData = SecureStore.getItem("erro");
+      if (erroData) {
+        setErro(erroData);
+        await SecureStore.deleteItemAsync("erro");
+      }
+    };
+
+    const fetchPlaceholder = async () => {
+      let nomeData = await SecureStore.getItemAsync("nome");
+      let emailData = await SecureStore.getItemAsync("email");
+      let telefoneData = await SecureStore.getItemAsync("telefone");
+
+      if (nomeData && emailData && telefoneData) {
+        setNome(nomeData);
+        setEmail(emailData);
+        setTelefone(telefoneData);
+      }
+    };
+
+    fetchErro();
+    fetchPlaceholder();
+  }, []);
+
   return (
     <LinearGradient
       colors={["#FF0F7B", "#F89B29"]}
@@ -63,7 +88,7 @@ const CadastroScreen = () => {
       <View style={styles.innerContainer}>
         <View style={styles.logoContainer}>
           <Image
-            source={require("../assets/logo.png")}
+            source={require("../../../assets/acheibarato.png")}
             style={{ width: 85, height: 85, marginTop: "10%" }}
           />
           <Text style={styles.logo}>
@@ -132,7 +157,7 @@ const CadastroScreen = () => {
 
           <View style={{ gap: 10 }}>
             <GoogleSignInScreen text={"Cadastrar com o Google"} />
-            <Link href={"/RegisterScreen"} asChild>
+            <Link href={"auth/store-register/RegisterScreen"} asChild>
               <TouchableOpacity style={styles.smallerButton}>
                 <Text style={{ color: "#303030", fontWeight: "bold" }}>
                   Cadastre-se como{" "}

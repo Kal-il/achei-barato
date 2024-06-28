@@ -8,8 +8,10 @@ from mercado.mercado.models import MercadoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
 
-
 from usuario.usuario.models import UsuarioManager
+
+
+from sqlalchemy.exc import IntegrityError
 
 
 class MercadoUseCases:
@@ -46,13 +48,10 @@ class MercadoUseCases:
 
         await self._validar_cadastro(db=db, data=novo_mercado)
         if imagem:
-            update_fields['url_foto'] = await FileManager.upload_foto(imagem)
-
+            update_fields["url_foto"] = await FileManager.upload_foto(imagem)
 
         mercado_manager = MercadoManager(db=db)
-        await mercado_manager.update_mercado(
-            usuario.id, dados_mercado=update_fields
-        )
+        await mercado_manager.update_mercado(usuario.id, dados_mercado=update_fields)
 
     async def delete_mercado(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
@@ -126,6 +125,11 @@ class MercadoUseCases:
         mercado_manager = MercadoManager(db=db)
         try:
             _mercado = await mercado_manager.create_mercado(data)
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Já existe um mercado cadastrado com este CNPJ",
+            )
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

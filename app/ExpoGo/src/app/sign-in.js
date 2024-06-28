@@ -38,7 +38,7 @@ export default function Dashboard() {
   };
 
   const handleRedirect = async () => {
-    router.replace("/register-user-1");
+    router.replace("/auth/user-register/register-user-1");
   };
 
   const handleLogin = async () => {
@@ -72,7 +72,7 @@ export default function Dashboard() {
     >
       <View style={styles.innerContainer}>
         <View style={{ alignItems: "center" }}>
-          <Image source={require("../assets/logo.png")} style={styles.image} />
+          <Image source={require("../assets/acheibarato.png")} style={styles.image} />
           <Text style={styles.logo}>
             <Text style={{ color: "white" }}>Achei</Text>{" "}
             <Text style={{ color: "#7F48CA" }}>Barato</Text>
@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
     paddingTop: "15%",
   },
   image: {
-    width: width * 0.5,
     height: height * 0.25,
+    aspectRatio: 1
   },
   logo: {
     fontWeight: "bold",
