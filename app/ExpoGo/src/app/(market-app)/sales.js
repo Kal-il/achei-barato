@@ -11,10 +11,12 @@ import { Link } from "expo-router";
 import { ApiClient } from "../../api/ApiClient";
 import Button from "../../components/Button";
 import PromotionCard from "../../components/PromotionCard";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function SalesPage() {
   const [loading, setLoading] = useState(true);
   const [promocoes, setPromocoes] = useState([]);
+  const [vazio, setVazio] = useState(false);
   const api = new ApiClient();
 
   const renderPromocao = ({ item }) => {
@@ -37,9 +39,14 @@ export default function SalesPage() {
 
   useEffect(() => {
     const fetchMarketSales = async () => {
+      setVazio(false);
       let promocoesData;
       try {
         promocoesData = await api.getPromocoesUsuario();
+        if (promocoesData.length == 0) {
+          setVazio(true);
+        }
+
         setPromocoes(promocoesData);
         setLoading(false);
       } catch (e) {
@@ -61,7 +68,7 @@ export default function SalesPage() {
             <View style={styles.mainContainer}>
               <View style={styles.headerContainer}>
                 <Text style={styles.title}>Suas Promoções</Text>
-                <Link href="/sales" asChild>
+                <Link href="/sale/create" asChild>
                   <TouchableOpacity>
                     <Button title="Cadastrar" ButtonColor={"#FF0F7B"} />
                   </TouchableOpacity>
@@ -76,10 +83,34 @@ export default function SalesPage() {
           style={{
             height: "60%",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+      {promocoes.length == 0 && !loading && (
+        <View
+          style={{
+            alignItems: "center",
+            marginTop: "50%",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="emoticon-sad"
+            size={56}
+            color={"#616161"}
+          />
+          <Text
+            style={{
+              fontWeight: "bold",
+              color: "#616161",
+              textAlign: "center",
+              fontSize: 20,
+            }}
+          >
+            Você ainda não cadastrou{"\n"}nenhuma promoção.
+          </Text>
         </View>
       )}
     </View>
