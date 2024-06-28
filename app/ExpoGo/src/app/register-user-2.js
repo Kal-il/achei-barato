@@ -6,20 +6,20 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, useRouter} from "expo-router";
-import * as SecureStore from 'expo-secure-store';
+import { Link, useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { ApiClient } from "../api/ApiClient";
 
-const CadastroScreen = ({ navigation }) => {
+const CadastroScreen = () => {
   const [cep, setCep] = useState("");
   const [estado, setEstado] = useState("");
   const [cidade, setCidade] = useState("");
   const [bairro, setBairro] = useState("");
   const [endereco, setEndereco] = useState("");
- 
+  const router = useRouter();
 
   const handleCadastrar = async () => {
     if (
@@ -39,20 +39,8 @@ const CadastroScreen = ({ navigation }) => {
     await SecureStore.setItemAsync("bairro", bairro);
     await SecureStore.setItemAsync("endereco", endereco);
 
-    const api = new ApiClient();
-
-    const customerAddress = {
-      cep: cep,
-      estado: estado,
-      cidade: cidade,
-      bairro: bairro,
-      endereco: endereco,
-    };
-
-    const router = useRouter();
-
     try {
-        router.replace("/register-user-3");
+      router.replace("/register-user-3");
     } catch (error) {
       handleErrorResponse(error.response ? error.response.status : 500);
     }
@@ -64,7 +52,10 @@ const CadastroScreen = ({ navigation }) => {
         Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
         break;
       case 403:
-        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        Alert.alert(
+          "Erro",
+          "Você não tem permissão para acessar este recurso."
+        );
         break;
       case 404:
         Alert.alert("Erro", "Dado não encontrado.");
@@ -82,96 +73,128 @@ const CadastroScreen = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
+    <LinearGradient colors={["#FF0F7B", "#F89B29"]} style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image
-          source={require("../assets/logo.png")}
-          style={{ width: 85, height: 85, marginTop: "20%" }}
-        />
-        <Text style={styles.logo}>
-          <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}
-          <Text style={{ color: "#7F48CA" }}>Barato</Text>
-        </Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Cep"
-            keyboardType="numeric"
-            autoCapitalize="none"
-            value={cep}
-            onChangeText={setCep}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../assets/logo.png")}
+            style={{ width: 85, height: 85, marginTop: "10%" }}
           />
+          <Text style={styles.logo}>
+            <Text style={{ color: "white" }}>Achei </Text>
+            <Text style={{ color: "#7F48CA" }}>Barato</Text>
+          </Text>
         </View>
 
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Estado"
-            keyboardType="default"
-            autoCapitalize="none"
-            value={estado}
-            onChangeText={setEstado}
-          />
-        </View>
+        <View style={styles.contentContainer}>
+          <View style={{ marginTop: 10, marginBottom: 30 }}>
+            <Text
+              style={{ fontSize: 24, fontWeight: "bold", color: "#303030" }}
+            >
+              Insira seu endereço
+            </Text>
+            <Text style={{ fontSize: 18, color: "#303030" }}>
+              Usamos esses dados para encontrar as promoções mais próximas de
+              você.
+            </Text>
+          </View>
 
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Cidade"
-            keyboardType="default"
-            autoCapitalize="none"
-            value={cidade}
-            onChangeText={setCidade}
-          />
-        </View>
+          <View style={styles.formContainer}>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="CEP"
+                placeholderTextColor={"#8D8D8D"}
+                keyboardType="numeric"
+                autoCapitalize="none"
+                value={cep}
+                onChangeText={setCep}
+              />
+            </View>
 
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Bairro"
-            keyboardType="default"
-            autoCapitalize="none"
-            value={bairro}
-            onChangeText={setBairro}
-          />
-        </View>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Estado"
+                placeholderTextColor={"#8D8D8D"}
+                keyboardType="default"
+                autoCapitalize="none"
+                value={estado}
+                onChangeText={setEstado}
+              />
+            </View>
 
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Endereco"
-            keyboardType="default"
-            autoCapitalize="none"
-            value={endereco}
-            onChangeText={setEndereco}
-          />
-        </View>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Cidade"
+                placeholderTextColor={"#8D8D8D"}
+                keyboardType="default"
+                autoCapitalize="none"
+                value={cidade}
+                onChangeText={setCidade}
+              />
+            </View>
 
-        <Link href={"register-user-3"} asChild>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Bairro"
+                placeholderTextColor={"#8D8D8D"}
+                keyboardType="default"
+                autoCapitalize="none"
+                value={bairro}
+                onChangeText={setBairro}
+              />
+            </View>
+
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Endereco"
+                placeholderTextColor={"#8D8D8D"}
+                keyboardType="default"
+                autoCapitalize="none"
+                value={endereco}
+                onChangeText={setEndereco}
+              />
+            </View>
+          </View>
           <TouchableOpacity style={styles.loginBtn} onPress={handleCadastrar}>
             <Text style={styles.loginText}>Continuar</Text>
           </TouchableOpacity>
-        </Link>
-
+        </View>
       </View>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  contentContainer: {
+    marginTop: 20,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 24,
+    elevation: 2,
+  },
+  logoContainer: {
     alignItems: "center",
-    justifyContent: "center",
+  },
+  container: {
+    height: "100%",
+  },
+  logo: {
+    fontWeight: "bold",
+    fontSize: 50,
+    color: "#fff",
   },
   innerContainer: {
-    width: "100%",
-    alignItems: "center",
+    width: "90%",
+    alignSelf: "center",
   },
   inputView: {
-    width: "80%",
-    backgroundColor: "#fff",
-    borderRadius: 24,
+    backgroundColor: "#F2F2F2",
+    borderRadius: 16,
     height: "6%",
     marginBottom: "5%",
     justifyContent: "center",
@@ -179,19 +202,21 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 50,
-    color: "#8D8D8D",
+    color: "#303030",
   },
   loginBtn: {
-    width: "65%",
+    width: "50%",
     backgroundColor: "#3672F6",
-    borderRadius: 25,
-    height: "6%",
+    borderRadius: 16,
+    height: 38,
     alignItems: "center",
     justifyContent: "center",
     marginTop: "2%",
     marginBottom: "2%",
+    alignSelf: "flex-end",
   },
   loginText: {
+    fontWeight: "bold",
     color: "white",
   },
   text: {

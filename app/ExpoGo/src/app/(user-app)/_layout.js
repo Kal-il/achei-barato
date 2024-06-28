@@ -36,13 +36,6 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
-        name="store-profile"
-        options={{
-          title: "perfil do mercado",
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
         name="edit-location"
         options={{
           elevation: 0,

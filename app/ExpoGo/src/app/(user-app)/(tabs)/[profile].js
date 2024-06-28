@@ -70,19 +70,19 @@ export default function Perfil() {
           ButtonLink={"/edit-profile"}
           ButtonText={"Editar Perfil"}
           ButtonIcon={"edit"}
-          ButtonIconColor={"#8D8D8D"}
+          ButtonIconColor={"#4a4a4a"}
         />
         <ProfileScreenButton
           ButtonLink={"/configuration"}
           ButtonText={"Configurações"}
           ButtonIcon={"settings"}
-          ButtonIconColor={"#8D8D8D"}
+          ButtonIconColor={"#4a4a4a"}
         />
         <ProfileScreenButton
           ButtonLink={"/edit-location"}
           ButtonText={"Editar Localização"}
           ButtonIcon={"map"}
-          ButtonIconColor={"#8D8D8D"}
+          ButtonIconColor={"#4a4a4a"}
         />
         <ProfileScreenButton
           ButtonLink={"/logout"}

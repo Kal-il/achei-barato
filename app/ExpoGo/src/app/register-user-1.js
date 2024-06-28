@@ -8,28 +8,29 @@ import {
   Image,
   Alert,
   ActivityIndicator,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons"; //Importação dos ícones do google e facebook
-import { Link,  useRouter } from "expo-router";
-import * as SecureStore from 'expo-secure-store'
+import { Link, useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import GoogleSignInScreen from "../components/GoogleSignIn";
 import { ApiClient } from "../api/ApiClient";
+import ErrorMessage from "../components/ErrorMessage";
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
-
-const CadastroScreen = ({ navigation }) => {
+const CadastroScreen = () => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
 
   const handleCadastrar = async () => {
     if (nome === "" || email === "" || telefone === "") {
-      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+      setErro("Todos os campos devem ser preenchidos.");
       return;
     }
 
@@ -37,45 +38,13 @@ const CadastroScreen = ({ navigation }) => {
     await SecureStore.setItemAsync("email", email);
     await SecureStore.setItemAsync("telefone", telefone);
 
-    const api = new ApiClient();
-
-    const customer = {
-      nome: nome,
-      email: email,
-      telefone: telefone,
-    };
-
     setLoading(true);
     try {
       router.replace("/register-user-2");
     } catch (error) {
       console.log(error);
-      handleErrorResponse(error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleErrorResponse = (status) => {
-    switch (status) {
-      case 400:
-        Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
-        break;
-      case 403:
-        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
-        break;
-      case 404:
-        Alert.alert("Erro", "Dado não encontrado.");
-        break;
-      case 409:
-        Alert.alert("Erro", "Esta ação já foi realizada.");
-        break;
-      case 500:
-        Alert.alert("Erro", "Erro no servidor. Tente novamente mais tarde.");
-        break;
-      default:
-        Alert.alert("Erro", "Erro inesperado. Tente novamente mais tarde.");
-        break;
     }
   };
 
@@ -85,138 +54,163 @@ const CadastroScreen = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient 
-    colors={['#A9C6FC', '#F67235']}
+    <LinearGradient
+      colors={["#FF0F7B", "#F89B29"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}
-      >
+    >
       <View style={styles.innerContainer}>
-        <Image
-          source={require("../assets/logo.png")}
-          style={{ width: 85, height: 85, marginTop: "20%" }}
-        />
-        <Text style={styles.logo}>
-          <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}
-          <Text style={{ color: "#7F48CA" }}>Barato</Text>
-        </Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Seu nome"
-            placeholderTextColor="#8D8D8D"
-            value={nome}
-            onChangeText={(text) => setNome(text)}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../assets/logo.png")}
+            style={{ width: 85, height: 85, marginTop: "10%" }}
           />
+          <Text style={styles.logo}>
+            <Text style={{ color: "white" }}>Achei</Text>{" "}
+            <Text style={{ color: "#7F48CA" }}>Barato</Text>
+          </Text>
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Seu email"
-            placeholderTextColor="#8D8D8D"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Telefone"
-            placeholderTextColor="#8D8D8D"
-            value={telefone}
-            onChangeText={formatarTelefone}
-            keyboardType="phone-pad" // Define o teclado para números
-          />
-        </View>
-        <ActivityIndicator size="large" color="#0000ff" animating={loading} />
-          <TouchableOpacity style={styles.button} onPress={handleCadastrar}>
-            <Text style={styles.loginText}>Continuar</Text>
-          </TouchableOpacity>     
-		
+        <View style={styles.contentContainer}>
+          <View>
+            <View style={{ marginBottom: 20 }}>
+              <Text style={styles.contentTitle}>Faça seu cadastro</Text>
+            </View>
+
+            {erro && (
+              <ErrorMessage mensagem={erro} maxWidth={"100%"}></ErrorMessage>
+            )}
+            <View style={{ gap: 20 }}>
+              <View style={styles.inputView}>
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Seu nome"
+                  placeholderTextColor="#8D8D8D"
+                  value={nome}
+                  onChangeText={(text) => setNome(text)}
+                />
+              </View>
+              <View style={styles.inputView}>
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Seu email"
+                  placeholderTextColor="#8D8D8D"
+                  value={email}
+                  onChangeText={(text) => setEmail(text)}
+                />
+              </View>
+              <View style={styles.inputView}>
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Telefone"
+                  placeholderTextColor="#8D8D8D"
+                  value={telefone}
+                  onChangeText={formatarTelefone}
+                  keyboardType="phone-pad" // Define o teclado para números
+                />
+              </View>
+            </View>
+            {loading && (
+              <ActivityIndicator
+                size="large"
+                color="#0000ff"
+                animating={loading}
+              />
+            )}
+            <View style={{ marginTop: 30, marginBottom: 15, gap: 8 }}>
+              <TouchableOpacity style={styles.button} onPress={handleCadastrar}>
+                <Text style={styles.loginText}>Continuar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
           <View style={styles.lineContainer}>
-          <View style={styles.line} />
-          <Text style={styles.orText}>Ou</Text>
-          <View style={styles.line} />
-        </View>
+            <View style={styles.line} />
+            <Text style={styles.orText}>Ou</Text>
+            <View style={styles.line} />
+          </View>
 
-        <GoogleSignInScreen/>
-
-        <View style={styles.separator} />
-        
-        <View style={styles.textContainer}>
-          <View style={styles.textContainer}>    
-
+          <View style={{ gap: 10 }}>
+            <GoogleSignInScreen text={"Cadastrar com o Google"} />
             <Link href={"/RegisterScreen"} asChild>
-              <TouchableOpacity>
-                <Text style={styles.link}>
-                É uma empresa? Cadastre-se aqui!
+              <TouchableOpacity style={styles.smallerButton}>
+                <Text style={{ color: "#303030", fontWeight: "bold" }}>
+                  Cadastre-se como{" "}
                 </Text>
+                <Text style={styles.redirectText}>empresa</Text>
               </TouchableOpacity>
             </Link>
-
+          </View>
         </View>
-      </View>
       </View>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  contentTitle: { fontSize: 24, fontWeight: "bold", color: "#303030" },
+  contentContainer: {
+    gap: 10,
+    marginTop: 20,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 24,
+    elevation: 2,
+  },
+  logoContainer: {
     alignItems: "center",
-    justifyContent: "center",
+  },
+  container: {
+    height: "100%",
   },
   innerContainer: {
-    width: "100%",
-    alignItems: "center",
+    width: "90%",
+    alignSelf: "center",
+    justifyContent: "space-evenly",
   },
   logo: {
     fontWeight: "bold",
     fontSize: 50,
     color: "#fff",
-    marginBottom: 40,
   },
   inputView: {
-    width: width * 0.8,
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    height: height * 0.065,
-    marginBottom: '5%',
-    justifyContent: 'center',
+    backgroundColor: "#F2F2F2",
+    borderRadius: 16,
+    height: "6%",
+    justifyContent: "center",
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
   },
   inputText: {
     height: 50,
-    color: '#7E48CC',
+    color: "#303030",
   },
   button: {
-    width: width * 0.4,
+    width: "100%",
     height: height * 0.05,
-    backgroundColor: '#007bff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
-    marginBottom: '5%',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    backgroundColor: "#007bff",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 16,
+    alignSelf: "center",
+    elevation: 3,
+  },
+  smallerButton: {
+    width: "100%",
+    height: height * 0.05,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    borderRadius: 24,
+    alignSelf: "center",
   },
   loginText: {
     color: "white",
+    fontWeight: "bold",
+  },
+  redirectText: {
+    color: "#FF0F7B",
+    fontWeight: "bold",
   },
   socialText: {
     color: "white",
@@ -227,7 +221,7 @@ const styles = StyleSheet.create({
     marginVertical: 1,
   },
   orText: {
-    color: "white",
+    color: "#303030",
     fontWeight: "bold",
     marginHorizontal: "5%",
   },
@@ -236,32 +230,35 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   link: {
-    color: "white",
+    color: "#FF0F7B",
     textDecorationLine: "underline",
     fontWeight: "bold",
+    textAlign: "center",
   },
   textContainer: {
     marginTop: 1,
+    flexDirection: "row",
+    alignSelf: "center",
     paddingHorizontal: 2,
   },
   lineContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: '3%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: "3%",
   },
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: "white",
+    backgroundColor: "#303030",
   },
   separator: {
-    borderBottomColor: '#fff',
+    borderBottomColor: "#fff",
     borderBottomWidth: 1,
     width: width,
-    alignSelf: 'center',
-    marginTop: '3%',
-    marginBottom: '5%',
+    alignSelf: "center",
+    marginTop: "3%",
+    marginBottom: "5%",
   },
 });
 

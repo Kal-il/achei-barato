@@ -65,64 +65,66 @@ export default function Dashboard() {
 
   return (
     <LinearGradient
-      colors={["#A9C6FC", "#F67235"]}
+      colors={["#FF0F7B", "#F89B29"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
       <View style={styles.innerContainer}>
-        <Image source={require("../assets/logo.png")} style={styles.image} />
-        <Text style={styles.logo}>
-          <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}
-          <Text style={{ color: "#7F48CA" }}>Barato</Text>
-        </Text>
+        <View style={{ alignItems: "center" }}>
+          <Image source={require("../assets/logo.png")} style={styles.image} />
+          <Text style={styles.logo}>
+            <Text style={{ color: "white" }}>Achei</Text>{" "}
+            <Text style={{ color: "#7F48CA" }}>Barato</Text>
+          </Text>
+        </View>
 
         {erro && <ErrorMessage mensagem={erro}></ErrorMessage>}
 
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Seu e-mail"
-            placeholderTextColor="#7E48CC"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-        </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Sua senha"
-            placeholderTextColor="#7E48CC"
-            secureTextEntry={true}
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-        </View>
-
-        <TouchableOpacity>
-          <Text style={styles.loginText} marginTop="1%">
-            Esqueceu sua Senha?
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.loginText}>Fazer Login</Text>
-        </TouchableOpacity>
-
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
-
-        <View style={styles.lineContainer}>
-          <View style={styles.line} />
-          <Text style={styles.loginText}>Ou</Text>
-          <View style={styles.line} />
+        <View style={{ marginBottom: "5%" }}>
+          <View style={{ gap: 15 }}>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Seu e-mail"
+                placeholderTextColor="#7E48CC"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+              />
+            </View>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.inputText}
+                placeholder="Sua senha"
+                placeholderTextColor="#7E48CC"
+                secureTextEntry={true}
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+              />
+            </View>
+          </View>
+          <TouchableOpacity style={{ alignSelf: "flex-end" }}>
+            <Text style={styles.loginText} marginTop="1%">
+              Esqueceu sua Senha?
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <GoogleSignInScreen style={{ margin: 2 }} />
+        <View style={{ width: "80%", gap: 10 }}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.loginText}>Fazer Login</Text>
+          </TouchableOpacity>
 
-        <View style={styles.separator} />
+          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+          <GoogleSignInScreen text={"Continuar com o Google"} />
+        </View>
 
-        <TouchableOpacity onPress={handleRedirect}>
-          <Text style={styles.loginText}>Não tem uma conta? Cadastre-se!</Text>
+        <TouchableOpacity
+          style={{ flexDirection: "row", marginTop: 10 }}
+          onPress={handleRedirect}
+        >
+          <Text style={styles.text}>Não tem uma conta? </Text>
+          <Text style={styles.redirectText}>Cadastre-se!</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -131,18 +133,17 @@ export default function Dashboard() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: "100%",
     alignItems: "center",
-    justifyContent: "center",
   },
   innerContainer: {
     width: "100%",
     alignItems: "center",
+    paddingTop: "15%",
   },
   image: {
     width: width * 0.5,
     height: height * 0.25,
-    marginBottom: "5%",
   },
   logo: {
     fontWeight: "bold",
@@ -155,17 +156,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 24,
     height: height * 0.07,
-    marginBottom: "5%",
     justifyContent: "center",
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    elevation: 3,
   },
   inputText: {
     height: 50,
@@ -176,23 +169,20 @@ const styles = StyleSheet.create({
     marginHorizontal: "3%",
     fontWeight: "bold",
   },
+  redirectText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  text: { color: "white", fontWeight: "500" },
   button: {
-    width: "40%",
+    width: "100%",
     height: 40,
     backgroundColor: "#007bff",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 50,
     marginTop: "5%",
-    marginBottom: "5%",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    elevation: 2,
   },
   lineContainer: {
     flexDirection: "row",

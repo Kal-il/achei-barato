@@ -7,22 +7,22 @@ import {
   StyleSheet,
   Image,
   Alert,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import * as SecureStore from 'expo-secure-store'
+import * as SecureStore from "expo-secure-store";
 import { ApiClient } from "../api/ApiClient";
-import {useRouter} from "expo-router";
+import { useRouter } from "expo-router";
 import { useAuth } from "../contexts/ctx";
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
-const router = useRouter();
-
-
-const CadastroScreen = ({ navigation }) => {
+const CadastroScreen = () => {
+  const router = useRouter();
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+
+  console.log("oi");
 
   const { signIn } = useAuth();
 
@@ -39,7 +39,6 @@ const CadastroScreen = ({ navigation }) => {
     let nome, email, telefone, cep, estado, cidade, bairro, endereco;
 
     try {
-
       nome = await SecureStore.getItemAsync("nome");
       email = await SecureStore.getItemAsync("email");
       telefone = await SecureStore.getItemAsync("telefone");
@@ -48,12 +47,10 @@ const CadastroScreen = ({ navigation }) => {
       cidade = await SecureStore.getItemAsync("cidade");
       bairro = await SecureStore.getItemAsync("bairro");
       endereco = await SecureStore.getItemAsync("endereco");
-
     } catch (error) {
       console.error("Erro ao obter dados do SecureStore:", error);
       return;
     }
-    
 
     const customer = {
       nome: nome,
@@ -66,20 +63,20 @@ const CadastroScreen = ({ navigation }) => {
       endereco: endereco,
       complemento: "",
       numero_endereco: 1,
-      telefone: parseInt(telefone)
+      telefone: parseInt(telefone),
     };
 
     const api = new ApiClient();
-    
+
     try {
       console.log(customer);
-      const response = await api.createCostumer(customer);
+      await api.createCostumer(customer);
 
-	  console.log('indo logar')
-	  await signIn(customer.email, customer.password);
-	  console.log('logado')
+      console.log("indo logar");
+      await signIn(customer.email, customer.password);
+      console.log("logado");
       router.replace("/");
-        // Navegar para outra tela ou limpar os campos de entrada, se necessário
+      // Navegar para outra tela ou limpar os campos de entrada, se necessário
     } catch (error) {
       console.log(error);
       handleErrorResponse(error.response ? error.response.status : 500);
@@ -92,7 +89,10 @@ const CadastroScreen = ({ navigation }) => {
         Alert.alert("Erro", "Erro nos dados inseridos no formulário.");
         break;
       case 403:
-        Alert.alert("Erro", "Você não tem permissão para acessar este recurso.");
+        Alert.alert(
+          "Erro",
+          "Você não tem permissão para acessar este recurso."
+        );
         break;
       case 404:
         Alert.alert("Erro", "Dado não encontrado.");
@@ -110,59 +110,79 @@ const CadastroScreen = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient colors={["#F67235", "#A9C6FC"]} style={styles.container}>
+    <LinearGradient colors={["#FF0F7B", "#F89B29"]} style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image
-          source={require("../assets/logo.png")}
-          style={{ width: 85, height: 85, marginTop: "20%" }}
-        />
-        <Text style={styles.logo}>
-          <Text style={{ color: "#FF5C00" }}>Achei</Text>{" "}
-          <Text style={{ color: "#7F48CA" }}>Barato</Text>
-        </Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Senha"
-            placeholderTextColor="#8D8D8D"
-            secureTextEntry={true}
-            value={senha}
-            onChangeText={(text) => setSenha(text)}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../assets/logo.png")}
+            style={{ width: 85, height: 85, marginTop: "20%" }}
           />
-        </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.inputText}
-            placeholder="Confirmar Senha"
-            placeholderTextColor="#8D8D8D"
-            secureTextEntry={true}
-            value={confirmarSenha}
-            onChangeText={(text) => setConfirmarSenha(text)}
-          />
+          <Text style={styles.logo}>
+            <Text style={{ color: "white" }}>Achei</Text>{" "}
+            <Text style={{ color: "#7F48CA" }}>Barato</Text>
+          </Text>
         </View>
 
-	
-        <TouchableOpacity onPress={handleCadastrar}>
-        <View style={styles.button}>
-          <Text style={styles.loginText}>Cadastrar</Text>
+        <View style={styles.contentContainer}>
+          <View style={{ marginBottom: 20 }}>
+            <Text
+              style={{ fontSize: 24, fontWeight: "bold", color: "#303030" }}
+            >
+              Quase lá!
+            </Text>
+            <Text style={{ fontSize: 18, color: "#303030" }}>
+              Insira a sua senha.
+            </Text>
           </View>
-        </TouchableOpacity>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Senha"
+              placeholderTextColor="#8D8D8D"
+              secureTextEntry={true}
+              value={senha}
+              onChangeText={(text) => setSenha(text)}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Confirmar Senha"
+              placeholderTextColor="#8D8D8D"
+              secureTextEntry={true}
+              value={confirmarSenha}
+              onChangeText={(text) => setConfirmarSenha(text)}
+            />
+          </View>
 
-
+          <TouchableOpacity onPress={handleCadastrar}>
+            <View style={styles.button}>
+              <Text style={styles.loginText}>Cadastrar</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  contentContainer: {
+    marginTop: 20,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 24,
+    elevation: 2,
+  },
+  logoContainer: {
     alignItems: "center",
-    justifyContent: "center",
+  },
+  container: {
+    height: "100%",
   },
   innerContainer: {
-    width: "100%",
-    alignItems: "center",
+    width: "90%",
+    alignSelf: "center",
   },
   logo: {
     fontWeight: "bold",
@@ -171,8 +191,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   inputView: {
-    width: "80%",
-    backgroundColor: "#fff",
+    backgroundColor: "#F2F2F2",
     borderRadius: 24,
     height: "6%",
     marginBottom: "5%",
@@ -181,24 +200,17 @@ const styles = StyleSheet.create({
   },
   inputText: {
     height: 50,
-    color: "#8D8D8D",
+    color: "#303030",
   },
   button: {
     width: width * 0.4,
     height: height * 0.05,
-    backgroundColor: '#007bff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#007bff",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 50,
-    marginBottom: '5%',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    alignSelf: "flex-end",
+    elevation: 2,
   },
   socialBtnContainer: {
     flexDirection: "row",
@@ -215,6 +227,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   loginText: {
+    fontWeight: "bold",
     color: "white",
   },
   socialText: {
