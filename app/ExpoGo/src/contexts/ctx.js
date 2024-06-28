@@ -75,6 +75,7 @@ export function AuthProvider({ children }) {
 			}
 		}
     } catch (error) {
+      setIsMercado("deslogado");
       throw error
     }
   };
@@ -83,7 +84,7 @@ export function AuthProvider({ children }) {
     try {
       const api2 = new ApiClient();
       await api2._authenticator.cleanUserState();
-		setIsMercado("");
+		setIsMercado("deslogado");
     } catch (error) {
       throw error
     }

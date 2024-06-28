@@ -34,8 +34,10 @@ export default function Perfil() {
     if (consumidorData) {
       setLoading(false);
       setConsumidor(consumidorData);
-      foto = `data:image/jpg;base64,${consumidorData.foto}`;
-      setFotoPerfil(foto);
+      if (consumidorData) {
+        foto = `data:image/jpg;base64,${consumidorData.foto}`;
+        setFotoPerfil(foto);
+      }
     }
   };
 
@@ -47,17 +49,16 @@ export default function Perfil() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.ProfileImage}>
-          {loading && (
-            <ImagesPicker
-              imageSize={0.16}
-              ImageHolder={require("../../../assets/profile.png")}
-              ImageBorderRadius={100}
-            ></ImagesPicker>
-          )}
-          {fotoPerfil && (
+          {fotoPerfil ? (
             <ImagesPicker
               imageSize={0.16}
               ImageHolder={{ uri: fotoPerfil }}
+              ImageBorderRadius={100}
+            ></ImagesPicker>
+          ) : (
+            <ImagesPicker
+              imageSize={0.16}
+              ImageHolder={require("../../../assets/profile.png")}
               ImageBorderRadius={100}
             ></ImagesPicker>
           )}

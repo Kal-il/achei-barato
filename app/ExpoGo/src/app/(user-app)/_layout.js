@@ -1,9 +1,6 @@
 import { Stack, Redirect, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth, useSession } from "../../contexts/ctx";
-import { Text } from "react-native";
-import SignIn from "../sign-in";
-import { ApiClient } from "../../api/ApiClient";
 import GradientBackground from "../../components/gradient";
 
 export default function AppLayout() {
@@ -11,12 +8,16 @@ export default function AppLayout() {
 	const { isMercado } = useAuth();
 	const router = useRouter()
 
-	console.log("valor: " + isMercado)
+  console.log("valor: " + isMercado);
+
 	if (isMercado == "mercado") {
 		console.log('é mercado')
 		router.push("/market-index");
-	} else {
-		console.log('é cnsimidor')
+	}
+
+	if (isMercado == "deslogado") {
+		console.log('deslogado')
+		router.push("/sign-in");
 	}
 
   return (

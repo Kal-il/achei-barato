@@ -114,7 +114,7 @@ const PromotionCard = ({
           </Link>
         </View>
         <View style={styles.LikeButton}>
-          <FavoriteButton />
+          <FavoriteButton postId={promotionId}/>
           <Text style={{ color: "#FF5F5F" }}>{LikesNumber}</Text>
         </View>
       </View>

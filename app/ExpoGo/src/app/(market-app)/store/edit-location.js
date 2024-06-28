@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     paddingTop: "5%",
+    marginTop: "10%",
   },
   headerContainer: {
     paddingHorizontal: "5%",

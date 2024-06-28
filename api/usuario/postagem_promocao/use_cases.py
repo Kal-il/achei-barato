@@ -1,3 +1,4 @@
+from utils.file_manager import FileManager
 from fastapi import BackgroundTasks, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import status, UploadFile
@@ -55,7 +56,7 @@ class PostagemPromocaoUseCases:
             )
             _postagem_promocao_usuario = []
             for postagem in _postagens:
-                postagem.imagem = await postagem_promocao_manager.get_foto_postagem(
+                postagem.imagem = await FileManager.get_foto(
                     postagem.imagem
                 )
                 _postagem_promocao_usuario.append(postagem)

@@ -1,3 +1,6 @@
+import uuid
+from mercado.mercado.models import MercadoManager
+from mercado.produto.schemas import ProdutoOutput
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -40,7 +43,28 @@ class CurtidasUseCases:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Curtidas não encontradas",
                 )
-            return curtidas
+
+            produto_manager = ProdutoManager(db)
+            mercado_manager = MercadoManager(db)
+
+            produtos = []
+            for curtida in curtidas:
+                produto = await produto_manager.get_produto_by_uuid(curtida.produto_id)
+                nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+                produtos.append(ProdutoOutput(**produto.__dict__, nome_mercado=nome_mercado))
+
+            return produtos
+        except Exception as err:
+            raise err
+
+    async def check_curtidas(self, db: AsyncSession, id_produto: uuid.UUID, usuario: Usuario):
+        try:
+            curtida_manager = CurtidasManager(db)
+            curtida = await curtida_manager.get_curtida(usuario, id_produto)
+
+            if curtida:
+                return True
+            return False
         except Exception as err:
             raise err
 

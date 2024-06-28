@@ -1,14 +1,25 @@
 import { Stack, Redirect, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { useSession } from "../../contexts/ctx";
-import { Text } from "react-native";
-import SignIn from "../sign-in";
-import { ApiClient } from "../../api/ApiClient";
+import { useAuth, useSession } from "../../contexts/ctx";
 import GradientBackground from "../../components/gradient";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function AppLayout() {
+  const { isMercado } = useAuth();
   const router = useRouter();
+
+  console.log("valor: " + isMercado);
+
+  if (isMercado == "consumidor") {
+    console.log("é consumidor");
+    router.push("/index");
+  }
+
+  if (isMercado == "deslogado") {
+    console.log("deslogado");
+    router.push("/sign-in");
+  }
+
   return (
     <Stack
       screenOptions={{
@@ -120,7 +131,7 @@ export default function AppLayout() {
               size={24}
               color="white"
               onPress={() => router.replace("/market-profile")}
-              style={{marginRight: 10}}
+              style={{ marginRight: 10 }}
             ></AntDesign>
           ),
         }}
@@ -137,7 +148,7 @@ export default function AppLayout() {
               size={24}
               color="white"
               onPress={() => router.replace("/market-profile")}
-              style={{marginRight: 10}}
+              style={{ marginRight: 10 }}
             ></AntDesign>
           ),
         }}

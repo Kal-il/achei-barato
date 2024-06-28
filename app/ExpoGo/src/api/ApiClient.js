@@ -32,7 +32,7 @@ export class ApiClient {
         data: data,
         params: params,
         headers: headers,
-			timeout: 60000,
+        timeout: 60000,
       });
 
       return response.data;
@@ -56,7 +56,7 @@ export class ApiClient {
         data,
         params,
         token,
-        multipart
+        multipart,
       );
     } catch (err) {
       // Caso o erro retornado seja um erro de autorização (de código 401),
@@ -74,7 +74,7 @@ export class ApiClient {
               data,
               params,
               token,
-              multipart
+              multipart,
             );
           } catch (err) {
             // Caso a atualização do token de acesso falhe, o usuário é deslogado.
@@ -276,6 +276,37 @@ export class ApiClient {
       data: parametros.imagem,
       params: parametros.formulario,
       multipart: true,
+    });
+  }
+
+  async favoritePost(postId) {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/curtir`,
+      method: "POST",
+      params: { id_produto: postId },
+    });
+  }
+
+  async getFavoritedPosts() {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/curtidas`,
+      method: "GET",
+    });
+  }
+
+  async deleteFavorite(postId) {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/descurtir`,
+      method: "DELETE",
+      params: { id_produto: postId },
+    });
+  }
+
+  async checkFavorite(postId) {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/checar`,
+      method: "GET",
+      params: { id_produto: postId },
     });
   }
 }

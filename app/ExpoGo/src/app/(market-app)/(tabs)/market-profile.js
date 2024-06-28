@@ -30,7 +30,10 @@ export default function Perfil() {
       try {
         mercadoData = await api.getMercadoUsuario();
 
-        mercadoData.foto = `data:image/jpg;base64,${mercadoData.foto}`;
+        if (mercadoData.foto) {
+          mercadoData.foto = `data:image/jpg;base64,${mercadoData.foto}`;
+        }
+
         setMercado(mercadoData);
         setLoading(false);
       } catch (e) {
@@ -57,12 +60,20 @@ export default function Perfil() {
             }}
           >
             <View style={styles.header}>
-              <View style={styles.ProfileImage}>
-                <ImagesPicker
-                  imageSize={0.16}
-                  ImageHolder={{ uri: mercado.foto }}
-                  ImageBorderRadius={100}
-                ></ImagesPicker>
+              <View>
+                {mercado.foto ? (
+                  <ImagesPicker
+                    imageSize={0.16}
+                    ImageHolder={{ uri: mercado.foto }}
+                    ImageBorderRadius={100}
+                  ></ImagesPicker>
+                ) : (
+                  <ImagesPicker
+                    imageSize={0.16}
+                    ImageHolder={require("../../../assets/profile.png")}
+                    ImageBorderRadius={100}
+                  ></ImagesPicker>
+                )}
               </View>
               <View>
                 <Text style={styles.title}>{mercado.nome_fantasia}</Text>
@@ -79,19 +90,19 @@ export default function Perfil() {
               ButtonLink={"/store/edit-profile"}
               ButtonText={"Editar Perfil"}
               ButtonIcon={"edit"}
-              ButtonIconColor={"#8D8D8D"}
+              ButtonIconColor={"#4a4a4a"}
             />
             <ProfileScreenButton
               ButtonLink={"/store/edit-location"}
               ButtonText={"Editar Localização"}
               ButtonIcon={"map"}
-              ButtonIconColor={"#8D8D8D"}
+              ButtonIconColor={"#4a4a4a"}
             />
             <ProfileScreenButton
               ButtonLink={"/configuration"}
               ButtonText={"Configurações"}
               ButtonIcon={"settings"}
-              ButtonIconColor={"#8D8D8D"}
+              ButtonIconColor={"#4a4a4a"}
             />
             <ProfileScreenButton
               ButtonLink={"/store/logout"}
@@ -108,7 +119,7 @@ export default function Perfil() {
           style={{
             height: "100%",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />
@@ -126,11 +137,11 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 20,
     paddingLeft: "10%",
     marginVertical: 20,
+    paddingTop: "8%"
   },
-  ProfileImage: {},
   title: {
     fontSize: 24,
     fontWeight: "bold",

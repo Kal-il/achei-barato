@@ -10,23 +10,6 @@ from sqlalchemy.orm import mapped_column, Mapped
 from core.security import get_hashed_password
 
 
-async def upload_foto_consumidor(foto: UploadFile):
-    conteudo = await foto.read()
-    md5 = hashlib.md5(await foto.read()).hexdigest()
-    store_name = f"media/{md5 + str(foto.filename)}"
-    async with aiofiles.open(store_name, "wb") as nova_foto:
-        await nova_foto.write(conteudo)
-        return store_name
-
-async def get_foto_consumidor(url_foto: str):
-    if url_foto:
-        async with aiofiles.open(url_foto, "rb") as foto:
-            foto_consumidor = await foto.read()
-            foto_consumidor = base64.b64encode(foto_consumidor)
-            return foto_consumidor
-    return b""
-
-
 class Consumidor(Usuario):
     __tablename__ = "usuario_consumidor"
 

@@ -64,15 +64,22 @@ class CurtidasManager:
         try:
             _query = select(Curtidas).where(Curtidas.usuario_id == usuario.id)
             _curtida = await self.db.execute(_query)
-            _curtida = _curtida.scalar()
+            _curtida = _curtida.scalars().all()
 
             return _curtida
+
+
 
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao buscar curtida: {err}",
             )
+
+    async def get_curtida(self, usuario: Usuario, id_produto: uuid.UUID):
+        query = select(Curtidas).where(Curtidas.produto_id == id_produto, Curtidas.usuario_id == usuario.id)
+        curtida = await self.db.execute(query)
+        return curtida.scalar()
 
     async def delete_curtidas(self, produto: Produto, usuario: Usuario):
         try:

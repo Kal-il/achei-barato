@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ButtonCard from "../../components/ButtonCard";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -99,6 +99,17 @@ export default function ErpManager() {
         iconName={"database-sync"}
         onPress={handleSync}
       />
+      {loading && (
+        <View
+          style={{
+            height: "23%",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
       {!loading && naoCadastrado && <ButtonCard
         text="Cadastar dados da API"
         link="/registerErp"
