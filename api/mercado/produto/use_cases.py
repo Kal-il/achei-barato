@@ -10,7 +10,7 @@ from mercado.mercado.models import MercadoManager
 from mercado.produto.models import ProdutoManager
 from mercado.promocao.models import ProdutosPromocaoErpManager
 from usuario.usuario.models import Usuario
-from .schemas import ProdutoBase, ProdutoOutput
+from .schemas import ProdutoBase, ProdutoOutput, ProdutoSimplesOutput
 
 
 
@@ -60,17 +60,17 @@ class ProdutoUseCases:
         return _produto
 
     async def get_produtos(self, db: AsyncSession, usuario: Usuario):
-        _cnpj = await MercadoManager(db=db).get_cnpj_by_usuario(usuario.id)
+        _mercado_id = await MercadoManager(db=db).get_mercado_id(usuario.id)
 
         produto_manager = ProdutoManager(db=db)
-        _produtos = await produto_manager.get_produtos_by_cnpj(_cnpj)
+        _produtos = await produto_manager.get_produtos_by_mercado(_mercado_id)
 
         if not _produtos:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
-        _produtos = [ProdutoBase(**_produto) for _produto in _produtos]
+        _produtos = [ProdutoSimplesOutput(**_produto.__dict__) for _produto in _produtos]
         return _produtos
 
     async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):

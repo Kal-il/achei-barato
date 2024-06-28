@@ -1,6 +1,7 @@
 import hashlib
 import base64
 import aiofiles
+from utils.file_manager import FileManager
 from fastapi import UploadFile
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,29 +17,11 @@ class PostagemPromocaoManager:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    @staticmethod
-    async def upload_postagem_promocao(foto: UploadFile) -> str:
-        conteudo = await foto.read()
-        md5 = hashlib.md5(conteudo).hexdigest()
-        store_name = f"media/{md5 + str(foto.filename)}"
-        async with aiofiles.open(store_name, "wb") as nova_foto:
-            await nova_foto.write(conteudo)
-        return store_name
-
-    @staticmethod
-    async def get_foto_postagem(url_foto: str) -> str:
-        async with aiofiles.open(url_foto, "rb") as foto:
-            postagem_promocao_foto = await foto.read()
-            postagem_promocao_foto = base64.b64encode(postagem_promocao_foto).decode(
-                "utf-8"
-            )
-        return postagem_promocao_foto
-
     async def create_postagem_promocao(
         self, foto: UploadFile, postagem: PostagemPromocaoCreate, usuario: Usuario
     ) -> PostagemPromocao:
         if foto:
-            _imagem = await self.upload_postagem_promocao(foto)
+            _imagem = await FileManager.upload_foto(foto)
         nova_postagem = PostagemPromocao(
             **postagem.__dict__,
             usuario_id=usuario.id,
@@ -135,12 +118,16 @@ class PostagemPromocaoManager:
         except Exception as e:
             print(f"Erro ao buscar nome do autor: {e}")
             return ""
-        
+
     async def marcar_denuncia_postagem(self, id: uuid.UUID):
         try:
-            _query = update(PostagemPromocao).where(PostagemPromocao.id == id).values(denuncia=True)
+            _query = (
+                update(PostagemPromocao)
+                .where(PostagemPromocao.id == id)
+                .values(denuncia=True)
+            )
             await self.db.execute(_query)
             await self.db.commit()
         except Exception as e:
-            print(f"Erro ao marcar a denuncia: {e}")    
+            print(f"Erro ao marcar a denuncia: {e}")
             return None

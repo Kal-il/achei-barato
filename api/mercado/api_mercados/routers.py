@@ -55,7 +55,7 @@ async def delete_erp_conexao(
 )
 async def put_erp_conexao(
     db: AsyncDBDependency,
-    api_mercado: schemas.ApiMercados,
+    api_mercado: schemas.ApiMercadosUpdate,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
     return await use_cases_api_mercados.update_dados_conexao(

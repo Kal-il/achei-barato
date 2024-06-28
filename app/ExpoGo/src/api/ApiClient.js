@@ -32,7 +32,7 @@ export class ApiClient {
         data: data,
         params: params,
         headers: headers,
-        timeout: 10000,
+        timeout: 60000,
       });
 
       return response.data;
@@ -193,36 +193,120 @@ export class ApiClient {
     return await this._callApi({
       path: `api/v1/mercado/produto/uuid/${produtoId}`,
       method: "GET",
-    })
+    });
   }
 
   async getMercadoPorUUID(mercadoId) {
     return await this._callApi({
       path: `api/v1/mercado/mercado/${mercadoId}`,
       method: "GET",
-    })
+    });
   }
 
-	async getPromocaoPorUUID(promocaoId) {
-		return await this._callApi({
-			path: `api/v1/mercado/promocao/${promocaoId}`,
-			method: "GET",
-		})
-	}
+  async getMercadoUsuario() {
+    return await this._callApi({
+      path: `api/v1/mercado/mercado/obter`,
+      method: "GET",
+    });
+  }
+
+  async getPromocaoPorUUID(promocaoId) {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/${promocaoId}`,
+      method: "GET",
+    });
+  }
 
   async getProdutosMercadosQuery(query) {
     return await this._callApi({
       path: `api/v1/mercado/produto/pesquisar/nome/`,
       method: "POST",
       params: query,
-    })
+    });
   }
 
   async getPromocoesMercado(mercadoId) {
     return await this._callApi({
       path: `api/v1/mercado/promocao/promocoes/${mercadoId}`,
       method: "GET",
-    })
+    });
   }
 
+  async getPromocoesUsuario() {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/`,
+      method: "GET",
+    });
+  }
+
+  async getProdutosMercado() {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/produtos`,
+      method: "GET",
+    });
+  }
+
+  async createConexaoERP(formData) {
+    return await this._callApi({
+      path: `api/v1/mercado/erp/conexao`,
+      method: "POST",
+      data: formData,
+    });
+  }
+
+  async updateConexaoERP(formData) {
+    return await this._callApi({
+      path: `api/v1/mercado/erp/conexao`,
+      method: "PUT",
+      data: formData,
+    });
+  }
+
+  async getConexaoERP() {
+    return await this._callApi({
+      path: `api/v1/mercado/erp/conexao`,
+      method: "GET",
+    });
+  }
+
+  async updateMercado(parametros) {
+    return await this._callApi({
+      path: `api/v1/mercado/mercado/editar`,
+      method: "PUT",
+      data: parametros.imagem,
+      params: parametros.formulario,
+      multipart: true,
+    });
+  }
+
+  async favoritePost(postId) {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/curtir`,
+      method: "POST",
+      params: { id_produto: postId },
+    });
+  }
+
+  async getFavoritedPosts() {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/curtidas`,
+      method: "GET",
+    });
+  }
+
+  async deleteFavorite(postId) {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/descurtir`,
+      method: "DELETE",
+      params: { id_produto: postId },
+    });
+  }
+
+  async checkFavorite(postId) {
+    return await this._callApi({
+      path: `api/v1/mercado/curtida/checar`,
+      method: "GET",
+      params: { id_produto: postId },
+    });
+  }
 }

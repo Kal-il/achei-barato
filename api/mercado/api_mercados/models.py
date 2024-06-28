@@ -104,18 +104,15 @@ class ApiMercadosManager:
             )
 
     async def update_api_mercados(
-        self, mercado_atualizado: Mercado, api_mercado: ApiMercados
+        self, mercado: Mercado, api_mercado: dict
     ):
         try:
             _query = (
                 update(ApiMercados)
-                .where(ApiMercados.mercado_id == api_mercado.id)
+                .where(ApiMercados.mercado_id == mercado.id)
                 .values(
-                    url_base=mercado_atualizado.url_base,
-                    porta=mercado_atualizado.porta,
-                    empresa_erp=mercado_atualizado.empresa_erp,
-                    terminal=mercado_atualizado.terminal,
-                    emp_id=mercado_atualizado.emp_id,
+                    **api_mercado,
+                    updated_at=datetime.datetime.now()
                 )
             )
 

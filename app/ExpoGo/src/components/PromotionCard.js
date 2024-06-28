@@ -18,7 +18,6 @@ const PromotionCard = ({
   imageSource,
   MarketImageProfile,
   MarketName,
-  MarketProfileLink,
   marketId,
   PromotionName,
   OldPrice,
@@ -26,6 +25,7 @@ const PromotionCard = ({
   tag,
   LikesNumber,
   promotionId,
+  pathname,
 }) => {
   const formatPrice = ({ price }) => {
     price = String(price);
@@ -39,7 +39,7 @@ const PromotionCard = ({
       <View style={styles.UpperCard}>
         <Link
           href={{
-            pathname: "/promotion/[id]",
+            pathname: `/${pathname ? pathname : "promotion"}/[id]`,
             params: { id: promotionId },
           }}
           asChild
@@ -87,7 +87,7 @@ const PromotionCard = ({
       <View style={styles.BottonCard}>
         <Link
           href={{
-            pathname: "/promotion/[id]",
+            pathname: `/${pathname ? pathname : "promotion"}/[id]`,
             params: { id: promotionId },
           }}
           asChild
@@ -103,7 +103,7 @@ const PromotionCard = ({
           <MaterialIcons name="expand-more" size={24} color="grey" />
           <Link
             href={{
-              pathname: "/promotion/[id]",
+              pathname: `/${pathname ? pathname : "promotion"}/[id]`,
               params: { id: promotionId },
             }}
             asChild
@@ -114,7 +114,7 @@ const PromotionCard = ({
           </Link>
         </View>
         <View style={styles.LikeButton}>
-          <FavoriteButton />
+          <FavoriteButton postId={promotionId}/>
           <Text style={{ color: "#FF5F5F" }}>{LikesNumber}</Text>
         </View>
       </View>

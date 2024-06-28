@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Tabs } from "expo-router";
+import React, {useEffect, useState} from "react";
+import { Tabs, useRouter } from "expo-router";
 import {
   MaterialIcons,
   MaterialCommunityIcons,
@@ -7,8 +7,11 @@ import {
 } from "@expo/vector-icons";
 import { StyleSheet, View } from "react-native";
 import GradientBackground from "../../../components/gradient";
+import { Authenticator } from "../../../api/Authenticator";
+import { ApiClient } from "../../../api/ApiClient";
 
 export default function TabRoutesLayout() {
+
   return (
     <Tabs
       screenOptions={{

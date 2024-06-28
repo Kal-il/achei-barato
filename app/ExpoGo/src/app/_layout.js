@@ -1,21 +1,28 @@
-import React from 'react';
-import { Slot, useRouter } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
-import { SessionProvider, useSession } from '../contexts/ctx'; // Importe o hook useSession
+import React, { useEffect } from 'react';
+import { Slot, Stack, useRouter } from 'expo-router'; // Certifique-se de importar Slot de 'expo-router'
+import { AuthProvider, SessionProvider, useAuth } from '../contexts/ctx'; // Importe o hook useSession
+import { ApiClient } from '../api/ApiClient';
 
 export default function Root() {
-  const { isAuthenticated } = useSession(); // Use o hook useSession
   const router = useRouter();
+  // const {erro, setErro} = useState("");
 
-  // Verifique se o usuário está autenticado e redirecione-o para a página inicial, se necessário
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/(user-app)/(tabs)/index'); // Redireciona para a página inicial
-    }
-  }, [isAuthenticated, router]);
+  // Se o usuário não estiver autenticado, redirecione-o para a página de login
+	const { isMercado } = useAuth();
 
-    return (
-    <SessionProvider>
+	if (isMercado == "mercado") {
+		console.log('é mercado')
+		router.push("/market-index");
+	}
+
+	if (isMercado == "deslogado") {
+		console.log('deslogado')
+		router.push("/sign-in");
+	}
+
+  return (
+    <AuthProvider>
       <Slot /> 
-    </SessionProvider>
+    </AuthProvider>
   );
 }

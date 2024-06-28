@@ -37,5 +37,13 @@ class ProdutoOutput(ProdutoBase):
     class Config:
         from_attributes = True
 
+class ProdutoSimplesOutput(ProdutoBase):
+    id: uuid.UUID
+    mercado_id: uuid.UUID
+
+    class Config:
+        from_attributes = True
+
+
 class ProdutoPromocaoOutput(ProdutoOutput):
     mercado: Any

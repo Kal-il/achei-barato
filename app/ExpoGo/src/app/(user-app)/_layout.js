@@ -1,44 +1,24 @@
 import { Stack, Redirect, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { useSession } from "../../contexts/ctx";
-import { Text } from "react-native";
-import SignIn from "../sign-in";
-import { ApiClient } from "../../api/ApiClient";
+import { useAuth, useSession } from "../../contexts/ctx";
 import GradientBackground from "../../components/gradient";
 
 export default function AppLayout() {
-  const { session, isLoading } = useSession();
-  const router = useRouter();
-  // const {erro, setErro} = useState("");
 
-  // Se ainda estiver carregando a sessão, exiba uma tela de carregamento
-  if (isLoading) {
-    console.log("Carregando...");
-  }
+	const { isMercado } = useAuth();
+	const router = useRouter()
 
-  // Se o usuário não estiver autenticado, redirecione-o para a página de login
-  useEffect(() => {
-    const asyncChecaUsuario = async () => {
-      const api = new ApiClient();
-      let usuario, erro;
-      try {
-        usuario = await api.getUserDetail();
-        console.log("foi");
-      } catch (e) {
-        if (e.response) {
-          erro = e.response.data.detail;
-        } else {
-          erro = e;
-        }
-      }
+  console.log("valor: " + isMercado);
 
-      if (erro) {
-        router.replace("/sign-in");
-      }
-    };
+	if (isMercado == "mercado") {
+		console.log('é mercado')
+		router.push("/market-index");
+	}
 
-    asyncChecaUsuario();
-  }, []);
+	if (isMercado == "deslogado") {
+		console.log('deslogado')
+		router.push("/sign-in");
+	}
 
   return (
     <Stack
@@ -53,13 +33,6 @@ export default function AppLayout() {
         options={{
           title: "Notificações",
           headerBackground: () => <GradientBackground></GradientBackground>,
-        }}
-      />
-      <Stack.Screen
-        name="store-profile"
-        options={{
-          title: "perfil do mercado",
-          headerTransparent: true,
         }}
       />
       <Stack.Screen

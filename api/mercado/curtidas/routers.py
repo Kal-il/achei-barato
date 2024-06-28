@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Annotated, List, Optional
+import uuid
 
 from fastapi import APIRouter, Depends, BackgroundTasks
 
@@ -37,6 +38,10 @@ async def get_curtidas(
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
 ):
     return await use_cases_curtidas.get_curtidas(db=db, usuario=usuario)
+
+@model_router.get("/checar", summary="Verifica se um produto está favoritado")
+async def check_curtida(db: AsyncDBDependency, id_produto: uuid.UUID, usuario: Annotated[Usuario, Depends(get_current_active_user)]):
+    return await use_cases_curtidas.check_curtidas(db=db, usuario=usuario, id_produto=id_produto)
 
 
 @model_router.delete("/descurtir", summary="Endpoint para descurtir um produto")

@@ -203,12 +203,14 @@ export default function PromotionPage({
                         {mercado.estado}
                       </Text>
                     </View>
-                    <TouchableOpacity>
-                      <Image
-                        source={MarketImageProfile}
-                        style={styles.perfilMercado}
-                      />
-                    </TouchableOpacity>
+					<Link href={{pathname: "/market/[id]", params: {id: mercado.id}}} asChild>
+						<TouchableOpacity>
+						  <Image
+							source={MarketImageProfile}
+							style={styles.perfilMercado}
+						  />
+						</TouchableOpacity>
+					</Link>
                   </View>
                 )}
               </View>

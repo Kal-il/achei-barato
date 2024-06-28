@@ -54,7 +54,37 @@ class ApiMercados(BaseModel):
         if self.url_base == None or self.url_base == "":
             return "URL base inválida"
 
-        if not self.url_base.startswith("http://") or not self.url_base.startswith(
-            "https://"
+        if not (
+            self.url_base.startswith("http://") or self.url_base.startswith("https://")
         ):
             return "URL base inválida, precisa começar com http:// ou https://"
+
+class ApiMercadosUpdate(BaseModel):
+    url_base: Optional[str] = Field("", description="URL base da API")
+    porta: Optional[int] = Field(0, description="Porta de acesso")
+    terminal: Optional[str] = Field("", description="Terminal de acesso")
+    emp_id: Optional[int] = Field(0, description="ID da empresa")
+
+    def validar_campos(self):
+        erros = {}
+
+        if erro := self._validar_porta():
+            erros["porta"] = erro
+
+        if erro := self._validar_url_base():
+            erros["url_base"] = erro
+
+        return erros
+
+    def _validar_porta(self):
+
+        if self.porta:
+            if not 0 <= self.porta <= 65535:
+                return "Porta inválida"
+
+    def _validar_url_base(self):
+        if self.url_base:
+            if not (
+                self.url_base.startswith("http://") or self.url_base.startswith("https://")
+            ):
+                return "URL base inválida, precisa começar com http:// ou https://"

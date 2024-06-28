@@ -1,14 +1,17 @@
 from typing import Union
 import uuid
-from fastapi import HTTPException, status, BackgroundTasks
+from fastapi import HTTPException, UploadFile, status, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from utils.file_manager import FileManager
 from mercado.mercado.models import MercadoManager
 from mercado.mercado import schemas
 from usuario.usuario.models import Usuario, UsuarioManager
 
-
 from usuario.usuario.models import UsuarioManager
+
+
+from sqlalchemy.exc import IntegrityError
 
 
 class MercadoUseCases:
@@ -23,7 +26,11 @@ class MercadoUseCases:
         await mercado_manager.restore_mercado_by_usuario(usuario.id)
 
     async def update_mercado(
-        self, db: AsyncSession, novo_mercado: schemas.MercadoUpdate, usuario: Usuario
+        self,
+        db: AsyncSession,
+        novo_mercado: schemas.MercadoUpdate,
+        usuario: Usuario,
+        imagem: UploadFile,
     ):
         if not usuario.dono_mercado:
             raise HTTPException(
@@ -36,10 +43,12 @@ class MercadoUseCases:
             if campo[1]:
                 update_fields[campo[0]] = campo[1]
 
-        if not update_fields:
+        if not update_fields and not imagem:
             return
 
         await self._validar_cadastro(db=db, data=novo_mercado)
+        if imagem:
+            update_fields["url_foto"] = await FileManager.upload_foto(imagem)
 
         mercado_manager = MercadoManager(db=db)
         await mercado_manager.update_mercado(usuario.id, dados_mercado=update_fields)
@@ -68,7 +77,9 @@ class MercadoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Mercado não encontrado."
             )
 
-        _mercado = schemas.MercadoSchema(**_mercado.__dict__)
+        foto = await FileManager.get_foto(_mercado.url_foto)
+
+        _mercado = schemas.MercadoOutput(**_mercado.__dict__, foto=foto)
         return _mercado
 
     async def get_mercado_by_nome(self, db: AsyncSession, nome: str):
@@ -114,6 +125,11 @@ class MercadoUseCases:
         mercado_manager = MercadoManager(db=db)
         try:
             _mercado = await mercado_manager.create_mercado(data)
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Já existe um mercado cadastrado com este CNPJ",
+            )
         except Exception as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -148,5 +164,6 @@ class MercadoUseCases:
         mercado_manager = MercadoManager(db)
         mercado = await mercado_manager.get_mercado_by_id(mercado_id)
         return schemas.MercadoSchema(**mercado.__dict__)
+
 
 use_cases_mercado = MercadoUseCases()

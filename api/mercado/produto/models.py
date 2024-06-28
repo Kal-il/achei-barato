@@ -80,9 +80,10 @@ class ProdutoManager:
 
         return _produto
 
-    async def get_produtos_by_cnpj(self, cnpj: str):
-        _produtos = await redis.get_produtos(cnpj)
-        return _produtos
+    async def get_produtos_by_mercado(self, mercado_id: uuid.UUID):
+        query = select(Produto).where(Produto.mercado_id == mercado_id)
+        _produtos = await self.db.execute(query)
+        return _produtos.scalars().all()
 
     async def sync_produtos(self, cnpj: str, produtos: List[ProdutoBase]):
         await redis.store_produtos_hash(cnpj=cnpj, produtos=produtos)

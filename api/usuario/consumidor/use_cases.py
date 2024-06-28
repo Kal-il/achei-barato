@@ -3,6 +3,7 @@ import os
 from uuid import UUID
 
 import aiofiles
+from utils.file_manager import FileManager
 from fastapi.responses import FileResponse
 from sqlalchemy.exc import IntegrityError
 from pydantic import EmailStr
@@ -15,7 +16,7 @@ from usuario.consumidor.schemas import (
     ConsumidorSchema,
     ConsumidorUpdate,
 )
-from usuario.consumidor.models import Consumidor, ConsumidorManager, get_foto_consumidor, upload_foto_consumidor
+from usuario.consumidor.models import Consumidor, ConsumidorManager
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, UploadFile, status
@@ -30,7 +31,7 @@ class ConsumidorUseCase:
     ) -> Optional[Consumidor]:
         consumidor_manager = ConsumidorManager(db=db)
 
-        if await consumidor_manager.get_consumidor_by_email(data.email):
+        if erro := await consumidor_manager.get_consumidor_by_email(data.email):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Este e-mail já está sendo usado",
@@ -43,12 +44,13 @@ class ConsumidorUseCase:
                 detail=erros,
             )
 
-        _consumidor = await consumidor_manager.create_consumidor(data)
-        # except Exception as err:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         detail=f"Erro ao cadastrar consumidor: {err}",
-        #     )
+        try:
+            _consumidor = await consumidor_manager.create_consumidor(data)
+        except Exception as err:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao cadastrar consumidor: {err}",
+            )
 
         return _consumidor
 
@@ -147,7 +149,7 @@ class ConsumidorUseCase:
                 detail="Dados do consumidor não encontrados",
             )
 
-        foto = await get_foto_consumidor(_consumidor_data.url_foto)
+        foto = await FileManager.get_foto(_consumidor_data.url_foto)
         _consumidor_data = ConsumidorSchema.model_validate(_consumidor_data)
         # _consumidor_data = ConsumidorSchema.model_validate(_consumidor_data)
         _consumidor_data = ConsumidorComFoto(**_consumidor_data.__dict__, foto=foto)
@@ -155,13 +157,16 @@ class ConsumidorUseCase:
 
     @staticmethod
     async def update_consumidor_data(
-        db: AsyncSession, id_consumidor: UUID, new_consumidor: ConsumidorUpdate, foto: Optional[UploadFile]
+        db: AsyncSession,
+        id_consumidor: UUID,
+        new_consumidor: ConsumidorUpdate,
+        foto: Optional[UploadFile],
     ):
 
         update_fields = {}
         if foto:
-            url_foto = await upload_foto_consumidor(foto)
-            update_fields['url_foto'] = url_foto
+            url_foto = await FileManager.upload_foto(foto)
+            update_fields["url_foto"] = url_foto
 
         for campo in new_consumidor:
             if campo[1]:

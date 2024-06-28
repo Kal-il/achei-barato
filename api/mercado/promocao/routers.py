@@ -35,7 +35,7 @@ async def promocao_cadastrar(
 @model_router.get(
     "/",
     summary="Retorna todas as promoções do mercado que está logado",
-    response_model=List[schemas.PromocaoSchema],
+    response_model=List[ProdutoOutput],
 )
 async def promocoes_mercado(
     db: AsyncDBDependency,

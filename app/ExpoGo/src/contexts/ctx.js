@@ -1,17 +1,48 @@
-import React from "react";
-import { useStorageState } from "./useStorageState";
+import React, { useCallback, useEffect, useState } from "react";
 import { ApiClient } from "../api/ApiClient.js";
 import { Authenticator } from "../api/Authenticator";
-import { Alert } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 const AuthContext = React.createContext({
   signIn: async () => {},
   signOut: () => {},
-  session: null,
-  isLoading: false,
+  isMercado: false,
 });
 
-export function useSession() {
+const useStorageState = (key) => {
+  const [state, setState] = useState("");
+  const [valor, setValor] = useState("");
+
+  useEffect(() => {
+    const fetchValor = () => {
+      let value;
+      value = SecureStore.getItem(key);
+      if (value) {
+        setValor(value);
+      }
+    };
+
+    fetchValor();
+  }, [key]);
+
+  useEffect(() => {
+    setState(valor);
+  }, [valor]);
+
+  const setValue = useCallback(
+    (valor) => {
+      if (valor) {
+        setState(valor);
+        SecureStore.setItem(key, valor);
+      }
+    },
+    [key]
+  );
+
+  return [state, setValue];
+};
+
+export function useAuth() {
   const value = React.useContext(AuthContext);
   if (!value) {
     throw new Error("useSession must be wrapped in a <SessionProvider />");
@@ -19,8 +50,8 @@ export function useSession() {
   return value;
 }
 
-export function SessionProvider(props) {
-  const [[isLoading, session], setSession] = useStorageState("session");
+export function AuthProvider({ children }) {
+  const [isMercado, setIsMercado] = useStorageState("is-mercado");
 
   const signIn = async (username, password) => {
     const formData = new URLSearchParams();
@@ -30,29 +61,38 @@ export function SessionProvider(props) {
     const auth = new Authenticator();
     let token = auth.fetchAccessToken();
 
-
     const api = new ApiClient();
     try {
       await api.loginUser(formData);
-      setSession(token);
+      usuario = await api.getUserDetail();
+      console.log(JSON.stringify(usuario));
+
+      if (usuario) {
+        if (usuario.dono_mercado) {
+          setIsMercado("mercado");
+        } else {
+          setIsMercado("consumidor");
+        }
+      }
     } catch (error) {
-      throw error
+      setIsMercado("deslogado");
+      throw error;
     }
   };
 
   const signOut = async () => {
     try {
       const api2 = new ApiClient();
-      await api2.logoutUser();
-      setSession(null);
+      await api2._authenticator.cleanUserState();
+      setIsMercado("deslogado");
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, session, isLoading }}>
-      {props.children}
+    <AuthContext.Provider value={{ signIn, signOut, isMercado }}>
+      {children}
     </AuthContext.Provider>
   );
 }

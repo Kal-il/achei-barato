@@ -65,7 +65,6 @@ export default function Dashboard() {
 
       try {
         produtos = await api.getProdutosPromocao();
-        console.log(produtos);
       } catch (e) {
         erro = e;
       }
@@ -164,7 +163,7 @@ export default function Dashboard() {
                   style={{ width: windowWidth, height: Height }}
                 />
                 <Image
-                  source={require("../../../assets/logo.png")}
+                  source={require("../../../assets/acheibarato.png")}
                   style={{ width: windowWidth, height: Height }}
                 />
               </ScrollView>

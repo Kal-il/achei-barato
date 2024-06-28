@@ -10,7 +10,6 @@ import {
 import ImageInput from "../components/ImageInput";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { ApiClient } from "../api/ApiClient";
 import ErrorMessage from "../components/ErrorMessage";
 
