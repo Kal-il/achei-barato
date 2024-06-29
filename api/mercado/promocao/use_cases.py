@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from mercado.produto.models import ProdutoManager
 from mercado.produto.schemas import ProdutoBase, ProdutoOutput
 from mercado.mercado.models import MercadoManager
-from mercado.promocao.models import PromocaoManager
+from mercado.promocao.models import ProdutosPromocaoErpManager, PromocaoManager
 from mercado.promocao.schemas import (
     PromocaoBase,
     PromocaoComProdutos,
@@ -124,6 +124,18 @@ class PromocaoUseCases:
             **promocao.__dict__,
             produtos=[ProdutoBase(**produto.__dict__) for produto in produtos],
         )
+
+    async def get_produto_erp(self, db: AsyncSession, id_produto: uuid.UUID):
+        erp_manager = ProdutosPromocaoErpManager(db)
+
+        produto = await erp_manager.get_produto_erp(id_produto)
+        if not produto:
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND, content="Promoção não encontrada"
+            )
+
+        nome_mercado = await MercadoManager(db).get_mercado_nome(produto.mercado_id)
+        return ProdutoOutput(**produto.__dict__, promocao_id=produto.id, nome_mercado=nome_mercado)
 
     async def get_promocoes(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
@@ -286,6 +298,8 @@ class PromocaoUseCases:
             )
 
         return promocao
+
+    
 
 
 use_cases_promocoes = PromocaoUseCases()

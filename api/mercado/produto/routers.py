@@ -19,37 +19,44 @@ model_router = APIRouter(
 )
 
 
-@model_router.get("/todos", summary="Retorna todos os produtos em promoção", response_model=List[ProdutoOutput])
+@model_router.get("/todos", summary="Retorna todos os produtos em promoção")
 async def get_todos_produtos(db: AsyncDBDependency):
     return await use_cases_produtos.get_todos_produtos(db)
 
 
-
-@model_router.post(
-    "/sync-produtos", summary="Sincroniza base de produtos com ERP"
+@model_router.get(
+    "/sync_erp", summary="Sincroniza produtos em promoção do ERP"
 )
-async def sync_produtos(
-    db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
+async def teste_auth_erp(
+    usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency
 ):
-    produtos = []
-    for i in range(0, 10):
-        produto = ProdutoBase(
-            nome=f"pão de queijo {i}",
-            marca="pão de acúcar",
-            data_validade=datetime.now().date().strftime("%d/%m/%Y"),
-            gtin_produto="",
-            mpn_produto="",
-            id_produto_erp="",
-            codigo_produto="",
-            ncm_produto="0402.10.90",
-            preco=5.00,
-            preco_promocional=3.50,
-            descricao="pão de queijo do bom",
-        )
+    return await use_cases_produtos.sync_produtos_promocao_erp(usuario=usuario, db=db)
 
-        produtos.append(produto)
+# @model_router.post(
+#     "/sync-produtos", summary="Sincroniza base de produtos com ERP"
+# )
+# async def sync_produtos(
+#     db: AsyncDBDependency, usuario: Annotated[Usuario, Depends(get_current_active_user)]
+# ):
+#     produtos = []
+#     for i in range(0, 10):
+#         produto = ProdutoBase(
+#             nome=f"pão de queijo {i}",
+#             marca="pão de acúcar",
+#             data_validade=datetime.now().date().strftime("%d/%m/%Y"),
+#             gtin_produto="",
+#             mpn_produto="",
+#             id_produto_erp="",
+#             codigo_produto="",
+#             ncm_produto="0402.10.90",
+#             preco=5.00,
+#             preco_promocional=3.50,
+#             descricao="pão de queijo do bom",
+#         )
 
-    return await use_cases_produtos.sync_produtos(db, produtos, usuario)
+#         produtos.append(produto)
+
+#     return await use_cases_produtos.sync_produtos(db, produtos, usuario)
 
 
 @model_router.post("/cadastrar", summary="Cadastrar produto")
@@ -90,13 +97,6 @@ async def get_produto_por_uuid(db: AsyncDBDependency, id_produto: uuid.UUID):
     return await use_cases_produtos.get_produto_by_uuid(db, id_produto)
 
 
-@model_router.get(
-    "/sync_erp", summary="Sincroniza produtos em promoção do ERP"
-)
-async def teste_auth_erp(
-    usuario: Annotated[Usuario, Depends(get_current_active_user)], db: AsyncDBDependency
-):
-    return await use_cases_produtos.sync_produtos_promocao_erp(usuario=usuario, db=db)
 @model_router.post(
     "/pesquisar/nome/", summary="Pesquisar por nome por produto e mercado"
 )

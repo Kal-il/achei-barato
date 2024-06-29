@@ -14,9 +14,6 @@ import * as SecureStore from "expo-secure-store";
 import { ApiClient } from "../../api/ApiClient";
 
 export default function ErpManager() {
-  const handleSync = async () => {
-    console.log("sincronizando produtos...");
-  };
 
   const [mensagem, setMensagem] = useState("");
   const [delayComplete, setDelayComplete] = useState(false);
@@ -26,8 +23,6 @@ export default function ErpManager() {
   useEffect(() => {
     const fetchMessage = async (mensagemData) => {
       setDelayComplete(false);
-      console.log("delay: " + delayComplete);
-      console.log("mensagem: " + mensagemData);
       setMensagem(mensagemData);
       await SecureStore.deleteItemAsync("mensagem");
 
@@ -101,11 +96,10 @@ export default function ErpManager() {
 
       <ButtonCard
         text="Sincronizar promoções"
-        link="/erp"
+        link="/syncErp"
         IconComponent={MaterialCommunityIcons}
         iconSize={32}
         iconName={"database-sync"}
-        onPress={handleSync}
       />
       {loading && (
         <View
@@ -135,7 +129,6 @@ export default function ErpManager() {
           IconComponent={MaterialCommunityIcons}
           iconSize={32}
           iconName={"api"}
-          onPress={handleSync}
         />
       )}
     </View>

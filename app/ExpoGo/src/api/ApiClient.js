@@ -327,4 +327,18 @@ export class ApiClient {
       multipart: true,
     })
   }
+
+  async sincronizarERP() {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/sync_erp`,
+      method: "GET",
+    })
+  }
+
+  async getProdutoERP(idProduto) {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/erp/${idProduto}`,
+      method: "GET",
+    })
+  }
 }

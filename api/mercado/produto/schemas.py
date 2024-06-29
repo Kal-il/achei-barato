@@ -16,7 +16,7 @@ class ProdutoBase(BaseModel):
     id_produto_erp: Optional[str] = Field(
         "", description="ID do produto no ERP de origem"
     )
-    descricao: Optional[str] = Field(..., max_length=500, description="Descrição")
+    descricao: Optional[str] = Field("", max_length=500, description="Descrição")
     preco: Optional[float] = Field(..., description="Preço")
     preco_promocional: Optional[float] = Field(None, description="Preço promocional")
     codigo_produto: Optional[str] = Field(

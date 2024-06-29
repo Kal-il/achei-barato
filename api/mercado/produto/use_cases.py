@@ -81,7 +81,7 @@ class ProdutoUseCases:
           
             mercado = await MercadoManager(db=db).get_mercado_by_usuario(usuario.id)
 
-            erp_requests = ErpRequest()
+            erp_requests = ErpRequest(db)
             await erp_requests.get_dados_conexao(db, mercado)
             lista_produtos_promo = await erp_requests.run_test()
 
@@ -173,11 +173,21 @@ class ProdutoUseCases:
     async def get_todos_produtos(self, db: AsyncSession):
         produto_manager = ProdutoManager(db)
         mercado_manager = MercadoManager(db)
+        erp_manager = ProdutosPromocaoErpManager(db)
+
         produtos = await produto_manager.get_todos_produtos()
         for produto in produtos:
             produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
             produto.foto = await FileManager.get_foto(produto.url_foto)
 
-        return [ProdutoOutput(**produto.__dict__) for produto in produtos] 
+        produtos_erp = await erp_manager.get_todos_produtos_erp()
+        for produto in produtos_erp:
+            produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+            produto.promocao_id = produto.id
+
+        return {
+            "produtos": [ProdutoOutput(**produto.__dict__) for produto in produtos],
+            "produtos_erp": [ProdutoOutput(**produto.__dict__) for produto in produtos_erp]
+        }
 
 use_cases_produtos = ProdutoUseCases()

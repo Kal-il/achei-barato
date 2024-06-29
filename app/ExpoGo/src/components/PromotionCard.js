@@ -26,6 +26,7 @@ const PromotionCard = ({
   LikesNumber,
   promotionId,
   pathname,
+  isErp,
 }) => {
   const formatPrice = ({ price }) => {
     price = String(price);
@@ -40,7 +41,7 @@ const PromotionCard = ({
         <Link
           href={{
             pathname: `/${pathname ? pathname : "promotion"}/[id]`,
-            params: { id: promotionId },
+            params: { id: promotionId, erp: isErp ? isErp : false },
           }}
           asChild
         >
@@ -130,7 +131,6 @@ const PromotionCard = ({
 
 const styles = StyleSheet.create({
   Card: {
-    height: height * 0.25,
     width: width * 0.93,
     borderColor: "#E9E9E9",
     borderWidth: 1,
