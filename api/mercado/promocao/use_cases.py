@@ -88,13 +88,13 @@ class PromocaoUseCases:
                     and not produto.promocao.deleted
                 ):
                     return JSONResponse(
-                        content=f"O produto {produto.nome} (ID {produto.id_produto_erp})"
+                        content=f"O produto {produto.nome}"
                         " ainda está em promoção",
                         status_code=status.HTTP_400_BAD_REQUEST,
                     )
 
             promocao = await promocao_manager.save_promocao(promocao, mercado_id)
-            await produto_manager.update_produto_promocao(
+            await produto_manager.update_produto_promocao_manual(
                 id_produtos=produtos, promocao=promocao, mercado_id=mercado_id
             )
         except Exception as e:

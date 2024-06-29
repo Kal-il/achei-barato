@@ -309,4 +309,12 @@ export class ApiClient {
       params: { id_produto: postId },
     });
   }
+
+  async createPromocao(promocao) {
+    return await this._callApi({
+      path: `api/v1/mercado/promocao/cadastrar`,
+      method: "POST",
+      data: promocao
+    })
+  }
 }

@@ -1,5 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import {
+    Dimensions,
   FlatList,
   ScrollView,
   StyleSheet,
@@ -17,6 +18,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import DateInput from "../../../components/DateInput";
 import ProductOption from "../../../components/ProdutOption";
 
+const { height, width } = Dimensions.get("window");
+
 export default function RegisterSale() {
   const [produtos, setProdutos] = useState([]);
 
@@ -24,34 +27,80 @@ export default function RegisterSale() {
   const [percentual, setPercentual] = useState(0);
   const [dataFinal, setDataFinal] = useState(new Date());
   const [dataInicial, setDataInicial] = useState(new Date());
+  const [listaIds, setListaIds] = useState([]);
 
   const [erro, setErro] = useState("");
   const [erroDescricao, setErroDescricao] = useState("");
   const [erroPercentual, setErroPercentual] = useState("");
   const [erroDataFinal, setErroDataFinal] = useState("");
   const [erroDataInicial, setErroDataInicial] = useState("");
+  const [erroProdutos, setErroProdutos] = useState("");
+  const [valido, setValido] = useState(true);
 
   const router = useRouter();
   const api = new ApiClient();
   const idProdutos = [];
 
   const validarFormulario = () => {
+    let houveErro = false;
     if (!descricao || !percentual || !dataFinal || !dataInicial) {
       setErro("Todos os campos devem ser preechidos");
-      return;
+      setErroPercentual("");
+      setErroProdutos("");
+      setValido(false);
+      return !houveErro;
+    }
+
+    if (!listaIds) {
+      setErro("");
+      setErroProdutos("Selecione pelo menos um produto");
+      setValido(false);
+      houveErro = true;
+    } else {
+      setErroProdutos("");
+    }
+
+    if (isNaN(percentual)) {
+      setErroPercentual("O percentual deve ser um número de 0 a 100");
+      setValido(false);
+      houveErro = true;
+    } else {
+      setErroPercentual("");
     }
 
     if (percentual > 100 || percentual <= 0) {
-      setErro("Insira um percentual de desconto válido");
+      setErroPercentual("Insira um percentual de desconto válido");
+      setValido(false);
+      houveErro = true;
+    } else {
+      setErroPercentual("");
     }
 
-    return;
+    return houveErro;
   };
 
-  const handleErroAPI = (erros) => {};
 
   const handleRegister = async () => {
-    validarFormulario();
+    if(!validarFormulario()) {
+      console.log(percentual)
+      console.log("rtrtrt" + percentual/100)
+      data = {
+        descricao: descricao, 
+        percentual_desconto: percentual/100,
+        data_inicial: dataInicial,
+        data_final: dataFinal,
+        produtos: listaIds
+      }
+
+      console.log(JSON.stringify(data));
+
+      try {
+        await api.createPromocao(data);
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
   };
 
   const getDataFinal = (date) => {
@@ -63,14 +112,9 @@ export default function RegisterSale() {
   };
 
   useEffect(() => {
-    console.log(idProdutos);
-  }, [idProdutos]);
-
-  useEffect(() => {
     const fetchProdutos = async () => {
       try {
         let produtosData = await api.getProdutosMercado();
-        console.log("data: " + produtosData);
         setProdutos(produtosData);
       } catch (e) {
         console.error(e);
@@ -84,16 +128,18 @@ export default function RegisterSale() {
   }, []);
 
   const appendProduct = (idProduto) => {
-    idProdutos.push(idProduto);
-    console.log(idProdutos);
-    console.log("append");
+    const idProdutos = Array.from(listaIds);
+    idProdutos.push(idProduto)
+    console.log("lista de ids: " + idProdutos)
+    setListaIds(idProdutos)
   };
 
   const removeProduct = (idProduto) => {
+    const idProdutos = Array.from(listaIds)
     let index = idProdutos.indexOf(idProduto);
     idProdutos.splice(index, 1);
-    console.log(idProdutos);
-    console.log("remove");
+    console.log("lista de ids: " + idProdutos)
+    setListaIds(idProdutos);
   };
 
   const renderOpcao = ({ item }) => {
@@ -114,15 +160,17 @@ export default function RegisterSale() {
       <View style={styles.mainContainer}>
         <View style={styles.headerContainer}>
           <Text style={styles.title}>Cadastre uma nova promoção</Text>
-          {erro ? (
-            <View style={{ alignSelf: "center" }}>
+          {erro && (
+            <View style={{ marginTop: height * 0.01}}>
               <ErrorMessage mensagem={erro} maxWidth={"100%"} />
             </View>
-          ) : (
-            <Text style={styles.subtitle}>
+          )}
+
+          {valido && 
+            <Text style={{...styles.subtitle, marginBottom: height * 0.01}}>
               Sua oferta será imediatamente compartilhada com o público
             </Text>
-          )}
+          }
         </View>
 
         <View style={styles.formContainer}>
@@ -139,7 +187,6 @@ export default function RegisterSale() {
               <View>
                 <Text
                   style={{
-                    marginLeft: 15,
                     color: "#d83933",
                     fontWeight: 500,
                   }}
@@ -149,27 +196,12 @@ export default function RegisterSale() {
               </View>
             )}
 
-            <View style={styles.formField}>
-              {erroPercentual && (
-                <View>
-                  <Text
-                    style={{
-                      marginLeft: 15,
-                      color: "#d83933",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {erroPercentual}
-                  </Text>
-                </View>
-              )}
-            </View>
           </View>
           <View style={styles.formField}>
             <View>
               <Text style={styles.label}>Insira o percentual de desconto:</Text>
               <Text style={styles.helpText}>
-                Será aplicado sobre o preço dos produtos selecionados.
+                Um valor de 0 a 100%. Será aplicado sobre o preço dos produtos selecionados.
               </Text>
             </View>
             <View style={styles.inputContainer}>
@@ -177,14 +209,13 @@ export default function RegisterSale() {
                 style={styles.inputText}
                 keyboardType="numeric"
                 value={percentual}
-                onChangeText={(text) => setDescricao(text)}
+                onChangeText={(text) => setPercentual(text)}
               />
             </View>
             {erroPercentual && (
               <View>
                 <Text
                   style={{
-                    marginLeft: 15,
                     color: "#d83933",
                     fontWeight: 500,
                   }}
@@ -212,6 +243,26 @@ export default function RegisterSale() {
           </View>
           <View style={{ marginTop: 20 }}>
             <Text style={styles.label}>Selecione os Produtos:</Text>
+            {erroProdutos && (
+              <View>
+                <Text
+                  style={{
+                    color: "#d83933",
+                    fontWeight: 500,
+                  }}
+                >
+                  {erroProdutos}
+                </Text>
+              </View>
+            )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: 10,
+            }}
+          >
             <FlatList
               style={{
                 marginTop: 10,
@@ -260,12 +311,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   mainContainer: {
-    paddingTop: "2%",
   },
   headerContainer: {
-    marginTop: "15%",
+    marginTop: height * 0.12,
     paddingHorizontal: "5%",
-    marginBottom: 20,
   },
   title: { fontSize: 24, fontWeight: "bold" },
   subtitle: {

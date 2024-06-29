@@ -23,6 +23,7 @@ from mercado.promocao.schemas import (
     ProdutoPromocaoErp,
     PromocaoBase,
     PromocaoCreate,
+    PromocaoCreateManual,
     PromocaoUpdate,
 )
 from core.database import Base
@@ -57,7 +58,7 @@ class PromocaoManager:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
 
-    async def save_promocao(self, promocao: PromocaoCreate, mercado_id) -> Promocao:
+    async def save_promocao(self, promocao: PromocaoCreate | PromocaoCreateManual, mercado_id) -> Promocao:
         try:
             promocao = Promocao(
                 data_inicial=promocao.data_inicial,

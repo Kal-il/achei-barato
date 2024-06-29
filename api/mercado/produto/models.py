@@ -10,6 +10,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    Numeric,
     String,
     UUID,
     delete,
@@ -158,7 +159,7 @@ class ProdutoManager:
                 .values(
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
-                    preco_promocional=round(
+                    preco_promocional=func.round(
                         (
                             Produto.preco
                             - (Produto.preco * promocao.percentual_desconto)
@@ -170,7 +171,7 @@ class ProdutoManager:
             await self.db.execute(query)
         await self.db.commit()
 
-    async def update_produto_promocao(
+    async def update_produto_promocao_manual(
         self, promocao: Promocao, mercado_id: str, id_produtos: list[uuid.UUID] = None
     ):
         # Atualiza os produtos em promoção, atribuindo o ID da promoção e o valor promocional
@@ -182,17 +183,18 @@ class ProdutoManager:
             id_produtos = id_produtos.scalars().all()
 
         for produto_id in id_produtos:
+            print(promocao.percentual_desconto)
             query = (
                 update(Produto)
                 .where(Produto.id == produto_id)
                 .values(
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
-                    preco_promocional=round(
-                        (
+                    preco_promocional=func.round(
+                        func.cast((
                             Produto.preco
                             - (Produto.preco * promocao.percentual_desconto)
-                        ),
+                        ), Numeric()),
                         2,
                     ),
                 )

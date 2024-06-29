@@ -10,7 +10,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function DateInput({ getDate }) {
   const [show, setShow] = useState(false);
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(new Date());
 
   const showDatePicker = () => {
     setShow(true);
