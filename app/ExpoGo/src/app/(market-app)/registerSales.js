@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, Platform, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons'; 
-import Button from "../../components/Button";
+import Button from "../../components/Button"
+import { ApiClient } from '../../api/ApiClient';
 
 export default function RegisterPromotionsPage() {
   const [dataInicial, setDataInicial] = useState(new Date());
@@ -25,6 +26,9 @@ export default function RegisterPromotionsPage() {
     setDataFinal(currentDate.toISOString().split('T')[0]); // formatar a data como YYYY-MM-DD
   };
 
+
+  const api = new ApiClient();
+
   const handleRegister = () => {
     const productData = {
       data_inicial: dataInicial,
@@ -33,7 +37,10 @@ export default function RegisterPromotionsPage() {
       descricao: descricao,
       produtos: produtos,
     };
-    // Ação de registro (ex.: salvar no banco de dados)
+
+    api.createPromotion(productData);
+    
+    
   };
 
   return (
