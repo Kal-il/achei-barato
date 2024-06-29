@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ApiClient } from "../api/ApiClient.js";
-import { Authenticator } from "../api/Authenticator";
 import * as SecureStore from "expo-secure-store";
 
 const AuthContext = React.createContext({
   signIn: async () => {},
   signOut: () => {},
   isMercado: false,
+  isLoaded: false,
   user: null,
 });
 
@@ -37,7 +37,7 @@ const useStorageState = (key) => {
         SecureStore.setItem(key, valor);
       }
     },
-    [key]
+    [key],
   );
 
   return [state, setValue];
@@ -60,14 +60,10 @@ export function AuthProvider({ children }) {
     formData.append("username", username);
     formData.append("password", password);
 
-    const auth = new Authenticator();
-    let token = auth.fetchAccessToken();
-
     const api = new ApiClient();
     try {
       await api.loginUser(formData);
       usuario = await api.getUserDetail();
-      console.log(JSON.stringify(usuario));
 
       if (usuario) {
         setUser(user);

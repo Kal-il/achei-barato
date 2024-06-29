@@ -5,20 +5,26 @@ import GradientBackground from "../../components/gradient";
 
 export default function AppLayout() {
 
-	const { isMercado } = useAuth();
+	const { isMercado, user } = useAuth();
 	const router = useRouter()
 
-  console.log("valor: " + isMercado);
+  if (user === undefined) {
+    setTimeout(() => {
+      if (isMercado == "mercado") {
+        console.log("é mercado");
+        router.push("/market-index");
+      }
 
-	if (isMercado == "mercado") {
-		console.log('é mercado')
-		router.replace("/market-index");
-	}
+      if (isMercado == "deslogado") {
+        console.log("deslogado");
+        router.push("/sign-in");
+      }
 
-	if (isMercado == "deslogado") {
-		console.log('deslogado')
-		router.replace("/sign-in");
-	}
+	  if (isMercado == "") {
+		router.push("/sign-in");
+	  }
+    }, 5000);
+  }
 
   return (
     <Stack
@@ -85,20 +91,6 @@ export default function AppLayout() {
         options={{
           title: "notificações",
           headerTransparent: true, // Torna o cabeçalho transparente
-        }}
-      />
-      <Stack.Screen
-        name="location"
-        options={{
-          title: "Localização",
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name="ProductsAndPromotions"
-        options={{
-          title: "Produtos",
-          headerTransparent: true,
         }}
       />
       <Stack.Screen

@@ -92,11 +92,10 @@ export default function UpdateERP() {
       await api.createConexaoERP(data);
       SecureStore.setItem(
         "mensagem",
-        "Parabéns! Você cadastrou os dados de conexão com a sua API. Agora, você pode sincronizar sua base de dados com o Achei Barato."
+        "Parabéns! Você cadastrou os dados de conexão com a sua API. Agora, você pode sincronizar sua base de dados com o Achei Barato.",
       );
       router.replace("/erp");
     } catch (e) {
-      console.log(e)
       erros = e.response.data.detail;
       handleErroAPI(erros);
     }

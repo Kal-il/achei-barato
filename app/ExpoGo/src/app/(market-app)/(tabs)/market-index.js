@@ -41,7 +41,6 @@ export default function Dashboard() {
         setUsuario(user);
         setLoading(false);
       } else {
-        console.log("sem user");
         try {
           let usuarioData = await api.getUserDetail();
           setUsuario(usuarioData);

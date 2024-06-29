@@ -31,6 +31,7 @@ class AuthUseCase:
 
         # Verifica se a senha confere
         if not verify_password(password, _usuario.hashed_password):
+            print('senha errada')
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="E-mail ou senha estão incorretos",

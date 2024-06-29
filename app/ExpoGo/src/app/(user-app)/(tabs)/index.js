@@ -31,23 +31,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const api = new ApiClient();
 
-  const [data, setData] = useState([
-    {
-      imageSource: require("../../../assets/apple.png"),
-      MarketImageProfile: require("../../../assets/supermercado.png"),
-      MarketName: "Supermercado Central",
-      OldPrice: "R$ 15,99",
-      Price: "R$ 10,49",
-      PromotionLink: "/promotion",
-      PromotionName: "Maçã",
-      tag: "Promoção",
-      CommentsNumber: "20",
-      LikesNumber: 15,
-      MarketProfileLink: "/store-profile",
-      id: "1",
-    },
-  ]);
-
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -66,8 +49,8 @@ export default function Dashboard() {
       try {
         let resultados = await api.getProdutosPromocao();
         if (resultados) {
-          produtos = resultados.produtos
-          produtosErp = resultados.produtos_erp
+          produtos = resultados.produtos;
+          produtosErp = resultados.produtos_erp;
         }
       } catch (e) {
         erro = e;
@@ -91,8 +74,6 @@ export default function Dashboard() {
 
   const renderItem = ({ item }) => {
     if (item.type === "post") {
-
-      console.log('post')
       return (
         <PostCard
           postId={item.id}
@@ -105,8 +86,6 @@ export default function Dashboard() {
     }
 
     if (item.type === "promocao") {
-
-      console.log('promocao')
       return (
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
@@ -125,7 +104,6 @@ export default function Dashboard() {
     }
 
     if (item.type === "erp") {
-      console.log('erp')
       return (
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
@@ -142,10 +120,10 @@ export default function Dashboard() {
           isErp={true}
         />
       );
-  };
+    }
 
     return null;
-  }
+  };
 
   return (
     <KeyboardAvoidingView

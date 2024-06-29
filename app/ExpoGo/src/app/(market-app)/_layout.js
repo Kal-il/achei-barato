@@ -12,10 +12,8 @@ export default function AppLayout() {
   const api = new ApiClient();
 
   const checkMercadoIsCreated = async () => {
-    console.log("checando");
     try {
-      let mercado = await api.getMercadoUsuario();
-      console.log(JSON.stringify(mercado));
+      await api.getMercadoUsuario();
     } catch (e) {
       if (e.response) {
         if (e.response.status == 404) {
@@ -31,8 +29,6 @@ export default function AppLayout() {
       }
     }
   };
-
-  console.log("valor: " + isMercado);
 
   if (isMercado == "consumidor") {
     console.log("é consumidor");

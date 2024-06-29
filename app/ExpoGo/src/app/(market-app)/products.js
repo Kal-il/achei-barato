@@ -30,14 +30,16 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   const renderProduto = ({ item }) => {
-    return (<ProductCard 
-      preco={item.preco}
-      nome={item.nome}
-      marca={item.marca}
-      descricao={item.descricao}
-      imagem={item.foto}
-    />)
-  }
+    return (
+      <ProductCard
+        preco={item.preco}
+        nome={item.nome}
+        marca={item.marca}
+        descricao={item.descricao}
+        imagem={item.foto}
+      />
+    );
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -46,19 +48,15 @@ export default function ProductsPage() {
 
       try {
         produtosData = await api.getProdutosMercado();
-        // produtosData.forEach((produto) => {
-        //   produto.foto = `data:image/jpg;base64,${produto.foto}`
-        // })
-
         setProdutos(produtosData);
         setLoading(false);
       } catch (e) {
         console.log(e);
       }
-    }
+    };
 
     fetchProducts();
-  }, [])
+  }, []);
   return (
     <View>
       {produtos && (
@@ -85,7 +83,7 @@ export default function ProductsPage() {
           style={{
             height: "60%",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />

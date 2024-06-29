@@ -32,7 +32,6 @@ export default function SyncERP() {
         setConexao(conexaoData);
         setLoading(false);
       } catch (e) {
-        console.error(e);
         setErro("Erro ao obter dados de conexão.");
         setLoading(false);
       }
@@ -45,14 +44,12 @@ export default function SyncERP() {
     setSincronizando(true);
 
     try {
-      console.log("iniciando");
       response = await api.sincronizarERP();
       if (response) {
         console.log(response);
         setSucesso(true);
       }
     } catch (e) {
-      console.log(e);
       setSincronizando(false);
       setErro(
         "Ocorreu um erro durante a sincronização. Tente novamente mais tarde.",

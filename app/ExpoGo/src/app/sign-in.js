@@ -30,9 +30,11 @@ export default function Dashboard() {
   const handleErrorResponse = (error) => {
     if (error.response) {
       setErro(error.response.data.detail);
+    } else if (error.status == 401) {
+      setErro("E-mail ou senha estão incorretos");
     } else {
       setErro(
-        "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde."
+        "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.",
       );
     }
   };
@@ -72,7 +74,10 @@ export default function Dashboard() {
     >
       <View style={styles.innerContainer}>
         <View style={{ alignItems: "center" }}>
-          <Image source={require("../assets/acheibarato.png")} style={styles.image} />
+          <Image
+            source={require("../assets/acheibarato.png")}
+            style={styles.image}
+          />
           <Text style={styles.logo}>
             <Text style={{ color: "white" }}>Achei</Text>{" "}
             <Text style={{ color: "#7F48CA" }}>Barato</Text>
@@ -143,7 +148,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: height * 0.25,
-    aspectRatio: 1
+    aspectRatio: 1,
   },
   logo: {
     fontWeight: "bold",

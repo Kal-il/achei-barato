@@ -21,7 +21,6 @@ export default function SalesPage() {
 
   const renderPromocao = ({ item }) => {
     if (item.type === "promocao") {
-      console.log('promocao')
       return (
         <PromotionCard
           MarketImageProfile={require("../../assets/supermercado.png")}
@@ -41,7 +40,6 @@ export default function SalesPage() {
     }
 
     if (item.type === "erp") {
-      console.log('erp')
       return (
         <PromotionCard
           MarketImageProfile={require("../../assets/supermercado.png")}

@@ -121,7 +121,7 @@ export class Authenticator {
       })
       .catch(function (error) {
         console.error("erro ao logar usuário:", error);
-			console.error(JSON.stringify(error) + ",erro")
+        console.error(JSON.stringify(error.status) + ",erro")
         throw error;
       });
     return returnToken;
