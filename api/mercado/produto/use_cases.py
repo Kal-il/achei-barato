@@ -57,7 +57,10 @@ class ProdutoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
-        _produto = ProdutoOutput(**_produto.__dict__, nome_mercado=_produto.mercado.nome_fantasia)
+        _produto = ProdutoOutput(
+            **_produto.__dict__,
+            nome_mercado=_mercado.nome_fantasia,
+            foto=await FileManager.get_foto(_produto.url_foto))
         return _produto
 
     async def get_produtos(self, db: AsyncSession, usuario: Usuario):
@@ -187,7 +190,7 @@ class ProdutoUseCases:
 
         return {
             "produtos": [ProdutoOutput(**produto.__dict__) for produto in produtos],
-            "produtos_erp": [ProdutoOutput(**produto.__dict__) for produto in produtos_erp]
+            "produtos_erp": [ProdutoOutput(**produto.__dict__, foto=b"") for produto in produtos_erp]
         }
 
 use_cases_produtos = ProdutoUseCases()

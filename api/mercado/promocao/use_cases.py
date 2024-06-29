@@ -135,7 +135,12 @@ class PromocaoUseCases:
             )
 
         nome_mercado = await MercadoManager(db).get_mercado_nome(produto.mercado_id)
-        return ProdutoOutput(**produto.__dict__, promocao_id=produto.id, nome_mercado=nome_mercado)
+        return ProdutoOutput(
+            **produto.__dict__, 
+            promocao_id=produto.id, 
+            nome_mercado=nome_mercado,
+            foto=b""
+        )
 
     async def get_promocoes(self, db: AsyncSession, usuario: Usuario):
         if not usuario.dono_mercado:
@@ -148,7 +153,7 @@ class PromocaoUseCases:
             promocao_manager = PromocaoManager(db=db)
             produto_manager = ProdutoManager(db)
             mercado_manager = MercadoManager(db)
-
+            erp_manager = ProdutosPromocaoErpManager(db)
             resultado = []
             mercado = await mercado_manager.get_mercado_by_usuario(usuario.id)
             promocoes = await promocao_manager.get_promocoes(mercado.id)
@@ -163,7 +168,18 @@ class PromocaoUseCases:
                 ]
                 resultado.extend(produtos)
 
-            return resultado
+            lista_erp = []
+            produtos_erp = await erp_manager.get_todos_produtos_erp()
+            for produto in produtos_erp:
+                produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+                produto.promocao_id = produto.id
+                lista_erp.append(ProdutoOutput(**produto.__dict__, foto=b""))
+
+            return {
+                "promocoes": resultado, 
+                "erp": lista_erp
+            }
+
         except Exception as e:
             print(e)
             raise HTTPException(

@@ -36,7 +36,6 @@ export default function PromotionPage({
   CommentsNumber,
   LikesNumber,
   description,
-  isErp,
 }) {
   imageSource = require("../../../assets/apple.png");
   MarketImageProfile = require("../../../assets/supermercado.png");
@@ -63,7 +62,7 @@ export default function PromotionPage({
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
-  console.log("erp:" + erp)
+  console.log("erp:" + typeof(erp))
   const meses = [
     "Janeiro",
     "Fevereiro",
@@ -136,7 +135,7 @@ export default function PromotionPage({
       }
     }
 
-    if (erp) {
+    if (erp === "true") {
       fetchPromotionErpData();
     } else {
       fetchPromotionData();
@@ -146,10 +145,14 @@ export default function PromotionPage({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <ImageBackground
+        {loading && <ImageBackground
           source={require("../../../assets/apple.png")}
           style={styles.PromotionImage}
-        />
+        />}
+        {!loading && <ImageBackground
+          source={produto.foto ? {uri: `data:image/jpg;base64,${produto.foto}`} : require("../../../assets/apple.png")}
+          style={styles.PromotionImage}
+        />}
         <BotomSheet
           ref={bottonSheetRef}
           index={1}

@@ -25,7 +25,7 @@ export default function Liked() {
     return (
       <PromotionCard
         MarketImageProfile={require("../../../assets/supermercado.png")}
-        imageSource={require("../../../assets/apple.png")}
+        imagem={item.foto}
         MarketName={item.nome_mercado}
         OldPrice={item.preco}
         Price={item.preco_promocional}
