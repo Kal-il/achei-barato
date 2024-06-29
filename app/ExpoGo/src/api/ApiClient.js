@@ -317,4 +317,14 @@ export class ApiClient {
       data: promocao
     })
   }
+
+  async createProduto(parametros) {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/cadastrar`,
+      method: "POST",
+      data: parametros.imagem,
+      params: parametros.formulario,
+      multipart: true,
+    })
+  }
 }

@@ -19,6 +19,7 @@ const ProductOption = ({
   preco,
   nome,
   marca,
+  imagem,
   appendProduct,
   removeProduct,
 }) => {
@@ -53,7 +54,7 @@ const ProductOption = ({
         <View style={styles.cardContent}>
           <TouchableOpacity>
             <Image
-              source={require("../assets/apple.png")}
+              source={imagem ? {uri: `data:image/jpg;base64,${imagem}`} : require("../assets/apple.png")}
               style={styles.productImage}
             />
           </TouchableOpacity>

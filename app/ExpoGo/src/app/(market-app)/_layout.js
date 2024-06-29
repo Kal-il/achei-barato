@@ -87,6 +87,21 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="registerProduct"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="white"
+              onPress={() => router.replace("/market-index")}
+            ></AntDesign>
+          ),
+        }}
+      />
+      <Stack.Screen
         name="erp"
         options={{
           title: "",

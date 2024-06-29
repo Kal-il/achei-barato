@@ -58,7 +58,7 @@ class Produto(Base):
     descricao: Mapped[str] = mapped_column(String(500), nullable=True)
     preco: Mapped[float] = mapped_column(Float, nullable=True)
     preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)
-    imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
+    url_foto: Mapped[str] = mapped_column(String(255), nullable=True)
     codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
@@ -89,7 +89,7 @@ class ProdutoManager:
     async def sync_produtos(self, cnpj: str, produtos: List[ProdutoBase]):
         await redis.store_produtos_hash(cnpj=cnpj, produtos=produtos)
 
-    async def save_produto(self, produto: ProdutoBase, mercado: Mercado):
+    async def save_produto(self, produto: ProdutoBase, mercado: Mercado, url_foto: str):
         try:
             _produto = Produto(
                 mercado_id=mercado.id,
@@ -104,6 +104,7 @@ class ProdutoManager:
                 preco=produto.preco,
                 preco_promocional=produto.preco_promocional,
                 codigo_produto=produto.codigo_produto,
+                url_foto=url_foto,
             )
 
             self.db.add(_produto)

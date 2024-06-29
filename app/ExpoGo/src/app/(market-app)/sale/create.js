@@ -92,10 +92,9 @@ export default function RegisterSale() {
         produtos: listaIds
       }
 
-      console.log(JSON.stringify(data));
-
       try {
         await api.createPromocao(data);
+        router.replace("/sales");
       } catch (e) {
         console.log(e)
       }
@@ -130,7 +129,6 @@ export default function RegisterSale() {
   const appendProduct = (idProduto) => {
     const idProdutos = Array.from(listaIds);
     idProdutos.push(idProduto)
-    console.log("lista de ids: " + idProdutos)
     setListaIds(idProdutos)
   };
 
@@ -138,7 +136,6 @@ export default function RegisterSale() {
     const idProdutos = Array.from(listaIds)
     let index = idProdutos.indexOf(idProduto);
     idProdutos.splice(index, 1);
-    console.log("lista de ids: " + idProdutos)
     setListaIds(idProdutos);
   };
 
@@ -149,6 +146,7 @@ export default function RegisterSale() {
         nome={item.nome}
         marca={item.marca}
         preco={item.preco}
+        imagem={item.foto}
         appendProduct={appendProduct}
         removeProduct={removeProduct}
       />

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated, List
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 from core.database import AsyncDBDependency
 from core.security import get_current_active_user
@@ -55,11 +55,12 @@ async def sync_produtos(
 @model_router.post("/cadastrar", summary="Cadastrar produto")
 async def cadastrar_produto(
     db: AsyncDBDependency,
-    produto: ProdutoBase,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
+    produto: ProdutoBase = Depends(),
+    foto: UploadFile = File(...),
 ):
     return await use_cases_produtos.cadastrar_produto(
-        db=db, produto=produto, usuario=usuario
+        db=db, produto=produto, usuario=usuario, imagem=foto
     )
 
 

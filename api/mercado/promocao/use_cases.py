@@ -18,6 +18,8 @@ from usuario.usuario.models import Usuario
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from utils.file_manager import FileManager
+
 
 class PromocaoUseCases:
     async def cadastrar_promocao(
@@ -141,7 +143,10 @@ class PromocaoUseCases:
             for promocao in promocoes:
                 produtos = await produto_manager.get_produtos_promocao(promocao.id)
                 produtos = [
-                    ProdutoOutput(**produto.__dict__, nome_mercado=mercado.nome_fantasia)
+                    ProdutoOutput(
+                        **produto.__dict__, 
+                        nome_mercado=mercado.nome_fantasia, 
+                        foto=await FileManager.get_foto(produto.url_foto))
                     for produto in produtos
                 ]
                 resultado.extend(produtos)

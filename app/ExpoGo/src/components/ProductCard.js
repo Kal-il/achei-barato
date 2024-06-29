@@ -1,6 +1,4 @@
-import { Link } from "expo-router";
 import React from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import {
   View,
   Image,
@@ -10,11 +8,10 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import FavoriteButton from "./favoriteButton";
 
 const { height, width } = Dimensions.get("window");
 
-const ProductCard = ({ preco, nome, marca, descricao }) => {
+const ProductCard = ({ preco, nome, marca, descricao, imagem }) => {
   const formatPrice = ({ price }) => {
     price = String(price);
     if (price.indexOf(".") == -1) {
@@ -26,10 +23,14 @@ const ProductCard = ({ preco, nome, marca, descricao }) => {
     <View style={styles.Card}>
       <View style={styles.cardContent}>
         <TouchableOpacity>
-          <Image
-            source={require("../assets/apple.png")}
+          {imagem && <Image
+            source={{uri: `data:image/jpg;base64,${imagem}`}}
             style={styles.productImage}
-          />
+          />}
+          {!imagem && <Image 
+              source={require("../assets/apple.png")}
+            style={styles.productImage}
+          />}
         </TouchableOpacity>
         <View>
           <View style={{ marginBottom: 15 }}>

@@ -1,7 +1,7 @@
 from email.policy import HTTP
 from typing import List, Union
 import uuid
-from fastapi import HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from mercado.promocao.schemas import ProdutoPromocaoErp
@@ -10,6 +10,7 @@ from mercado.mercado.models import MercadoManager
 from mercado.produto.models import ProdutoManager
 from mercado.promocao.models import ProdutosPromocaoErpManager
 from usuario.usuario.models import Usuario
+from utils.file_manager import FileManager
 from .schemas import ProdutoBase, ProdutoOutput, ProdutoSimplesOutput
 
 
@@ -70,7 +71,9 @@ class ProdutoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado"
             )
 
-        _produtos = [ProdutoSimplesOutput(**_produto.__dict__) for _produto in _produtos]
+        _produtos = [
+            ProdutoSimplesOutput(**_produto.__dict__, foto=await FileManager.get_foto(_produto.url_foto)) 
+            for _produto in _produtos]
         return _produtos
 
     async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):
@@ -79,7 +82,7 @@ class ProdutoUseCases:
             mercado = await MercadoManager(db=db).get_mercado_by_usuario(usuario.id)
 
             erp_requests = ErpRequest()
-            erp_requests.get_dados_conexao(db, mercado)
+            await erp_requests.get_dados_conexao(db, mercado)
             lista_produtos_promo = await erp_requests.run_test()
 
             if not lista_produtos_promo:
@@ -126,7 +129,7 @@ class ProdutoUseCases:
             raise err
 
     async def cadastrar_produto(
-        self, db: AsyncSession, produto: ProdutoBase, usuario: Usuario
+        self, db: AsyncSession, produto: ProdutoBase, imagem: UploadFile, usuario: Usuario
     ):
         try:
             mercado_manager = MercadoManager(db=db)
@@ -140,7 +143,8 @@ class ProdutoUseCases:
                 )
 
             produto_manager = ProdutoManager(db=db)
-            response = await produto_manager.save_produto(produto, mercado)
+            url_foto = await FileManager.upload_foto(imagem)
+            response = await produto_manager.save_produto(produto, mercado, url_foto)
             if not response:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -172,6 +176,7 @@ class ProdutoUseCases:
         produtos = await produto_manager.get_todos_produtos()
         for produto in produtos:
             produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+            produto.foto = await FileManager.get_foto(produto.url_foto)
 
         return [ProdutoOutput(**produto.__dict__) for produto in produtos] 
 

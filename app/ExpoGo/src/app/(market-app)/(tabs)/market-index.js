@@ -113,13 +113,6 @@ export default function Dashboard() {
             link="/erp"
             iconName="computer"
           />
-          <ButtonCard
-            text="Novidades"
-            IconComponent={MaterialCommunityIcons}
-            iconSize={42}
-            link="/notifications"
-            iconName="bell"
-          />
         </View>
       )}
       {loading && (
