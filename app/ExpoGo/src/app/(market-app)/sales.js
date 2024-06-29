@@ -61,7 +61,7 @@ export default function SalesPage() {
             <View style={styles.mainContainer}>
               <View style={styles.headerContainer}>
                 <Text style={styles.title}>Suas Promoções</Text>
-                <Link href="/sales" asChild>
+                <Link href="/registerSales" asChild>
                   <TouchableOpacity>
                     <Button title="Cadastrar" ButtonColor={"#FF0F7B"} />
                   </TouchableOpacity>
