@@ -163,6 +163,22 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="sale/create"
+        options={{
+          title: "Cadastrar Promoção",
+          headerTransparent: true,
+          headerBackground: () => <GradientBackground></GradientBackground>,
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="white"
+              onPress={() => router.replace("/sales")}
+            ></AntDesign>
+          ),
+        }}
+      />
+      <Stack.Screen
         name="store/edit-profile"
         options={{
           title: "Editar Perfil",

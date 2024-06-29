@@ -10,6 +10,7 @@ from mercado.promocao.schemas import (
     PromocaoBase,
     PromocaoComProdutos,
     PromocaoCreate,
+    PromocaoCreateManual,
     PromocaoSchema,
     PromocaoUpdate,
 )
@@ -52,6 +53,48 @@ class PromocaoUseCases:
 
             promocao = await promocao_manager.save_promocao(promocao, mercado_id)
             await produto_manager.update_produto_promocao(
+                id_produtos=produtos, promocao=promocao, mercado_id=mercado_id
+            )
+        except Exception as e:
+            print(e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro interno no servidor",
+            )
+
+    async def cadastrar_promocao_manual(
+        self, db: AsyncSession, usuario: Usuario, promocao: PromocaoCreateManual
+    ):
+        if not usuario.dono_mercado:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="O usuário não é dono de mercado",
+            )
+
+        promocao_manager = PromocaoManager(db)
+        produto_manager = ProdutoManager(db)
+
+        try:
+            mercado_id = await MercadoManager(db).get_mercado_id(usuario.id)
+
+            produtos = promocao.produtos
+            for id_produto in produtos:
+                produto = await produto_manager.get_produto_by_uuid(
+                    id_produto
+                )
+                if (
+                    produto.promocao
+                    and datetime.now() < produto.promocao.data_final
+                    and not produto.promocao.deleted
+                ):
+                    return JSONResponse(
+                        content=f"O produto {produto.nome}"
+                        " ainda está em promoção",
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                    )
+
+            promocao = await promocao_manager.save_promocao(promocao, mercado_id)
+            await produto_manager.update_produto_promocao_manual(
                 id_produtos=produtos, promocao=promocao, mercado_id=mercado_id
             )
         except Exception as e:

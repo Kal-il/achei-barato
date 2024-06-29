@@ -10,6 +10,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    Numeric,
     String,
     UUID,
     delete,
@@ -142,53 +143,90 @@ class ProdutoManager:
     ):
         # Atualiza os produtos em promoção, atribuindo o ID da promoção e o valor promocional
         if not id_produtos:
-            query = select(Produto.id_produto_erp).where(Produto.promocao_id == promocao.id)
+            query = select(Produto.id_produto_erp).where(
+                Produto.promocao_id == promocao.id
+            )
             id_produtos = await self.db.execute(query)
             id_produtos = id_produtos.scalars().all()
-    
+
         for produto_id in id_produtos:
             query = (
                 update(Produto)
-                .where(Produto.id_produto_erp == produto_id)
+                .where(
+                    Produto.id_produto_erp == produto_id,
+                    Produto.mercado_id == mercado_id,
+                )
                 .values(
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
-                    preco_promocional=round((
-                        Produto.preco - (Produto.preco * promocao.percentual_desconto)), 2
+                    preco_promocional=func.round(
+                        (
+                            Produto.preco
+                            - (Produto.preco * promocao.percentual_desconto)
+                        ),
+                        2,
                     ),
                 )
             )
             await self.db.execute(query)
         await self.db.commit()
 
+    async def update_produto_promocao_manual(
+        self, promocao: Promocao, mercado_id: str, id_produtos: list[uuid.UUID] = None
+    ):
+        # Atualiza os produtos em promoção, atribuindo o ID da promoção e o valor promocional
+        if not id_produtos:
+            query = select(Produto.id_produto_erp).where(
+                Produto.promocao_id == promocao.id
+            )
+            id_produtos = await self.db.execute(query)
+            id_produtos = id_produtos.scalars().all()
 
-    async def get_produtos_or_mercado(self, nome:str):
+        for produto_id in id_produtos:
+            print(promocao.percentual_desconto)
+            query = (
+                update(Produto)
+                .where(Produto.id == produto_id)
+                .values(
+                    promocao_id=promocao.id,
+                    mercado_id=mercado_id,
+                    preco_promocional=func.round(
+                        func.cast((
+                            Produto.preco
+                            - (Produto.preco * promocao.percentual_desconto)
+                        ), Numeric()),
+                        2,
+                    ),
+                )
+            )
+            await self.db.execute(query)
+        await self.db.commit()
+
+    async def get_produtos_or_mercado(self, nome: str):
         try:
             produto_query = (
-            select(Produto)
-            .options(selectinload(Produto.mercado))
-            .where(Produto.nome.ilike(f"{nome}%"))
-        )
+                select(Produto)
+                .options(selectinload(Produto.mercado))
+                .where(Produto.nome.ilike(f"{nome}%"))
+            )
             produto_result = await self.db.execute(produto_query)
             produtos = produto_result.scalars().all()
 
-        
-            mercado_query = select(Mercado).where(Mercado.nome_fantasia.ilike(f"{nome}%"))
+            mercado_query = select(Mercado).where(
+                Mercado.nome_fantasia.ilike(f"{nome}%")
+            )
             mercado_result = await self.db.execute(mercado_query)
             mercados = mercado_result.scalars().all()
 
-            result = {
-                "produtos": produtos,
-                "mercados": mercados
-            }
+            result = {"produtos": produtos, "mercados": mercados}
 
             return result
         except Exception as e:
             print(f"Erro ao buscar os produtos: {e}")
             return None
-        
+
     async def get_todos_produtos(self) -> List[Produto]:
-        query = select(Produto)
+        query = select(Produto).where(Produto.promocao_id != None)
         produtos = await self.db.execute(query)
         return produtos.scalars().all()
 

@@ -1,5 +1,12 @@
 import { Link } from "expo-router";
-import { ActivityIndicator, Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ButtonCard from "../../components/ButtonCard";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -19,15 +26,15 @@ export default function ErpManager() {
   useEffect(() => {
     const fetchMessage = async (mensagemData) => {
       setDelayComplete(false);
-      console.log('delay: ' + delayComplete);
-      console.log('mensagem: ' + mensagemData);
+      console.log("delay: " + delayComplete);
+      console.log("mensagem: " + mensagemData);
       setMensagem(mensagemData);
-      await SecureStore.deleteItemAsync("mensagem")
+      await SecureStore.deleteItemAsync("mensagem");
 
       setTimeout(() => {
         setDelayComplete(true);
-      }, 15000)
-    }
+      }, 15000);
+    };
 
     let mensagemData;
     mensagemData = SecureStore.getItem("mensagem");
@@ -37,12 +44,11 @@ export default function ErpManager() {
     }
   }, []);
 
-
   useEffect(() => {
     const fetchConexaoData = async () => {
       let conexaoData;
 
-      const api = new ApiClient()
+      const api = new ApiClient();
       try {
         conexaoData = await api.getConexaoERP();
       } catch (e) {
@@ -55,7 +61,7 @@ export default function ErpManager() {
         }
       }
       setLoading(false);
-    }
+    };
 
     fetchConexaoData();
   }, []);
@@ -69,17 +75,19 @@ export default function ErpManager() {
         </Text>
       </View>
 
-      {naoCadastrado && <View style={styles.messageContainer}>
-        <FontAwesome name="warning" size={32} />
-        <Text style={styles.message}>
-          Seu sistema de ERP ainda não está sincronizado!
-        </Text>
-        <Text style={styles.messageDescription}>
-          Sincronizar significa mais facilidade na hora de divulgar suas
-          promoções para os seus clientes. Para inserir os dados de conexão,
-          basta clicar no botão "Cadastrar Dados da API".
-        </Text>
-      </View>}
+      {naoCadastrado && (
+        <View style={styles.messageContainer}>
+          <FontAwesome name="warning" size={32} />
+          <Text style={styles.message}>
+            Seu sistema de ERP ainda não está sincronizado!
+          </Text>
+          <Text style={styles.messageDescription}>
+            Sincronizar significa mais facilidade na hora de divulgar suas
+            promoções para os seus clientes. Para inserir os dados de conexão,
+            basta clicar no botão "Cadastrar Dados da API".
+          </Text>
+        </View>
+      )}
 
       {mensagem && !delayComplete && (
         <View style={styles.messageSuccessContainer}>
@@ -104,28 +112,32 @@ export default function ErpManager() {
           style={{
             height: "23%",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
-      {!loading && naoCadastrado && <ButtonCard
-        text="Cadastar dados da API"
-        link="/registerErp"
-        IconComponent={MaterialCommunityIcons}
-        iconSize={32}
-        iconName={"api"}
-        onPress={handleSync}
-      />}
-      {!loading && !naoCadastrado && <ButtonCard
-        text="Atualizar dados da API"
-        link="/updateErp"
-        IconComponent={MaterialCommunityIcons}
-        iconSize={32}
-        iconName={"api"}
-        onPress={handleSync}
-      />}
+      {!loading && naoCadastrado && (
+        <ButtonCard
+          text="Cadastar dados da API"
+          link="/registerErp"
+          IconComponent={MaterialCommunityIcons}
+          iconSize={32}
+          iconName={"api"}
+          onPress={handleSync}
+        />
+      )}
+      {!loading && !naoCadastrado && (
+        <ButtonCard
+          text="Atualizar dados da API"
+          link="/updateErp"
+          IconComponent={MaterialCommunityIcons}
+          iconSize={32}
+          iconName={"api"}
+          onPress={handleSync}
+        />
+      )}
     </View>
   );
 }

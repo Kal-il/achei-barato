@@ -310,11 +310,11 @@ export class ApiClient {
     });
   }
 
-  async createPromotion(formData) {
+  async createPromocao(promocao) {
     return await this._callApi({
-      path: "api/v1/mercado/promocao/cadastrar",
+      path: `api/v1/mercado/promocao/cadastrar`,
       method: "POST",
-      data: formData,
-    });
+      data: promocao
+    })
   }
 }
