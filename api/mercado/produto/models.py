@@ -226,7 +226,7 @@ class ProdutoManager:
             return None
 
     async def get_todos_produtos(self) -> List[Produto]:
-        query = select(Produto)
+        query = select(Produto).where(Produto.promocao_id != None)
         produtos = await self.db.execute(query)
         return produtos.scalars().all()
 
