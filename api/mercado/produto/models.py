@@ -14,6 +14,7 @@ from sqlalchemy import (
     String,
     UUID,
     delete,
+    desc,
     select,
     update,
     func,
@@ -82,7 +83,11 @@ class ProdutoManager:
         return _produto
 
     async def get_produtos_by_mercado(self, mercado_id: uuid.UUID):
-        query = select(Produto).where(Produto.mercado_id == mercado_id)
+        query = (
+            select(Produto)
+            .where(Produto.mercado_id == mercado_id)
+            .order_by(desc(Produto.created_at))
+        )
         _produtos = await self.db.execute(query)
         return _produtos.scalars().all()
 
@@ -135,7 +140,11 @@ class ProdutoManager:
         return _produto
 
     async def get_produtos_promocao(self, promocao_id: uuid.UUID):
-        _query = select(Produto).where(Produto.promocao_id == promocao_id)
+        _query = (
+            select(Produto)
+            .where(Produto.promocao_id == promocao_id)
+            .order_by(desc(Produto.created_at))
+        )
         _produtos = await self.db.execute(_query)
         return _produtos.scalars().all()
 
@@ -192,10 +201,13 @@ class ProdutoManager:
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
                     preco_promocional=func.round(
-                        func.cast((
-                            Produto.preco
-                            - (Produto.preco * promocao.percentual_desconto)
-                        ), Numeric()),
+                        func.cast(
+                            (
+                                Produto.preco
+                                - (Produto.preco * promocao.percentual_desconto)
+                            ),
+                            Numeric(),
+                        ),
                         2,
                     ),
                 )
@@ -227,7 +239,11 @@ class ProdutoManager:
             return None
 
     async def get_todos_produtos(self) -> List[Produto]:
-        query = select(Produto).where(Produto.promocao_id != None)
+        query = (
+            select(Produto)
+            .where(Produto.promocao_id != None)
+            .order_by(desc(Produto.created_at))
+        )
         produtos = await self.db.execute(query)
         return produtos.scalars().all()
 

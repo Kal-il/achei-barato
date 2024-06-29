@@ -81,17 +81,14 @@ class PromocaoUseCases:
 
             produtos = promocao.produtos
             for id_produto in produtos:
-                produto = await produto_manager.get_produto_by_uuid(
-                    id_produto
-                )
+                produto = await produto_manager.get_produto_by_uuid(id_produto)
                 if (
                     produto.promocao
                     and datetime.now() < produto.promocao.data_final
                     and not produto.promocao.deleted
                 ):
                     return JSONResponse(
-                        content=f"O produto {produto.nome}"
-                        " ainda está em promoção",
+                        content=f"O produto {produto.nome}" " ainda está em promoção",
                         status_code=status.HTTP_400_BAD_REQUEST,
                     )
 
@@ -106,9 +103,7 @@ class PromocaoUseCases:
                 detail="Erro interno no servidor",
             )
 
-    async def get_promocao(
-        self, db: AsyncSession, id_promocao: uuid.UUID
-    ):
+    async def get_promocao(self, db: AsyncSession, id_promocao: uuid.UUID):
         promocao_manager = PromocaoManager(db)
         produto_manager = ProdutoManager(db)
         promocao = await promocao_manager.get_promocao(id_promocao)
@@ -136,10 +131,10 @@ class PromocaoUseCases:
 
         nome_mercado = await MercadoManager(db).get_mercado_nome(produto.mercado_id)
         return ProdutoOutput(
-            **produto.__dict__, 
-            promocao_id=produto.id, 
+            **produto.__dict__,
+            promocao_id=produto.id,
             nome_mercado=nome_mercado,
-            foto=b""
+            foto=b"",
         )
 
     async def get_promocoes(self, db: AsyncSession, usuario: Usuario):
@@ -149,6 +144,7 @@ class PromocaoUseCases:
                 detail="O usuário não é dono de mercado",
             )
 
+        print("chamou aqui")
         try:
             promocao_manager = PromocaoManager(db=db)
             produto_manager = ProdutoManager(db)
@@ -161,9 +157,10 @@ class PromocaoUseCases:
                 produtos = await produto_manager.get_produtos_promocao(promocao.id)
                 produtos = [
                     ProdutoOutput(
-                        **produto.__dict__, 
-                        nome_mercado=mercado.nome_fantasia, 
-                        foto=await FileManager.get_foto(produto.url_foto))
+                        **produto.__dict__,
+                        nome_mercado=mercado.nome_fantasia,
+                        foto=await FileManager.get_foto(produto.url_foto),
+                    )
                     for produto in produtos
                 ]
                 resultado.extend(produtos)
@@ -171,14 +168,13 @@ class PromocaoUseCases:
             lista_erp = []
             produtos_erp = await erp_manager.get_todos_produtos_erp()
             for produto in produtos_erp:
-                produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+                produto.nome_mercado = await mercado_manager.get_mercado_nome(
+                    produto.mercado_id
+                )
                 produto.promocao_id = produto.id
                 lista_erp.append(ProdutoOutput(**produto.__dict__, foto=b""))
 
-            return {
-                "promocoes": resultado, 
-                "erp": lista_erp
-            }
+            return {"promocoes": resultado, "erp": lista_erp}
 
         except Exception as e:
             print(e)
@@ -201,7 +197,9 @@ class PromocaoUseCases:
                 detail="Erro interno no servidor",
             )
 
-    async def get_produtos_promocoes_mercado(self, db: AsyncSession, id_mercado: uuid.UUID):
+    async def get_produtos_promocoes_mercado(
+        self, db: AsyncSession, id_mercado: uuid.UUID
+    ):
         try:
             promocao_manager = PromocaoManager(db=db)
             produto_manager = ProdutoManager(db)
@@ -314,8 +312,6 @@ class PromocaoUseCases:
             )
 
         return promocao
-
-    
 
 
 use_cases_promocoes = PromocaoUseCases()

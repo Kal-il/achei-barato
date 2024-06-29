@@ -1,5 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   TextInput,
@@ -25,31 +26,32 @@ export default function RegisterERP() {
   const [erroEmpId, setErroEmpId] = useState("");
   const [erroTerminal, setErroTerminal] = useState("");
 
+  const [loading, setLoading] = useState(true);
   const [conexao, setConexao] = useState(null);
 
   const router = useRouter();
-    const api = new ApiClient();
+  const api = new ApiClient();
 
   const validarFormulario = () => {
     if (porta) {
-        if (isNaN(porta)) {
+      if (isNaN(porta)) {
         setErroPorta("A porta deve ser um número");
-        }
-        if (porta.length > 6) {
+      }
+      if (porta.length > 6) {
         setErroPorta("Esta porta é muito longa");
-        }
+      }
     }
 
     if (empId) {
-        if (isNaN(empId)) {
+      if (isNaN(empId)) {
         setErroEmpId("O ID da empresa deve ser um número");
-        }
+      }
     }
 
     if (url) {
-        if (!isNaN(url)) {
+      if (!isNaN(url)) {
         setErroUrl("Esta URL é inválida");
-        }
+      }
     }
     return;
   };
@@ -80,10 +82,8 @@ export default function RegisterERP() {
     }
   };
 
-
   const handleRegister = async () => {
     validarFormulario();
-
 
     values = {
       url_base: url,
@@ -93,23 +93,20 @@ export default function RegisterERP() {
       empresa_erp: 1,
     };
 
-    data = {}
+    data = {};
 
-	for (const [key, value] of Object.entries(values)){
-		if (value) {
-			data[key] = value;
-		}
-	}
+    for (const [key, value] of Object.entries(values)) {
+      if (value) {
+        data[key] = value;
+      }
+    }
 
     let erros;
 
     try {
       await api.updateConexaoERP(data);
 
-      SecureStore.setItem(
-        "mensagem",
-        "Dados de conexão atualizados."
-      );
+      SecureStore.setItem("mensagem", "Dados de conexão atualizados.");
 
       router.replace("/erp");
     } catch (e) {
@@ -120,17 +117,18 @@ export default function RegisterERP() {
 
   useEffect(() => {
     const fetchConexaoData = async () => {
-        let conexaoData;
-        try {
-            conexaoData = await api.getConexaoERP();
-            setConexao(conexaoData);
-        } catch (e) {
-            console.log(e);
-        }
-    }
+      let conexaoData;
+      try {
+        conexaoData = await api.getConexaoERP();
+        setConexao(conexaoData);
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
 
     fetchConexaoData();
-  }, [])
+  }, []);
   return (
     <View>
       <View style={styles.mainContainer}>
@@ -147,105 +145,134 @@ export default function RegisterERP() {
           </View>
         )}
 
-        {conexao && <View style={styles.formContainer}>
-          <View style={styles.formField}>
-            <Text style={styles.subtitle}>Insira a URL da API:</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.inputText}
-                value={url}
-                placeholder={conexao.url_base}
-                onChangeText={(text) => setUrl(text)}
-              />
-            </View>
-            {erroUrl && (
-              <View>
-                <Text
-                  style={{ marginLeft: 15, color: "#d83933", fontWeight: 500 }}
-                >
-                  {erroUrl}
-                </Text>
+        {conexao && (
+          <View style={styles.formContainer}>
+            <View style={styles.formField}>
+              <Text style={styles.subtitle}>Insira a URL da API:</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.inputText}
+                  value={url}
+                  placeholder={conexao.url_base}
+                  onChangeText={(text) => setUrl(text)}
+                />
               </View>
-            )}
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.subtitle}>
-              Insira a porta de conexão com a API:
-            </Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.inputText}
-                keyboardType="numeric"
-                placeholder={String(conexao.porta)}
-                value={porta ? String(porta) : ""}
-                onChangeText={(text) => setPorta(parseInt(text))}
-              />
+              {erroUrl && (
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 15,
+                      color: "#d83933",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {erroUrl}
+                  </Text>
+                </View>
+              )}
             </View>
+            <View style={styles.formField}>
+              <Text style={styles.subtitle}>
+                Insira a porta de conexão com a API:
+              </Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.inputText}
+                  keyboardType="numeric"
+                  placeholder={String(conexao.porta)}
+                  value={porta ? String(porta) : ""}
+                  onChangeText={(text) => setPorta(parseInt(text))}
+                />
+              </View>
 
-            {erroPorta && (
-              <View>
-                <Text
-                  style={{ marginLeft: 15, color: "#d83933", fontWeight: 500 }}
-                >
-                  {erroPorta}
-                </Text>
-              </View>
-            )}
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.subtitle}>
-              Insira o ID da empresa no sistema:
-            </Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.inputText}
-                keyboardType="numeric"
-                placeholder={String(conexao.emp_id)}
-                value={empId ? String(empId) : ""}
-                onChangeText={(text) => setEmpId(parseInt(text))}
-              />
+              {erroPorta && (
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 15,
+                      color: "#d83933",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {erroPorta}
+                  </Text>
+                </View>
+              )}
             </View>
-
-            {erroEmpId && (
-              <View>
-                <Text
-                  style={{ marginLeft: 15, color: "#d83933", fontWeight: 500 }}
-                >
-                  {erroEmpId}
-                </Text>
+            <View style={styles.formField}>
+              <Text style={styles.subtitle}>
+                Insira o ID da empresa no sistema:
+              </Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.inputText}
+                  keyboardType="numeric"
+                  placeholder={String(conexao.emp_id)}
+                  value={empId ? String(empId) : ""}
+                  onChangeText={(text) => setEmpId(parseInt(text))}
+                />
               </View>
-            )}
-          </View>
-          <View style={styles.formField}>
-            <Text style={styles.subtitle}>Insira o número de terminal:</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.inputText}
-                value={terminal}
-                placeholder={conexao.terminal}
-                onChangeText={(text) => setTerminal(text)}
-              />
+
+              {erroEmpId && (
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 15,
+                      color: "#d83933",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {erroEmpId}
+                  </Text>
+                </View>
+              )}
             </View>
+            <View style={styles.formField}>
+              <Text style={styles.subtitle}>Insira o número de terminal:</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.inputText}
+                  value={terminal}
+                  placeholder={conexao.terminal}
+                  onChangeText={(text) => setTerminal(text)}
+                />
+              </View>
 
-            {erroTerminal && (
-              <View>
-                <Text
-                  style={{ marginLeft: 15, color: "#d83933", fontWeight: 500 }}
-                >
-                  {erroTerminal}
-                </Text>
-              </View>
-            )}
+              {erroTerminal && (
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 15,
+                      color: "#d83933",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {erroTerminal}
+                  </Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.buttonField}>
+              <TouchableNativeFeedback onPress={handleRegister}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Cadastrar</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </View>
           </View>
-          <View style={styles.buttonField}>
-            <TouchableNativeFeedback onPress={handleRegister}>
-              <View style={styles.button}>
-                <Text style={styles.buttonText}>Cadastrar</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-        </View>}
+        )}
       </View>
+      {loading && (
+        <View
+          style={{
+            height: 200,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </View>
   );
 }
@@ -308,4 +335,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-

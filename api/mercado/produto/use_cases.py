@@ -14,7 +14,6 @@ from utils.file_manager import FileManager
 from .schemas import ProdutoBase, ProdutoOutput, ProdutoSimplesOutput
 
 
-
 class ProdutoUseCases:
     async def sync_produtos(
         self, db: AsyncSession, produtos: List[ProdutoBase], usuario: Usuario
@@ -42,9 +41,7 @@ class ProdutoUseCases:
         _produto = ProdutoBase(**_produto)
         return _produto
 
-    async def get_produto_by_uuid(
-        self, db: AsyncSession, id_produto: uuid.UUID
-    ):
+    async def get_produto_by_uuid(self, db: AsyncSession, id_produto: uuid.UUID):
         # Método que obtém produto através de seu ID.
         produto_manager = ProdutoManager(db=db)
         _produto = await produto_manager.get_produto_by_uuid(id_produto)
@@ -60,7 +57,8 @@ class ProdutoUseCases:
         _produto = ProdutoOutput(
             **_produto.__dict__,
             nome_mercado=_mercado.nome_fantasia,
-            foto=await FileManager.get_foto(_produto.url_foto))
+            foto=await FileManager.get_foto(_produto.url_foto)
+        )
         return _produto
 
     async def get_produtos(self, db: AsyncSession, usuario: Usuario):
@@ -75,13 +73,16 @@ class ProdutoUseCases:
             )
 
         _produtos = [
-            ProdutoSimplesOutput(**_produto.__dict__, foto=await FileManager.get_foto(_produto.url_foto)) 
-            for _produto in _produtos]
+            ProdutoSimplesOutput(
+                **_produto.__dict__, foto=await FileManager.get_foto(_produto.url_foto)
+            )
+            for _produto in _produtos
+        ]
         return _produtos
 
     async def sync_produtos_promocao_erp(self, db: AsyncSession, usuario: Usuario):
         try:
-          
+
             mercado = await MercadoManager(db=db).get_mercado_by_usuario(usuario.id)
 
             erp_requests = ErpRequest(db)
@@ -119,12 +120,13 @@ class ProdutoUseCases:
                 produtos.append(produto_promocao)
 
             produto_manager = ProdutosPromocaoErpManager(db=db)
-            response = await produto_manager.save_produtos_erp(produtos, mercado)
-            if not response:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Erro ao salvar produtos",
-                )
+            if await produto_manager.remove_produtos_erp(mercado):
+                response = await produto_manager.save_produtos_erp(produtos, mercado)
+                if not response:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Erro ao salvar produtos",
+                    )
 
             return lista_produtos_promo
 
@@ -132,7 +134,11 @@ class ProdutoUseCases:
             raise err
 
     async def cadastrar_produto(
-        self, db: AsyncSession, produto: ProdutoBase, imagem: UploadFile, usuario: Usuario
+        self,
+        db: AsyncSession,
+        produto: ProdutoBase,
+        imagem: UploadFile,
+        usuario: Usuario,
     ):
         try:
             mercado_manager = MercadoManager(db=db)
@@ -156,19 +162,24 @@ class ProdutoUseCases:
             return response
         except Exception as err:
             raise err
-        
+
     async def pesquisar_nome(self, db: AsyncSession, nome: str):
         try:
             produto_manager = ProdutoManager(db=db)
             objetos = await produto_manager.get_produtos_or_mercado(nome)
-            if not objetos['mercados'] and not objetos['produtos']:
+            if not objetos["mercados"] and not objetos["produtos"]:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Produto não encontrado",
                 )
 
-            objetos['produtos'] = [ProdutoOutput(**produto.__dict__, nome_mercado=produto.mercado.nome_fantasia) for produto in objetos['produtos']]
-            
+            objetos["produtos"] = [
+                ProdutoOutput(
+                    **produto.__dict__, nome_mercado=produto.mercado.nome_fantasia
+                )
+                for produto in objetos["produtos"]
+            ]
+
             return objetos
         except Exception as err:
             raise err
@@ -180,17 +191,24 @@ class ProdutoUseCases:
 
         produtos = await produto_manager.get_todos_produtos()
         for produto in produtos:
-            produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+            produto.nome_mercado = await mercado_manager.get_mercado_nome(
+                produto.mercado_id
+            )
             produto.foto = await FileManager.get_foto(produto.url_foto)
 
         produtos_erp = await erp_manager.get_todos_produtos_erp()
         for produto in produtos_erp:
-            produto.nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+            produto.nome_mercado = await mercado_manager.get_mercado_nome(
+                produto.mercado_id
+            )
             produto.promocao_id = produto.id
 
         return {
             "produtos": [ProdutoOutput(**produto.__dict__) for produto in produtos],
-            "produtos_erp": [ProdutoOutput(**produto.__dict__, foto=b"") for produto in produtos_erp]
+            "produtos_erp": [
+                ProdutoOutput(**produto.__dict__, foto=b"") for produto in produtos_erp
+            ],
         }
+
 
 use_cases_produtos = ProdutoUseCases()

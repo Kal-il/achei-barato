@@ -46,8 +46,8 @@ export default function Perfil() {
 
   return (
     <View style={styles.container}>
-      {mercado && (
-        <View>
+      <View>
+        {mercado && (
           <LinearGradient
             colors={["#FF0F7B", "#F89B29"]}
             start={{ x: 0.8, y: 0.8 }}
@@ -84,47 +84,46 @@ export default function Perfil() {
               </View>
             </View>
           </LinearGradient>
-
-          <View style={{ alignItems: "center" }}>
-            <ProfileScreenButton
-              ButtonLink={"/store/edit-profile"}
-              ButtonText={"Editar Perfil"}
-              ButtonIcon={"edit"}
-              ButtonIconColor={"#4a4a4a"}
-            />
-            <ProfileScreenButton
-              ButtonLink={"/store/edit-location"}
-              ButtonText={"Editar Localização"}
-              ButtonIcon={"map"}
-              ButtonIconColor={"#4a4a4a"}
-            />
-            <ProfileScreenButton
-              ButtonLink={"/configuration"}
-              ButtonText={"Configurações"}
-              ButtonIcon={"settings"}
-              ButtonIconColor={"#4a4a4a"}
-            />
-            <ProfileScreenButton
-              ButtonLink={"/store/logout"}
-              ButtonText={"Sair"}
-              ButtonIcon={"logout"}
-              ButtonIconColor={"#FF6565"}
-            />
+        )}
+        {loading && (
+          <View
+            style={{
+              height: 250,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#0000ff" />
           </View>
-        </View>
-      )}
+        )}
 
-      {loading && (
-        <View
-          style={{
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#0000ff" />
+        <View style={{ alignItems: "center" }}>
+          <ProfileScreenButton
+            ButtonLink={"/store/edit-profile"}
+            ButtonText={"Editar Perfil"}
+            ButtonIcon={"edit"}
+            ButtonIconColor={"#4a4a4a"}
+          />
+          <ProfileScreenButton
+            ButtonLink={"/store/edit-location"}
+            ButtonText={"Editar Localização"}
+            ButtonIcon={"map"}
+            ButtonIconColor={"#4a4a4a"}
+          />
+          <ProfileScreenButton
+            ButtonLink={"/configuration"}
+            ButtonText={"Configurações"}
+            ButtonIcon={"settings"}
+            ButtonIconColor={"#4a4a4a"}
+          />
+          <ProfileScreenButton
+            ButtonLink={"/store/logout"}
+            ButtonText={"Sair"}
+            ButtonIcon={"logout"}
+            ButtonIconColor={"#FF6565"}
+          />
         </View>
-      )}
+      </View>
     </View>
   );
 }

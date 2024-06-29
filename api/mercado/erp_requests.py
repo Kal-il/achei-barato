@@ -165,7 +165,6 @@ class ErpRequest:
                 if product_data.get("vlrPromocao", 0) > 0:
                     promo_products.append(product_data)
 
-            print(promo_products)
             return promo_products
 
         except Exception as err:
