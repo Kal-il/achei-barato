@@ -21,6 +21,7 @@ import GradientBackground from "../../../components/gradient.js";
 import { ApiClient } from "../../../api/ApiClient.js";
 import ButtonCard from "../../../components/ButtonCard.js";
 import SideButtonCard from "../../../components/SideButtonCard.js";
+import { useAuth } from "../../../contexts/ctx.js";
 
 const windowDimensions = Dimensions.get("window");
 const windowWidth = windowDimensions.width;
@@ -32,15 +33,22 @@ export default function Dashboard() {
   const [usuario, setUsuario] = useState(null);
   const api = new ApiClient();
 
+  const { user } = useAuth();
+
   useEffect(() => {
     const fetchUserData = async () => {
-      let usuarioData;
-      try {
-        usuarioData = await api.getUserDetail();
-        setUsuario(usuarioData);
+      if (user) {
+        setUsuario(user);
         setLoading(false);
-      } catch (e) {
-        console.log(e);
+      } else {
+        console.log("sem user");
+        try {
+          let usuarioData = await api.getUserDetail();
+          setUsuario(usuarioData);
+          setLoading(false);
+        } catch (e) {
+          console.log(e);
+        }
       }
     };
 
@@ -113,13 +121,6 @@ export default function Dashboard() {
             link="/erp"
             iconName="computer"
           />
-          <ButtonCard
-            text="Novidades"
-            IconComponent={MaterialCommunityIcons}
-            iconSize={42}
-            link="/notifications"
-            iconName="bell"
-          />
         </View>
       )}
       {loading && (
@@ -127,7 +128,7 @@ export default function Dashboard() {
           style={{
             height: "90%",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />

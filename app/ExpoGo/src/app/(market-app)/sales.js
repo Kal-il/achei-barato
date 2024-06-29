@@ -20,22 +20,47 @@ export default function SalesPage() {
   const api = new ApiClient();
 
   const renderPromocao = ({ item }) => {
-    return (
-      <PromotionCard
-        MarketImageProfile={require("../../assets/supermercado.png")}
-        imageSource={require("../../assets/apple.png")}
-        MarketName={item.nome_mercado}
-        OldPrice={item.preco}
-        Price={item.preco_promocional}
-        promotionId={item.id}
-        PromotionName={item.nome}
-        tag="Promoção"
-        CommentsNumber={15}
-        LikesNumber={15}
-        pathname={"sale"}
-      />
-    );
+    if (item.type === "promocao") {
+      console.log('promocao')
+      return (
+        <PromotionCard
+          MarketImageProfile={require("../../assets/supermercado.png")}
+          imagem={item.foto}
+          MarketName={item.nome_mercado}
+          OldPrice={item.preco}
+          Price={item.preco_promocional}
+          promotionId={item.id}
+          PromotionName={item.nome}
+          tag="Promoção"
+          CommentsNumber={15}
+          marketId={item.mercado_id}
+          LikesNumber={15}
+          pathname="sale"
+        />
+      );
+    }
+
+    if (item.type === "erp") {
+      console.log('erp')
+      return (
+        <PromotionCard
+          MarketImageProfile={require("../../assets/supermercado.png")}
+          imagem={item.foto}
+          MarketName={item.nome_mercado}
+          OldPrice={item.preco}
+          Price={item.preco_promocional}
+          promotionId={item.id}
+          PromotionName={item.nome}
+          tag="Promoção"
+          CommentsNumber={15}
+          marketId={item.mercado_id}
+          LikesNumber={15}
+          pathname="sale"
+          isErp={true}
+        />
+      );
   };
+  }
 
   useEffect(() => {
     const fetchMarketSales = async () => {
@@ -47,7 +72,16 @@ export default function SalesPage() {
           setVazio(true);
         }
 
-        setPromocoes(promocoesData);
+        if (promocoesData) {
+          let produtos = promocoesData.promocoes
+          let produtosErp = promocoesData.erp
+          const lista = [
+            ...produtos.map((item) => ({ ...item, type: "promocao" })),
+            ...produtosErp.map((item) => ({ ...item, type: "erp" })),
+          ];
+          setPromocoes(lista);
+        }
+
         setLoading(false);
       } catch (e) {
         console.log(e);

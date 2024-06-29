@@ -35,6 +35,7 @@ export default function ProductsPage() {
       nome={item.nome}
       marca={item.marca}
       descricao={item.descricao}
+      imagem={item.foto}
     />)
   }
 
@@ -45,6 +46,10 @@ export default function ProductsPage() {
 
       try {
         produtosData = await api.getProdutosMercado();
+        // produtosData.forEach((produto) => {
+        //   produto.foto = `data:image/jpg;base64,${produto.foto}`
+        // })
+
         setProdutos(produtosData);
         setLoading(false);
       } catch (e) {
@@ -65,7 +70,7 @@ export default function ProductsPage() {
             <View style={styles.mainContainer}>
               <View style={styles.headerContainer}>
                 <Text style={styles.title}>Seus Produtos</Text>
-                <Link href="/products" asChild>
+                <Link href="/registerProduct" asChild>
                   <TouchableOpacity>
                     <Button title="Cadastrar" ButtonColor={"#FF0F7B"} />
                   </TouchableOpacity>

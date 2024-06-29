@@ -7,6 +7,7 @@ const AuthContext = React.createContext({
   signIn: async () => {},
   signOut: () => {},
   isMercado: false,
+  user: null,
 });
 
 const useStorageState = (key) => {
@@ -45,13 +46,14 @@ const useStorageState = (key) => {
 export function useAuth() {
   const value = React.useContext(AuthContext);
   if (!value) {
-    throw new Error("useSession must be wrapped in a <SessionProvider />");
+    throw new Error("useAuth must be wrapped in a <SessionProvider />");
   }
   return value;
 }
 
 export function AuthProvider({ children }) {
   const [isMercado, setIsMercado] = useStorageState("is-mercado");
+  const [user, setUser] = useStorageState("user");
 
   const signIn = async (username, password) => {
     const formData = new URLSearchParams();
@@ -68,13 +70,17 @@ export function AuthProvider({ children }) {
       console.log(JSON.stringify(usuario));
 
       if (usuario) {
+        setUser(user);
         if (usuario.dono_mercado) {
           setIsMercado("mercado");
         } else {
           setIsMercado("consumidor");
         }
+      } else {
+        setUser(null);
       }
     } catch (error) {
+      setUser(null);
       setIsMercado("deslogado");
       throw error;
     }
@@ -85,6 +91,7 @@ export function AuthProvider({ children }) {
       const api2 = new ApiClient();
       await api2._authenticator.cleanUserState();
       setIsMercado("deslogado");
+      setUser(null);
     } catch (error) {
       throw error;
     }

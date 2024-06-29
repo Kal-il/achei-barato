@@ -110,7 +110,7 @@ export default function Dashboard() {
       return (
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
-          imageSource={require("../../../assets/apple.png")}
+          imagem={item.foto}
           MarketName={item.nome_mercado}
           OldPrice={item.preco}
           Price={item.preco_promocional}
@@ -129,7 +129,7 @@ export default function Dashboard() {
       return (
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
-          imageSource={require("../../../assets/apple.png")}
+          imagem={item.foto}
           MarketName={item.nome_mercado}
           OldPrice={item.preco}
           Price={item.preco_promocional}

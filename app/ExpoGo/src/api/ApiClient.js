@@ -318,6 +318,16 @@ export class ApiClient {
     })
   }
 
+  async createProduto(parametros) {
+    return await this._callApi({
+      path: `api/v1/mercado/produto/cadastrar`,
+      method: "POST",
+      data: parametros.imagem,
+      params: parametros.formulario,
+      multipart: true,
+    })
+  }
+
   async sincronizarERP() {
     return await this._callApi({
       path: `api/v1/mercado/produto/sync_erp`,

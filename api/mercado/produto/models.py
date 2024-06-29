@@ -14,6 +14,7 @@ from sqlalchemy import (
     String,
     UUID,
     delete,
+    desc,
     select,
     update,
     func,
@@ -58,7 +59,7 @@ class Produto(Base):
     descricao: Mapped[str] = mapped_column(String(500), nullable=True)
     preco: Mapped[float] = mapped_column(Float, nullable=True)
     preco_promocional: Mapped[float] = mapped_column(Float, nullable=True)
-    imagem: Mapped[ImageType] = mapped_column(ImageType(storage=storage), nullable=True)
+    url_foto: Mapped[str] = mapped_column(String(255), nullable=True)
     codigo_produto: Mapped[str] = mapped_column(String(30), nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=datetime.datetime.now()
@@ -82,14 +83,18 @@ class ProdutoManager:
         return _produto
 
     async def get_produtos_by_mercado(self, mercado_id: uuid.UUID):
-        query = select(Produto).where(Produto.mercado_id == mercado_id)
+        query = (
+            select(Produto)
+            .where(Produto.mercado_id == mercado_id)
+            .order_by(desc(Produto.created_at))
+        )
         _produtos = await self.db.execute(query)
         return _produtos.scalars().all()
 
     async def sync_produtos(self, cnpj: str, produtos: List[ProdutoBase]):
         await redis.store_produtos_hash(cnpj=cnpj, produtos=produtos)
 
-    async def save_produto(self, produto: ProdutoBase, mercado: Mercado):
+    async def save_produto(self, produto: ProdutoBase, mercado: Mercado, url_foto: str):
         try:
             _produto = Produto(
                 mercado_id=mercado.id,
@@ -104,6 +109,7 @@ class ProdutoManager:
                 preco=produto.preco,
                 preco_promocional=produto.preco_promocional,
                 codigo_produto=produto.codigo_produto,
+                url_foto=url_foto,
             )
 
             self.db.add(_produto)
@@ -134,7 +140,11 @@ class ProdutoManager:
         return _produto
 
     async def get_produtos_promocao(self, promocao_id: uuid.UUID):
-        _query = select(Produto).where(Produto.promocao_id == promocao_id)
+        _query = (
+            select(Produto)
+            .where(Produto.promocao_id == promocao_id)
+            .order_by(desc(Produto.created_at))
+        )
         _produtos = await self.db.execute(_query)
         return _produtos.scalars().all()
 
@@ -191,10 +201,13 @@ class ProdutoManager:
                     promocao_id=promocao.id,
                     mercado_id=mercado_id,
                     preco_promocional=func.round(
-                        func.cast((
-                            Produto.preco
-                            - (Produto.preco * promocao.percentual_desconto)
-                        ), Numeric()),
+                        func.cast(
+                            (
+                                Produto.preco
+                                - (Produto.preco * promocao.percentual_desconto)
+                            ),
+                            Numeric(),
+                        ),
                         2,
                     ),
                 )
@@ -226,7 +239,11 @@ class ProdutoManager:
             return None
 
     async def get_todos_produtos(self) -> List[Produto]:
-        query = select(Produto).where(Produto.promocao_id != None)
+        query = (
+            select(Produto)
+            .where(Produto.promocao_id != None)
+            .order_by(desc(Produto.created_at))
+        )
         produtos = await self.db.execute(query)
         return produtos.scalars().all()
 

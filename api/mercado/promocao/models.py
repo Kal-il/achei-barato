@@ -11,6 +11,8 @@ from sqlalchemy import (
     ForeignKey,
     String,
     UUID,
+    delete,
+    desc,
     select,
     update,
 )
@@ -58,7 +60,9 @@ class PromocaoManager:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
 
-    async def save_promocao(self, promocao: PromocaoCreate | PromocaoCreateManual, mercado_id) -> Promocao:
+    async def save_promocao(
+        self, promocao: PromocaoCreate | PromocaoCreateManual, mercado_id
+    ) -> Promocao:
         try:
             promocao = Promocao(
                 data_inicial=promocao.data_inicial,
@@ -72,12 +76,8 @@ class PromocaoManager:
         except Exception as e:
             raise e
 
-    async def get_promocao(
-        self, id_promocao: uuid.UUID
-    ) -> Promocao | None:
-        query = select(Promocao).where(
-            Promocao.id == id_promocao
-        )
+    async def get_promocao(self, id_promocao: uuid.UUID) -> Promocao | None:
+        query = select(Promocao).where(Promocao.id == id_promocao)
         promocao = await self.db.execute(query)
         return promocao.scalar()
 
@@ -85,7 +85,7 @@ class PromocaoManager:
         try:
             query = select(Promocao).where(
                 Promocao.mercado_id == mercado_id, Promocao.deleted == False
-            )
+            ).order_by(desc(Promocao.created_at))
 
             promocoes = await self.db.execute(query)
             return promocoes.scalars().all()
@@ -111,11 +111,13 @@ class PromocaoManager:
         query = (
             update(Promocao)
             .where(Promocao.id == id_promocao, Promocao.mercado_id == id_mercado)
-            .values(**promocao).returning(Promocao)
+            .values(**promocao)
+            .returning(Promocao)
         )
         query = select(Promocao).from_statement(query)
         promocao = await self.db.execute(query)
         return promocao.scalar()
+
 
 class ProdutosPromocaoErp(Base):
     """Models responsável por registrar os produtos em promoção no ERP"""
@@ -170,6 +172,16 @@ class ProdutosPromocaoErpManager:
             await self.db.commit()
 
         return produtos
+
+    async def remove_produtos_erp(self, mercado: Mercado):
+        query = delete(ProdutosPromocaoErp).where(
+            ProdutosPromocaoErp.mercado_id == mercado.id
+        )
+        try:
+            await self.db.execute(query)
+            return True
+        except Exception:
+            return False
 
     async def get_todos_produtos_erp(self):
         query = select(ProdutosPromocaoErp)

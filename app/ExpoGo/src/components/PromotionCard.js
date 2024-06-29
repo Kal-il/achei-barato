@@ -15,7 +15,7 @@ import FavoriteButton from "./favoriteButton";
 const { height, width } = Dimensions.get("window");
 
 const PromotionCard = ({
-  imageSource,
+  imagem,
   MarketImageProfile,
   MarketName,
   marketId,
@@ -46,7 +46,13 @@ const PromotionCard = ({
           asChild
         >
           <TouchableOpacity>
-            <Image source={imageSource} style={styles.promotionImage} />
+            {imagem ? 
+              <Image 
+                source={{uri: `data:image/jpg;base64,${imagem}`}} 
+                style={styles.promotionImage} />
+             : <Image 
+              source={require("../assets/apple.png")} 
+              style={styles.promotionImage} />}
           </TouchableOpacity>
         </Link>
         <View style={styles.PromotionInfos}>

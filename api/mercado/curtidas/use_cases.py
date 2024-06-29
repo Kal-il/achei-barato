@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from mercado.curtidas.models import CurtidasManager
 from mercado.produto.models import ProdutoManager
 from usuario.usuario.models import Usuario
+from utils.file_manager import FileManager
 
 
 class CurtidasUseCases:
@@ -51,7 +52,12 @@ class CurtidasUseCases:
             for curtida in curtidas:
                 produto = await produto_manager.get_produto_by_uuid(curtida.produto_id)
                 nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
-                produtos.append(ProdutoOutput(**produto.__dict__, nome_mercado=nome_mercado))
+                produtos.append(
+                    ProdutoOutput(
+                        **produto.__dict__, 
+                        nome_mercado=nome_mercado, 
+                        foto=await FileManager.get_foto(produto.url_foto)
+                    ))
 
             return produtos
         except Exception as err:

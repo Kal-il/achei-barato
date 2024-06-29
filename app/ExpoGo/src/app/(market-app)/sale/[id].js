@@ -55,12 +55,14 @@ export default function PromotionPage({
     () => [height / 2.2, height / 2.2, height],
     [],
   );
-  const { id } = useLocalSearchParams();
+  const { id, erp } = useLocalSearchParams();
   const [produto, setProduto] = useState(null);
   const [promocao, setPromocao] = useState(null);
   const [mercado, setMercado] = useState(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
+
+  console.log('erp no mercado' + erp);
 
   const meses = [
     "Janeiro",
@@ -119,16 +121,39 @@ export default function PromotionPage({
       }
     };
 
-    fetchPromotionData();
+    const fetchPromotionErpData = async () => {
+      let produtoData, mercadoData;
+      try {
+        produtoData = await api.getProdutoERP(id);
+        mercadoData = await api.getMercadoPorUUID(produtoData.mercado_id);
+
+        setProduto(produtoData);
+        setMercado(mercadoData);
+        setLoading(false);
+      } catch (e) {
+        setErro("Ocorreu um erro ao carregar a promoção.");
+        setLoading(false);
+      }
+    }
+
+    if (erp === "true") {
+      fetchPromotionErpData();
+    } else {
+      fetchPromotionData();
+    }
   }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <ImageBackground
+        {loading && <ImageBackground
           source={require("../../../assets/apple.png")}
           style={styles.PromotionImage}
-        />
+        />}
+        {!loading && produto && <ImageBackground
+          source={produto.foto ? {uri: `data:image/jpg;base64,${produto.foto}`} : require("../../../assets/apple.png")}
+          style={styles.PromotionImage}
+        />}
         <BotomSheet
           ref={bottonSheetRef}
           index={1}
@@ -143,6 +168,29 @@ export default function PromotionPage({
             <View style={styles.container}>
               <View style={styles.titleContainer}>
                 <View style={styles.topInfoContainer}>
+                  {erp && (<View>
+                  <View style={{ width: "100%", marginTop: 15}}>
+                    <Text style={styles.title}>{produto.nome}</Text>
+                    <Text style={styles.marca}>{produto.marca}</Text>
+                  </View>
+
+                 <View style={styles.PricesErp}>
+                    <View style={styles.oldPriceContainer}>
+                      <Text style={{ fontSize: 24 }}>De </Text>
+                      <Text style={styles.OldPrice}>
+                        {formatPrice({ price: produto.preco })}
+                      </Text>
+                    </View>
+                    <View style={styles.priceContainer}>
+                      <Text style={{ fontSize: 32 }}>Por </Text>
+                      <Text style={styles.Price}>
+                        {formatPrice({ price: produto.preco_promocional })}
+                      </Text>
+                    </View>
+                  </View>
+                </View>)}
+
+                {!erp && (<View style={styles.topInfoContainer}>
                   <View style={{ width: "50%" }}>
                     <Text style={styles.title}>{produto.nome}</Text>
                     <Text style={styles.marca}>{produto.marca}</Text>
@@ -168,9 +216,10 @@ export default function PromotionPage({
                       )}
                     </View>
                   </View>
+                </View>)}
                 </View>
                 <View style={{ paddingVertical: 20, width: "93%", gap: 5 }}>
-                  <View style={styles.descriptionRow}>
+                  {produto.descricao && <View style={styles.descriptionRow}>
                     <MaterialIcons
                       name="info"
                       size={26}
@@ -178,7 +227,7 @@ export default function PromotionPage({
                       color="#f0a356"
                     ></MaterialIcons>
                     <Text style={styles.text}>{produto.descricao}</Text>
-                  </View>
+                  </View>}
                   {promocao && (
                     <View style={styles.dateRow}>
                       <MaterialIcons
@@ -325,6 +374,10 @@ const styles = StyleSheet.create({
   },
   Prices: {
     flexDirection: "column",
+  },
+  PricesErp: {
+    flexDirection: "column",
+    alignItems: "flex-end",
   },
   Tag: {
     fontSize: 16,
