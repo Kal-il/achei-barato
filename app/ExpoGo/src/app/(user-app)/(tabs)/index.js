@@ -52,7 +52,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      let posts, produtos, erro;
+      let posts, produtos, produtosErp, erro;
 
       try {
         posts = await api.getTodosPosts();
@@ -64,7 +64,11 @@ export default function Dashboard() {
       }
 
       try {
-        produtos = await api.getProdutosPromocao();
+        let resultados = await api.getProdutosPromocao();
+        if (resultados) {
+          produtos = resultados.produtos
+          produtosErp = resultados.produtos_erp
+        }
       } catch (e) {
         erro = e;
       }
@@ -72,6 +76,7 @@ export default function Dashboard() {
       if (posts) {
         const lista = [
           ...produtos.map((item) => ({ ...item, type: "promocao" })),
+          ...produtosErp.map((item) => ({ ...item, type: "erp" })),
           ...posts.map((item) => ({ ...item, type: "post" })),
         ];
         setList(lista);
@@ -86,6 +91,8 @@ export default function Dashboard() {
 
   const renderItem = ({ item }) => {
     if (item.type === "post") {
+
+      console.log('post')
       return (
         <PostCard
           postId={item.id}
@@ -98,6 +105,8 @@ export default function Dashboard() {
     }
 
     if (item.type === "promocao") {
+
+      console.log('promocao')
       return (
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
@@ -115,8 +124,28 @@ export default function Dashboard() {
       );
     }
 
-    return null;
+    if (item.type === "erp") {
+      console.log('erp')
+      return (
+        <PromotionCard
+          MarketImageProfile={require("../../../assets/supermercado.png")}
+          imageSource={require("../../../assets/apple.png")}
+          MarketName={item.nome_mercado}
+          OldPrice={item.preco}
+          Price={item.preco_promocional}
+          promotionId={item.id}
+          PromotionName={item.nome}
+          tag="Promoção"
+          CommentsNumber={15}
+          marketId={item.mercado_id}
+          LikesNumber={15}
+          isErp={true}
+        />
+      );
   };
+
+    return null;
+  }
 
   return (
     <KeyboardAvoidingView

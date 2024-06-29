@@ -170,3 +170,13 @@ class ProdutosPromocaoErpManager:
             await self.db.commit()
 
         return produtos
+
+    async def get_todos_produtos_erp(self):
+        query = select(ProdutosPromocaoErp)
+        produtos = await self.db.execute(query)
+        return produtos.scalars().all()
+
+    async def get_produto_erp(self, id_produto: uuid.UUID):
+        query = select(ProdutosPromocaoErp).where(ProdutosPromocaoErp.id == id_produto)
+        produto = await self.db.execute(query)
+        return produto.scalar()

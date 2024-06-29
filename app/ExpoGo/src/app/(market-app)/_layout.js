@@ -147,6 +147,21 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+          name="syncErp"
+        options={{
+          title: "",
+          headerBackground: () => <GradientBackground></GradientBackground>,
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="white"
+              onPress={() => router.replace("/erp")}
+            ></AntDesign>
+          ),
+        }}
+      />
+      <Stack.Screen
         name="sale/[id]"
         options={{
           title: "",

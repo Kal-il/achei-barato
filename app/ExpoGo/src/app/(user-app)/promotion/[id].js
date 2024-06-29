@@ -36,6 +36,7 @@ export default function PromotionPage({
   CommentsNumber,
   LikesNumber,
   description,
+  isErp,
 }) {
   imageSource = require("../../../assets/apple.png");
   MarketImageProfile = require("../../../assets/supermercado.png");
@@ -55,13 +56,14 @@ export default function PromotionPage({
     () => [height / 2.2, height / 2.2, height],
     [],
   );
-  const { id } = useLocalSearchParams();
+  const { id, erp } = useLocalSearchParams();
   const [produto, setProduto] = useState(null);
   const [promocao, setPromocao] = useState(null);
   const [mercado, setMercado] = useState(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
+  console.log("erp:" + erp)
   const meses = [
     "Janeiro",
     "Fevereiro",
@@ -119,7 +121,26 @@ export default function PromotionPage({
       }
     };
 
-    fetchPromotionData();
+    const fetchPromotionErpData = async () => {
+      let produtoData, mercadoData;
+      try {
+        produtoData = await api.getProdutoERP(id);
+        mercadoData = await api.getMercadoPorUUID(produtoData.mercado_id);
+
+        setProduto(produtoData);
+        setMercado(mercadoData);
+        setLoading(false);
+      } catch (e) {
+        setErro("Ocorreu um erro ao carregar a promoção.");
+        setLoading(false);
+      }
+    }
+
+    if (erp) {
+      fetchPromotionErpData();
+    } else {
+      fetchPromotionData();
+    }
   }, []);
 
   return (
@@ -142,7 +163,29 @@ export default function PromotionPage({
           {!loading && !erro && produto && (
             <View style={styles.container}>
               <View style={styles.titleContainer}>
-                <View style={styles.topInfoContainer}>
+                {erp && (<View>
+                  <View style={{ width: "100%", marginTop: 15}}>
+                    <Text style={styles.title}>{produto.nome}</Text>
+                    <Text style={styles.marca}>{produto.marca}</Text>
+                  </View>
+
+                 <View style={styles.PricesErp}>
+                    <View style={styles.oldPriceContainer}>
+                      <Text style={{ fontSize: 24 }}>De </Text>
+                      <Text style={styles.OldPrice}>
+                        {formatPrice({ price: produto.preco })}
+                      </Text>
+                    </View>
+                    <View style={styles.priceContainer}>
+                      <Text style={{ fontSize: 32 }}>Por </Text>
+                      <Text style={styles.Price}>
+                        {formatPrice({ price: produto.preco_promocional })}
+                      </Text>
+                    </View>
+                  </View>
+                </View>)}
+
+                {!erp && (<View style={styles.topInfoContainer}>
                   <View style={{ width: "50%" }}>
                     <Text style={styles.title}>{produto.nome}</Text>
                     <Text style={styles.marca}>{produto.marca}</Text>
@@ -168,9 +211,9 @@ export default function PromotionPage({
                       )}
                     </View>
                   </View>
-                </View>
+                </View>)}
                 <View style={{ paddingVertical: 20, width: "93%", gap: 5 }}>
-                  <View style={styles.descriptionRow}>
+                  {produto.descricao && <View style={styles.descriptionRow}>
                     <MaterialIcons
                       name="info"
                       size={26}
@@ -178,7 +221,7 @@ export default function PromotionPage({
                       color="#f0a356"
                     ></MaterialIcons>
                     <Text style={styles.text}>{produto.descricao}</Text>
-                  </View>
+                  </View>}
                   {promocao && (
                     <View style={styles.dateRow}>
                       <MaterialIcons
@@ -187,7 +230,7 @@ export default function PromotionPage({
                         color="#f0a356"
                       ></MaterialIcons>
                       <Text style={styles.text}>
-                        Até o dia {promocao.data_inicial}
+                        Até o dia {promocao.data_final}
                       </Text>
                     </View>
                   )}
@@ -327,6 +370,10 @@ const styles = StyleSheet.create({
   },
   Prices: {
     flexDirection: "column",
+  },
+  PricesErp: {
+    flexDirection: "column",
+    alignItems: "flex-end",
   },
   Tag: {
     fontSize: 16,
