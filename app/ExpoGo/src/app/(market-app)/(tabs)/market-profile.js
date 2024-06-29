@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     gap: 20,
     paddingLeft: "10%",
     marginVertical: 20,
-    paddingTop: "8%"
+    paddingTop: "8%",
   },
   title: {
     fontSize: 24,

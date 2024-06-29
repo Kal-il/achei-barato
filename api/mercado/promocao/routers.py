@@ -25,9 +25,9 @@ model_router = APIRouter(
 async def promocao_cadastrar(
     db: AsyncDBDependency,
     usuario: Annotated[Usuario, Depends(get_current_active_user)],
-    promocao: schemas.PromocaoCreate,
+    promocao: schemas.PromocaoCreateManual,
 ):
-    return await use_cases_promocoes.cadastrar_promocao(
+    return await use_cases_promocoes.cadastrar_promocao_manual(
         db=db, usuario=usuario, promocao=promocao
     )
 

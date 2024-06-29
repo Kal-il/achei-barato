@@ -72,3 +72,7 @@ class PromocaoComProdutos(PromocaoSchema):
 
 class PromocaoCreate(PromocaoBase):
     produtos: list[str] = Field(..., description="Produtos em promoção")
+
+
+class PromocaoCreateManual(PromocaoBase):
+    produtos: list[uuid.UUID] = Field(..., description="Produtos em promoção")

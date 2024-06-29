@@ -12,13 +12,20 @@ export default function AppLayout() {
 
 	if (isMercado == "mercado") {
 		console.log('é mercado')
-		router.push("/market-index");
+		router.replace("/market-index");
 	}
 
 	if (isMercado == "deslogado") {
 		console.log('deslogado')
-		router.push("/sign-in");
+		router.replace("/sign-in");
 	}
+
+  setTimeout(() => {
+    if (!isMercado) {
+      console.log('baitola');
+      router.replace("/sign-in")
+    }
+  }, 2000)
 
   return (
     <Stack
