@@ -20,12 +20,12 @@ export default function AppLayout() {
 		router.replace("/sign-in");
 	}
 
-  setTimeout(() => {
-    if (!isMercado) {
-      console.log('baitola');
-      router.replace("/sign-in")
-    }
-  }, 2000)
+  // setTimeout(() => {
+  //   if (!isMercado) {
+  //     console.log('baitola');
+  //     router.replace("/sign-in")
+  //   }
+  // }, 5000)
 
   return (
     <Stack

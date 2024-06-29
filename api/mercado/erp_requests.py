@@ -12,6 +12,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class ErpRequest:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
     async def get_dados_conexao(self, db: AsyncSession, mercado: Mercado):
         conexao_erp = await self._get_conexao_erp(mercado)
         self.base_url = f"{conexao_erp.url_base}:{conexao_erp.porta}"
@@ -136,7 +139,7 @@ class ErpRequest:
 
         try:
 
-            token = await ErpRequest.verify_token_erp()
+            token = await self.verify_token_erp()
             headers = {
                 "Content-Type": "application/json",
                 "empId": self.emp_id,
@@ -162,6 +165,7 @@ class ErpRequest:
                 if product_data.get("vlrPromocao", 0) > 0:
                     promo_products.append(product_data)
 
+            print(promo_products)
             return promo_products
 
         except Exception as err:

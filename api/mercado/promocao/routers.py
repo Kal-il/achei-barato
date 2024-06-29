@@ -43,6 +43,15 @@ async def promocoes_mercado(
 ):
     return await use_cases_promocoes.get_promocoes(db=db, usuario=usuario)
 
+@model_router.get(
+    "/erp/{id_produto}",
+    summary="Retorna o produto em promoção de um sistema ERP sincronizado",
+    response_model=ProdutoOutput,
+)
+async def get_promocao_erp(
+    db: AsyncDBDependency, id_produto: uuid.UUID
+):
+    return await use_cases_promocoes.get_produto_erp(db, id_produto)
 
 @model_router.get(
     "/{id_promocao}",
@@ -69,7 +78,7 @@ async def deletar_promocao(
     summary="Atualiza uma promoção",
     response_model=schemas.PromocaoSchema,
 )
-async def deletar_promocao(
+async def atualizar_promocao(
     db: AsyncDBDependency,
     id_promocao: uuid.UUID,
     nova_promocao: schemas.PromocaoUpdate,
@@ -97,7 +106,7 @@ async def promocoes_mercado_por_id(
     summary="Retorna todos os produtos de uma promoção",
     response_model=List[ProdutoBase],
 )
-async def promocoes_mercado_por_id(
+async def promocoes_todos_produtos(
     db: AsyncDBDependency,
     id_promocao: uuid.UUID,
 ):
