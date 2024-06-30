@@ -167,6 +167,12 @@ class ProdutoUseCases:
         try:
             produto_manager = ProdutoManager(db=db)
             objetos = await produto_manager.get_produtos_or_mercado(nome)
+            if not objetos: 
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Produto não encontrado",
+                )
+
             if not objetos["mercados"] and not objetos["produtos"]:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -175,7 +181,9 @@ class ProdutoUseCases:
 
             objetos["produtos"] = [
                 ProdutoOutput(
-                    **produto.__dict__, nome_mercado=produto.mercado.nome_fantasia
+                    **produto.__dict__, 
+                    nome_mercado=produto.mercado.nome_fantasia,
+                    foto=await FileManager.get_foto(produto.url_foto)
                 )
                 for produto in objetos["produtos"]
             ]
