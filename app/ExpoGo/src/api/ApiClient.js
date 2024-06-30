@@ -7,7 +7,7 @@ export class ApiClient {
   // deve ser implementada como método assíncrono desta classe.
   constructor() {
     // ALTERAR CONFORME O SEU IP
-    this._apiBaseUrl = `http://${process.env.EXPO_PUBLIC_IP_HOST}:8000/`;
+    this._apiBaseUrl = `${process.env.EXPO_PUBLIC_IP_HOST}`;
     this._authenticator = new Authenticator();
   }
 
@@ -314,8 +314,8 @@ export class ApiClient {
     return await this._callApi({
       path: `api/v1/mercado/promocao/cadastrar`,
       method: "POST",
-      data: promocao
-    })
+      data: promocao,
+    });
   }
 
   async createProduto(parametros) {
@@ -325,20 +325,20 @@ export class ApiClient {
       data: parametros.imagem,
       params: parametros.formulario,
       multipart: true,
-    })
+    });
   }
 
   async sincronizarERP() {
     return await this._callApi({
       path: `api/v1/mercado/produto/sync_erp`,
       method: "GET",
-    })
+    });
   }
 
   async getProdutoERP(idProduto) {
     return await this._callApi({
       path: `api/v1/mercado/promocao/erp/${idProduto}`,
       method: "GET",
-    })
+    });
   }
 }

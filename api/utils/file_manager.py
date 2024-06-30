@@ -3,6 +3,7 @@ import hashlib
 
 import aiofiles
 from fastapi import UploadFile
+from core.config import settings
 
 
 class FileManager:
@@ -10,7 +11,7 @@ class FileManager:
     async def upload_foto(foto: UploadFile):
         conteudo = await foto.read()
         md5 = hashlib.md5(await foto.read()).hexdigest()
-        store_name = f"media/{md5 + str(foto.filename)}"
+        store_name = f"{settings.media_path}/{md5 + str(foto.filename)}"
         async with aiofiles.open(store_name, "wb") as nova_foto:
             await nova_foto.write(conteudo)
             return store_name

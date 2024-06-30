@@ -6,6 +6,7 @@ api/.env
 app/ExpoGo/node_modules
 app/ExpoGo/.expo
 app/ExpoGo/%ProgramData%
+app/ExpoGo/eas.json
 api/venv
 .idea
 node_modules

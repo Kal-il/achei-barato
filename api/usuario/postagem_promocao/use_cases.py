@@ -34,6 +34,7 @@ class PostagemPromocaoUseCases:
         except HTTPException as err:
             raise err
         except Exception as err:
+            print(err)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro ao cadastrar postagem promocao: {err}",
@@ -77,7 +78,7 @@ class PostagemPromocaoUseCases:
             _postagens = await postagem_promocao_manager.get_all_promocao_all()
             _postagem_promocao = []
             for postagem in _postagens:
-                postagem.imagem = await postagem_promocao_manager.get_foto_postagem(
+                postagem.imagem = await FileManager.get_foto(
                     postagem.imagem
                 )
                 _postagem_promocao.append(postagem)
@@ -191,7 +192,7 @@ class PostagemPromocaoUseCases:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Postagem não encontrada",
                 )
-            postagem.imagem = await postagem_promocao_manager.get_foto_postagem(
+            postagem.imagem = await FileManager.get_foto(
                 postagem.imagem
             )
             postagem.autor = await postagem_promocao_manager.get_nome_autor(

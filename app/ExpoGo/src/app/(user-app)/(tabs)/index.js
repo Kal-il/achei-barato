@@ -21,6 +21,7 @@ import GradientBackground from "../../../components/gradient.js";
 import { Authenticator } from "../../../api/Authenticator.js";
 import PostCard from "../../../components/PostCard.js";
 import { ApiClient } from "../../../api/ApiClient.js";
+import { FAB } from "react-native-elements";
 
 const windowDimensions = Dimensions.get("window");
 const windowWidth = windowDimensions.width;
@@ -32,6 +33,24 @@ export default function Dashboard() {
   const api = new ApiClient();
 
   const [list, setList] = useState([]);
+
+  const shuffle = (array) => {
+    let currentIndex = array.length;
+  
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element...
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+  }
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -57,11 +76,12 @@ export default function Dashboard() {
       }
 
       if (posts) {
-        const lista = [
+        const lista = shuffle([
           ...produtos.map((item) => ({ ...item, type: "promocao" })),
           ...produtosErp.map((item) => ({ ...item, type: "erp" })),
           ...posts.map((item) => ({ ...item, type: "post" })),
-        ];
+        ]);
+        console.log('lista!!! ' + lista)
         setList(lista);
         setLoading(false);
       }

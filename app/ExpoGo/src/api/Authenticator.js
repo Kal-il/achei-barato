@@ -8,7 +8,7 @@ export class Authenticator {
   // à autenticação.
   constructor() {
     // ALTERAR CONFORME O SEU IP
-    this._apiBaseUrl = `http://${process.env.EXPO_PUBLIC_IP_HOST}:8000/`;
+    this._apiBaseUrl = `${process.env.EXPO_PUBLIC_IP_HOST}`;
   }
 
   fetchAccessToken() {
@@ -53,7 +53,7 @@ export class Authenticator {
     try {
       token = JWT.decode(
         token,
-        "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+        "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7",
       );
       return true;
     } catch (e) {
@@ -92,12 +92,10 @@ export class Authenticator {
         console.log("sucesso");
       })
       .catch(function (error) {
-			console.log("erro: " + error)
-			console.log(JSON.stringify(error))
+        console.log("erro: " + error);
+        console.log(JSON.stringify(error));
         throw error;
       });
-
-
   }
 
   async authenticateUser(userData) {
@@ -113,7 +111,7 @@ export class Authenticator {
       .post(url, userData, { timeout: 60000 })
       .then(async (response) => {
         if (response.data.access_token) {
-          console.log('foi')
+          console.log("foi");
           this._setAccessToken(response.data.access_token);
           this._setRefreshToken(response.data.refresh_token);
           returnToken = response.data.access_token;
@@ -121,7 +119,7 @@ export class Authenticator {
       })
       .catch(function (error) {
         console.error("erro ao logar usuário:", error);
-        console.error(JSON.stringify(error.status) + ",erro")
+        console.error(JSON.stringify(error.status) + ",erro");
         throw error;
       });
     return returnToken;

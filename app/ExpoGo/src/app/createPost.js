@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { ApiClient } from "../api/ApiClient";
 import ErrorMessage from "../components/ErrorMessage";
+import { useRouter } from "expo-router";
 
 const { width, height } = Dimensions.get("window"); //essa função retorna o tamanho da tela do dispositivo
 
@@ -23,6 +24,7 @@ export default function CriarPost() {
   const [imagem, setImagem] = useState(null);
   const api = new ApiClient();
 
+  const router = useRouter()
   const [erroFormulario, setErroFormulario] = useState("");
 
   const _validarFormulario = () => {
@@ -64,7 +66,9 @@ export default function CriarPost() {
 
     try {
       await api.createPost(parametros);
+      router.replace("/index");
     } catch (e) {
+      console.log(e)
       erros = e.response.data.detail;
       console.error(erros);
     }

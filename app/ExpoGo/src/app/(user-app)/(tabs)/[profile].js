@@ -85,6 +85,12 @@ export default function Perfil() {
           ButtonIconColor={"#4a4a4a"}
         />
         <ProfileScreenButton
+          ButtonLink={"/createPost"}
+          ButtonText={"Compartilhar Promoção"}
+          ButtonIcon={"local-grocery-store"}
+          ButtonIconColor={"#4a4a4a"}
+        />
+        <ProfileScreenButton
           ButtonLink={"/logout"}
           ButtonText={"Sair"}
           ButtonIcon={"logout"}

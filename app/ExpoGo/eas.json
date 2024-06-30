@@ -8,7 +8,13 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_CLIENT_ID": "765762436702-f7bkfd387j9iqb5bqv6ci2cs0gk8k97j.apps.googleusercontent.com",
+        "EXPO_PUBLIC_IP_HOST":"192.168.0.119"
+      }
     },
     "production": {}
   },
