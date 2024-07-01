@@ -7,14 +7,11 @@ import {
   Text,
   TextInput,
   TouchableNativeFeedback,
-  TouchableOpacity,
 } from "react-native";
 import { View } from "react-native";
 import ErrorMessage from "../../../components/ErrorMessage";
 import { useEffect, useState } from "react";
 import { ApiClient } from "../../../api/ApiClient";
-import * as SecureStore from "expo-secure-store";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import DateInput from "../../../components/DateInput";
 import ProductOption from "../../../components/ProdutOption";
 
@@ -32,8 +29,6 @@ export default function RegisterSale() {
   const [erro, setErro] = useState("");
   const [erroDescricao, setErroDescricao] = useState("");
   const [erroPercentual, setErroPercentual] = useState("");
-  const [erroDataFinal, setErroDataFinal] = useState("");
-  const [erroDataInicial, setErroDataInicial] = useState("");
   const [erroProdutos, setErroProdutos] = useState("");
   const [valido, setValido] = useState(true);
 
@@ -181,18 +176,6 @@ export default function RegisterSale() {
                 onChangeText={(text) => setDescricao(text)}
               />
             </View>
-            {erroDescricao && (
-              <View>
-                <Text
-                  style={{
-                    color: "#d83933",
-                    fontWeight: 500,
-                  }}
-                >
-                  {erroDescricao}
-                </Text>
-              </View>
-            )}
 
           </View>
           <View style={styles.formField}>
@@ -206,7 +189,7 @@ export default function RegisterSale() {
               <TextInput
                 style={styles.inputText}
                 keyboardType="numeric"
-                value={percentual}
+                value={`${percentual}`}
                 onChangeText={(text) => setPercentual(text)}
               />
             </View>

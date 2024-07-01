@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import {
   Feather,
   FontAwesome5,
@@ -24,16 +24,14 @@ import SideButtonCard from "../../../components/SideButtonCard.js";
 import { useAuth } from "../../../contexts/ctx.js";
 
 const windowDimensions = Dimensions.get("window");
-const windowWidth = windowDimensions.width;
 const { height, width } = Dimensions.get("window");
-const Height = "100%";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [usuario, setUsuario] = useState(null);
   const api = new ApiClient();
-
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,11 +40,18 @@ export default function Dashboard() {
         setLoading(false);
       } else {
         try {
+          console.log('fddfgdfg')
           let usuarioData = await api.getUserDetail();
           setUsuario(usuarioData);
           setLoading(false);
         } catch (e) {
-          console.log(e);
+          console.log("erro-" + e);
+          if (e.response) {
+            if (e.response.status == 401) {
+              signOut();
+              router.replace('/sign-in');
+            }
+          }
         }
       }
     };

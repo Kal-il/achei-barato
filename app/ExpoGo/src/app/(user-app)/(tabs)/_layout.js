@@ -2,13 +2,9 @@ import React, {useEffect, useState} from "react";
 import { Tabs, useRouter } from "expo-router";
 import {
   MaterialIcons,
-  MaterialCommunityIcons,
   Ionicons,
 } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
 import GradientBackground from "../../../components/gradient";
-import { Authenticator } from "../../../api/Authenticator";
-import { ApiClient } from "../../../api/ApiClient";
 
 export default function TabRoutesLayout() {
 
@@ -22,7 +18,7 @@ export default function TabRoutesLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
           tabBarIcon: ({ size, color, focused = false }) => {

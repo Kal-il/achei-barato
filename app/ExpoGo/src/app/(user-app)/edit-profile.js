@@ -67,7 +67,7 @@ export default function EditarPerfil() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.ProfileImage}>
-          {fotoPerfil ? (
+          {fotoPerfil && (
             <ImagesPicker
               imageSize={0.16}
               ImageHolder={{ uri: fotoPerfil }}
@@ -76,7 +76,8 @@ export default function EditarPerfil() {
                 true
               } /* Essa condição diz se o usuário vai ou não poder mudar a imagem*/
             ></ImagesPicker>
-          ) : (
+          )}
+          {!fotoPerfil && (
             <ImagesPicker
               imageSize={0.16}
               ImageHolder={require("../../assets/profile.png")}
