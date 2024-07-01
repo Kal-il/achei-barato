@@ -51,6 +51,8 @@ export default function Dashboard() {
       <PromotionCard
         MarketImageProfile={require("../../../assets/supermercado.png")}
         imageSource={require("../../../assets/apple.png")}
+        imagem={item.foto}
+        marketImagem={item.foto_mercado}
         MarketName={item.nome_mercado}
         OldPrice={item.preco}
         Price={item.preco_promocional}
