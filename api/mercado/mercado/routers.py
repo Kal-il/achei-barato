@@ -41,7 +41,7 @@ async def get_mercado(
 @model_router.get(
     "/{id_mercado}",
     summary="Pesquisar mercados por ID",
-    response_model=schemas.MercadoSchema,
+    response_model=schemas.MercadoOutput,
 )
 async def get_mercado_by_nome(db: AsyncDBDependency, id_mercado: str):
     return await use_cases_mercado.get_mercado_by_id(db=db, mercado_id=id_mercado)

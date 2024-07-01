@@ -35,7 +35,6 @@ const PromotionCard = ({
     }
     return price.replace(".", ",");
   };
-  console.log(marketImagem);
   return (
     <View style={styles.Card}>
       <View style={styles.UpperCard}>

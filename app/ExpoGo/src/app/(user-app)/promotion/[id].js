@@ -130,6 +130,7 @@ export default function PromotionPage({
         setMercado(mercadoData);
         setLoading(false);
       } catch (e) {
+        console.log(e)
         setErro("Ocorreu um erro ao carregar a promoção.");
         setLoading(false);
       }
@@ -278,7 +279,9 @@ export default function PromotionPage({
                     >
                       <TouchableOpacity>
                         <Image
-                          source={{ uri: `oi` }}
+                          source={{
+                            uri: `data:image/jpg;base64,${produto.foto_mercado}`,
+                          }}
                           style={styles.perfilMercado}
                         />
                       </TouchableOpacity>
@@ -361,6 +364,7 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     aspectRatio: 1,
     borderWidth: 1,
+    borderRadius: 100,
   },
   dadosMercado: {
     alignItems: "flex-end",
