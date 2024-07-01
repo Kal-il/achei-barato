@@ -254,7 +254,9 @@ export default function PromotionPage({
                     </View>
                     <TouchableOpacity>
                       <Image
-                        source={MarketImageProfile}
+                          source={{
+                            uri: `data:image/jpg;base64,${produto.foto_mercado}`,
+                          }}
                         style={styles.perfilMercado}
                       />
                     </TouchableOpacity>
@@ -327,6 +329,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   perfilMercado: {
+    borderRadius: 100,
     width: width * 0.15,
     height: height * 0.07,
     aspectRatio: 1,

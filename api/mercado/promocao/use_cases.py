@@ -171,11 +171,15 @@ class PromocaoUseCases:
             lista_erp = []
             produtos_erp = await erp_manager.get_todos_produtos_erp()
             for produto in produtos_erp:
-                produto.nome_mercado = await mercado_manager.get_mercado_nome(
-                    produto.mercado_id
-                )
                 produto.promocao_id = produto.id
-                lista_erp.append(ProdutoOutput(**produto.__dict__, foto=b""))
+                lista_erp.append(
+                    ProdutoOutput(
+                        **produto.__dict__,
+                        foto=b"",
+                        nome_mercado=mercado.nome_fantasia,
+                        foto_mercado=await FileManager.get_foto(mercado.url_foto),
+                    )
+                )
 
             return {"promocoes": resultado, "erp": lista_erp}
 
