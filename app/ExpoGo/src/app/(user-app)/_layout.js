@@ -5,7 +5,7 @@ import GradientBackground from "../../components/gradient";
 
 export default function AppLayout() {
 
-	const { isMercado, user } = useAuth();
+	const { isMercado, user, signOut } = useAuth();
 	const router = useRouter()
 
   if (user === undefined) {
@@ -17,11 +17,14 @@ export default function AppLayout() {
 
       if (isMercado == "deslogado") {
         console.log("deslogado");
+
+        signOut();
         router.push("/sign-in");
       }
 
 	  if (isMercado == "") {
 		router.push("/sign-in");
+    signOut();
 	  }
     }, 5000);
   }

@@ -73,9 +73,11 @@ export function AuthProvider({ children }) {
           setIsMercado("consumidor");
         }
       } else {
+        console.log('aqui')
         setUser(null);
       }
     } catch (error) {
+        console.log('rgefgefgdfg')
       setUser(null);
       setIsMercado("deslogado");
       throw error;

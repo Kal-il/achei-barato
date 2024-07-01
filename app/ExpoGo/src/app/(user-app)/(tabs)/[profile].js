@@ -49,13 +49,14 @@ export default function Perfil() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.ProfileImage}>
-          {fotoPerfil ? (
+          {fotoPerfil && (
             <ImagesPicker
               imageSize={0.16}
               ImageHolder={{ uri: fotoPerfil }}
               ImageBorderRadius={100}
             ></ImagesPicker>
-          ) : (
+          )}
+          { !fotoPerfil && (
             <ImagesPicker
               imageSize={0.16}
               ImageHolder={require("../../../assets/profile.png")}

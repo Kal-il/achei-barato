@@ -14,25 +14,28 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRootNavigationState, useRouter } from "expo-router";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import PromotionCard from "../../../components/PromotionCard.js";
 import GradientBackground from "../../../components/gradient.js";
-import { Authenticator } from "../../../api/Authenticator.js";
 import PostCard from "../../../components/PostCard.js";
 import { ApiClient } from "../../../api/ApiClient.js";
-import { FAB } from "react-native-elements";
+import { useAuth } from "../../../contexts/ctx.js";
 
 const windowDimensions = Dimensions.get("window");
 const windowWidth = windowDimensions.width;
 const { height, width } = Dimensions.get("window");
 const Height = "100%";
 
-export default function Dashboard() {
+export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [list, setList] = useState([]);
+  const rootNavigationState = useRootNavigationState();
+  const { user } = useAuth();
   const api = new ApiClient();
 
-  const [list, setList] = useState([]);
+  const router = useRouter();
+
 
   const shuffle = (array) => {
     let currentIndex = array.length;
@@ -57,12 +60,15 @@ export default function Dashboard() {
       let posts, produtos, produtosErp, erro;
 
       try {
+        console.log('tentando pegar posts')
         posts = await api.getTodosPosts();
+        console.log('posts pegos')
         posts.forEach((post) => {
           post.imagem = `data:image/jpg;base64,${post.imagem}`;
         });
       } catch (e) {
         erro = e;
+        console.log("erro no index")
       }
 
       try {
@@ -86,7 +92,7 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
-
+    
     fetchPosts();
   }, []);
 

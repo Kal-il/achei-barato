@@ -42,6 +42,7 @@ async def get_postagem_promocao_by_id(
 
 @model_router.get("/consultar", summary="Obtém todas as postagens")
 async def get_all_postagem_promocao(db: AsyncDBDependency):
+    print('ooi')
     return await postagem_promocao_usecases.get_all_postagem_promocao(db)
 
 

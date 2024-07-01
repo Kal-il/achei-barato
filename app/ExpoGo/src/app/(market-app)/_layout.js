@@ -7,7 +7,7 @@ import { ApiClient } from "../../api/ApiClient";
 import * as SecureStore from "expo-secure-store";
 
 export default function AppLayout() {
-  const { isMercado } = useAuth();
+  const { isMercado, signOut } = useAuth();
   const router = useRouter();
   const api = new ApiClient();
 
@@ -24,6 +24,8 @@ export default function AppLayout() {
           );
           router.replace("/auth/store-register/RegisterScreen2");
         } else if (e.response.status == 401) {
+          console.log('oi')
+          signOut()
           router.replace("/sign-in");
         }
       }
@@ -32,7 +34,7 @@ export default function AppLayout() {
 
   if (isMercado == "consumidor") {
     console.log("é consumidor");
-    router.replace("/index");
+    router.replace("/home");
   }
 
   if (isMercado == "deslogado") {

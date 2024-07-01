@@ -8,7 +8,7 @@ export class Authenticator {
   // à autenticação.
   constructor() {
     // ALTERAR CONFORME O SEU IP
-    this._apiBaseUrl = `${process.env.EXPO_PUBLIC_IP_HOST}`;
+    this._apiBaseUrl = `${process.env.EXPO_PUBLIC_IP_HOST}/`;
   }
 
   fetchAccessToken() {
@@ -41,24 +41,6 @@ export class Authenticator {
 
   fetchUserData() {
     return SecureStore.getItem("user-data");
-  }
-
-  validateToken(tokenData) {
-    let token = this.fetchAccessToken();
-
-    if (!token) {
-      return false;
-    }
-
-    try {
-      token = JWT.decode(
-        token,
-        "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7",
-      );
-      return true;
-    } catch (e) {
-      return false;
-    }
   }
 
   async createAndAuthenticateUser(userData) {

@@ -7,7 +7,7 @@ export class ApiClient {
   // deve ser implementada como método assíncrono desta classe.
   constructor() {
     // ALTERAR CONFORME O SEU IP
-    this._apiBaseUrl = `${process.env.EXPO_PUBLIC_IP_HOST}`;
+    this._apiBaseUrl = `${process.env.EXPO_PUBLIC_IP_HOST}/`;
     this._authenticator = new Authenticator();
   }
 
@@ -82,6 +82,7 @@ export class ApiClient {
             throw err;
           }
         } else {
+          console.log("teste")
           throw err;
         }
       } else {

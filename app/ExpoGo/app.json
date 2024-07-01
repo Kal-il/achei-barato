@@ -5,10 +5,10 @@
     "scheme": "ExpoGo",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/acheibarato.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/splash.png",
+      "image": "./src/assets/acheibarato.png",
       "resizeMode": "center",
       "backgroundColor": "#F67235"
     },

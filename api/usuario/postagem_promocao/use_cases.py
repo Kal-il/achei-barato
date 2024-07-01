@@ -71,6 +71,7 @@ class PostagemPromocaoUseCases:
 
     @staticmethod
     async def get_all_postagem_promocao(db: AsyncSession):
+        print('ooi')
 
         postagem_promocao_manager = PostagemPromocaoManager(db=db)
 
