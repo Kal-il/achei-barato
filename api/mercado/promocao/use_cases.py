@@ -1,5 +1,6 @@
 from datetime import datetime
 import uuid
+from click import File
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from mercado.produto.models import ProdutoManager
@@ -129,11 +130,12 @@ class PromocaoUseCases:
                 status_code=status.HTTP_404_NOT_FOUND, content="Promoção não encontrada"
             )
 
-        nome_mercado = await MercadoManager(db).get_mercado_nome(produto.mercado_id)
+        mercado = await MercadoManager(db).get_mercado_by_id(produto.mercado_id)
         return ProdutoOutput(
             **produto.__dict__,
             promocao_id=produto.id,
-            nome_mercado=nome_mercado,
+            nome_mercado=mercado.nome_fantasia,
+            foto_mercado=await FileManager.get_foto(mercado.url_foto),
             foto=b"",
         )
 
@@ -159,6 +161,7 @@ class PromocaoUseCases:
                     ProdutoOutput(
                         **produto.__dict__,
                         nome_mercado=mercado.nome_fantasia,
+                        foto_mercado=await FileManager.get_foto(mercado.url_foto),
                         foto=await FileManager.get_foto(produto.url_foto),
                     )
                     for produto in produtos
@@ -206,12 +209,17 @@ class PromocaoUseCases:
             mercado_manager = MercadoManager(db)
 
             resultado = []
-            nome_mercado = await mercado_manager.get_mercado_nome(id_mercado)
+            mercado = await mercado_manager.get_mercado_by_id(id_mercado)
             promocoes = await promocao_manager.get_promocoes(id_mercado)
             for promocao in promocoes:
                 produtos = await produto_manager.get_produtos_promocao(promocao.id)
                 produtos = [
-                    ProdutoOutput(**produto.__dict__, nome_mercado=nome_mercado)
+                    ProdutoOutput(
+                        **produto.__dict__,
+                        nome_mercado=mercado.nome_fantasia,
+                        foto=await FileManager.get_foto(produto.url_foto),
+                        foto_mercado=await FileManager.get_foto(mercado.url_foto),
+                    )
                     for produto in produtos
                 ]
                 resultado.extend(produtos)

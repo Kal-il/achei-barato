@@ -163,7 +163,10 @@ class MercadoUseCases:
     async def get_mercado_by_id(self, db: AsyncSession, mercado_id: uuid.UUID):
         mercado_manager = MercadoManager(db)
         mercado = await mercado_manager.get_mercado_by_id(mercado_id)
-        return schemas.MercadoSchema(**mercado.__dict__)
+        return schemas.MercadoOutput(
+            **mercado.__dict__,
+            foto=await FileManager.get_foto(mercado.url_foto)
+        )
 
 
 use_cases_mercado = MercadoUseCases()

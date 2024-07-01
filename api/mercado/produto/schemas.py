@@ -34,6 +34,7 @@ class ProdutoOutput(ProdutoBase):
     promocao_id: uuid.UUID
     nome_mercado: str
     foto: bytes
+    foto_mercado: bytes
 
     class Config:
         from_attributes = True

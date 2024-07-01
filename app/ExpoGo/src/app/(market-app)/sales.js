@@ -23,7 +23,7 @@ export default function SalesPage() {
     if (item.type === "promocao") {
       return (
         <PromotionCard
-          MarketImageProfile={require("../../assets/supermercado.png")}
+          marketImagem={item.foto_mercado}
           imagem={item.foto}
           MarketName={item.nome_mercado}
           OldPrice={item.preco}
@@ -42,7 +42,7 @@ export default function SalesPage() {
     if (item.type === "erp") {
       return (
         <PromotionCard
-          MarketImageProfile={require("../../assets/supermercado.png")}
+          marketImagem={item.foto_mercado}
           imagem={item.foto}
           MarketName={item.nome_mercado}
           OldPrice={item.preco}

@@ -51,7 +51,11 @@ export default function ProductsPage() {
         setProdutos(produtosData);
         setLoading(false);
       } catch (e) {
-        console.log(e);
+        if (e.response) {
+          if (e.response.status == 404) {
+            setLoading(false);
+          }
+        }
       }
     };
 
@@ -87,6 +91,30 @@ export default function ProductsPage() {
           }}
         >
           <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+      {produtos.length == 0 && !loading && (
+        <View
+          style={{
+            alignItems: "center",
+            marginTop: "50%",
+          }}
+        >
+          <MaterialCommunityIcons
+            name="emoticon-sad"
+            size={56}
+            color={"#616161"}
+          />
+          <Text
+            style={{
+              fontWeight: "bold",
+              color: "#616161",
+              textAlign: "center",
+              fontSize: 20,
+            }}
+          >
+            Você ainda não cadastrou{"\n"}nenhum produto.
+          </Text>
         </View>
       )}
     </View>

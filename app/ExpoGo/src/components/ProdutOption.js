@@ -54,29 +54,30 @@ const ProductOption = ({
         <View style={styles.cardContent}>
           <TouchableOpacity>
             <Image
-              source={imagem ? {uri: `data:image/jpg;base64,${imagem}`} : require("../assets/apple.png")}
+              source={
+                imagem
+                  ? { uri: `data:image/jpg;base64,${imagem}` }
+                  : require("../assets/apple.png")
+              }
               style={styles.productImage}
             />
           </TouchableOpacity>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                marginBottom: "5%",
-                alignItems: "baseline",
-              }}
-            >
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>{nome}</Text>
-              <Text style={{ fontSize: 16 }}> • </Text>
-              <Text style={{ fontSize: 16 }}>{marca}</Text>
-            </View>
-
+          <View
+            style={{
+              maxWidth: "90%",
+              marginBottom: "5%",
+              marginLeft: 10,
+              alignItems: "baseline",
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>{nome}</Text>
+            <Text style={{ fontSize: 16 }}>{marca}</Text>
             <Text style={styles.price}>{formatPrice({ price: preco })}</Text>
           </View>
         </View>
         {selected && (
-          <View style={{ paddingRight: 12 }}>
-            <AntDesign name="checkcircle" color={"green"} size={42} />
+          <View style={{alignSelf: "baseline"}}>
+            <AntDesign name="checkcircle" color={"green"} size={24} />
           </View>
         )}
       </View>
@@ -92,8 +93,8 @@ const styles = StyleSheet.create({
   },
   selectedBorder: { borderWidth: 5, borderColor: "#5fbf36" },
   cardContent: {
-    gap: 15,
     flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   productImage: {
     aspectRatio: 1,

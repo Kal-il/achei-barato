@@ -23,18 +23,31 @@ const ProductCard = ({ preco, nome, marca, descricao, imagem }) => {
     <View style={styles.Card}>
       <View style={styles.cardContent}>
         <TouchableOpacity>
-          {imagem && <Image
-            source={{uri: `data:image/jpg;base64,${imagem}`}}
-            style={styles.productImage}
-          />}
-          {!imagem && <Image 
+          {imagem && (
+            <Image
+              source={{ uri: `data:image/jpg;base64,${imagem}` }}
+              style={styles.productImage}
+            />
+          )}
+          {!imagem && (
+            <Image
               source={require("../assets/apple.png")}
-            style={styles.productImage}
-          />}
+              style={styles.productImage}
+            />
+          )}
         </TouchableOpacity>
         <View>
           <View style={{ marginBottom: 15 }}>
-            <Text style={{ fontSize: 22, fontWeight: "bold" }}>{nome}</Text>
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 22,
+                fontWeight: "bold",
+                maxWidth: "85%",
+              }}
+            >
+              {nome}
+            </Text>
             <Text style={{ fontSize: 18 }}>{marca}</Text>
           </View>
 

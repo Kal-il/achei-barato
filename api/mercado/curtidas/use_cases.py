@@ -51,12 +51,13 @@ class CurtidasUseCases:
             produtos = []
             for curtida in curtidas:
                 produto = await produto_manager.get_produto_by_uuid(curtida.produto_id)
-                nome_mercado = await mercado_manager.get_mercado_nome(produto.mercado_id)
+                mercado = await mercado_manager.get_mercado_by_id(produto.mercado_id)
                 produtos.append(
                     ProdutoOutput(
                         **produto.__dict__, 
-                        nome_mercado=nome_mercado, 
-                        foto=await FileManager.get_foto(produto.url_foto)
+                        nome_mercado=mercado.nome_fantasia, 
+                        foto=await FileManager.get_foto(produto.url_foto),
+                        foto_mercado= await FileManager.get_foto(mercado.url_foto)
                     ))
 
             return produtos

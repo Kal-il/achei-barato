@@ -31,7 +31,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState([]);
   const rootNavigationState = useRootNavigationState();
-  const { user } = useAuth();
+  const { isMercado, user } = useAuth();
+  console.log("is mercado na home: " + isMercado);
   const api = new ApiClient();
 
   const router = useRouter();

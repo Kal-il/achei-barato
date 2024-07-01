@@ -53,7 +53,7 @@ export default function PromotionPage({
   const bottonSheetRef = React.useRef(null);
   const snapPoints = React.useMemo(
     () => [height / 2.2, height / 2.2, height],
-    [],
+    []
   );
   const { id, erp } = useLocalSearchParams();
   const [produto, setProduto] = useState(null);
@@ -62,7 +62,7 @@ export default function PromotionPage({
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState("");
 
-  console.log("erp:" + typeof(erp))
+  console.log("erp:" + typeof erp);
   const meses = [
     "Janeiro",
     "Fevereiro",
@@ -133,7 +133,7 @@ export default function PromotionPage({
         setErro("Ocorreu um erro ao carregar a promoção.");
         setLoading(false);
       }
-    }
+    };
 
     if (erp === "true") {
       fetchPromotionErpData();
@@ -145,14 +145,22 @@ export default function PromotionPage({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
-        {loading && <ImageBackground
-          source={require("../../../assets/apple.png")}
-          style={styles.PromotionImage}
-        />}
-        {!loading && <ImageBackground
-          source={produto.foto ? {uri: `data:image/jpg;base64,${produto.foto}`} : require("../../../assets/apple.png")}
-          style={styles.PromotionImage}
-        />}
+        {loading && (
+          <ImageBackground
+            source={require("../../../assets/apple.png")}
+            style={styles.PromotionImage}
+          />
+        )}
+        {!loading && (
+          <ImageBackground
+            source={
+              produto.foto
+                ? { uri: `data:image/jpg;base64,${produto.foto}` }
+                : require("../../../assets/apple.png")
+            }
+            style={styles.PromotionImage}
+          />
+        )}
         <BotomSheet
           ref={bottonSheetRef}
           index={1}
@@ -166,35 +174,14 @@ export default function PromotionPage({
           {!loading && !erro && produto && (
             <View style={styles.container}>
               <View style={styles.titleContainer}>
-                {erp && (<View>
-                  <View style={{ width: "100%", marginTop: 15}}>
-                    <Text style={styles.title}>{produto.nome}</Text>
-                    <Text style={styles.marca}>{produto.marca}</Text>
-                  </View>
-
-                 <View style={styles.PricesErp}>
-                    <View style={styles.oldPriceContainer}>
-                      <Text style={{ fontSize: 24 }}>De </Text>
-                      <Text style={styles.OldPrice}>
-                        {formatPrice({ price: produto.preco })}
-                      </Text>
+                {erp && (
+                  <View>
+                    <View style={{ width: "100%", marginTop: 15 }}>
+                      <Text style={styles.title}>{produto.nome}</Text>
+                      <Text style={styles.marca}>{produto.marca}</Text>
                     </View>
-                    <View style={styles.priceContainer}>
-                      <Text style={{ fontSize: 32 }}>Por </Text>
-                      <Text style={styles.Price}>
-                        {formatPrice({ price: produto.preco_promocional })}
-                      </Text>
-                    </View>
-                  </View>
-                </View>)}
 
-                {!erp && (<View style={styles.topInfoContainer}>
-                  <View style={{ width: "50%" }}>
-                    <Text style={styles.title}>{produto.nome}</Text>
-                    <Text style={styles.marca}>{produto.marca}</Text>
-                  </View>
-                  <View style={styles.PricesAndTag}>
-                    <View style={styles.Prices}>
+                    <View style={styles.PricesErp}>
                       <View style={styles.oldPriceContainer}>
                         <Text style={{ fontSize: 24 }}>De </Text>
                         <Text style={styles.OldPrice}>
@@ -207,24 +194,51 @@ export default function PromotionPage({
                           {formatPrice({ price: produto.preco_promocional })}
                         </Text>
                       </View>
-                      {promocao && (
-                        <Text style={styles.Tag}>
-                          {promocao.percentual_desconto} de desconto!
-                        </Text>
-                      )}
                     </View>
                   </View>
-                </View>)}
+                )}
+
+                {!erp && (
+                  <View style={styles.topInfoContainer}>
+                    <View style={{ width: "50%" }}>
+                      <Text style={styles.title}>{produto.nome}</Text>
+                      <Text style={styles.marca}>{produto.marca}</Text>
+                    </View>
+                    <View style={styles.PricesAndTag}>
+                      <View style={styles.Prices}>
+                        <View style={styles.oldPriceContainer}>
+                          <Text style={{ fontSize: 24 }}>De </Text>
+                          <Text style={styles.OldPrice}>
+                            {formatPrice({ price: produto.preco })}
+                          </Text>
+                        </View>
+                        <View style={styles.priceContainer}>
+                          <Text style={{ fontSize: 32 }}>Por </Text>
+                          <Text style={styles.Price}>
+                            {formatPrice({ price: produto.preco_promocional })}
+                          </Text>
+                        </View>
+                        {promocao && (
+                          <Text style={styles.Tag}>
+                            {promocao.percentual_desconto} de desconto!
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                )}
                 <View style={{ paddingVertical: 20, width: "93%", gap: 5 }}>
-                  {produto.descricao && <View style={styles.descriptionRow}>
-                    <MaterialIcons
-                      name="info"
-                      size={26}
-                      style={{ marginTop: 3 }}
-                      color="#f0a356"
-                    ></MaterialIcons>
-                    <Text style={styles.text}>{produto.descricao}</Text>
-                  </View>}
+                  {produto.descricao && (
+                    <View style={styles.descriptionRow}>
+                      <MaterialIcons
+                        name="info"
+                        size={26}
+                        style={{ marginTop: 3 }}
+                        color="#f0a356"
+                      ></MaterialIcons>
+                      <Text style={styles.text}>{produto.descricao}</Text>
+                    </View>
+                  )}
                   {promocao && (
                     <View style={styles.dateRow}>
                       <MaterialIcons
@@ -244,19 +258,31 @@ export default function PromotionPage({
                       <Text style={{ ...styles.text, fontWeight: "bold" }}>
                         No mercado {produto.nome_mercado}
                       </Text>
-                      <Text style={{ ...styles.textMercado, maxWidth: "90%", textAlign: "right" }}>
+                      <Text
+                        style={{
+                          ...styles.textMercado,
+                          maxWidth: "90%",
+                          textAlign: "right",
+                        }}
+                      >
                         {mercado.endereco}, {mercado.bairro}, {mercado.cidade},{" "}
                         {mercado.estado}
                       </Text>
                     </View>
-					<Link href={{pathname: "/market/[id]", params: {id: mercado.id}}} asChild>
-						<TouchableOpacity>
-						  <Image
-							source={MarketImageProfile}
-							style={styles.perfilMercado}
-						  />
-						</TouchableOpacity>
-					</Link>
+                    <Link
+                      href={{
+                        pathname: "/market/[id]",
+                        params: { id: mercado.id },
+                      }}
+                      asChild
+                    >
+                      <TouchableOpacity>
+                        <Image
+                          source={{uri: `data:image/jpg;base64,${mercado.foto}`}}
+                          style={styles.perfilMercado}
+                        />
+                      </TouchableOpacity>
+                    </Link>
                   </View>
                 )}
               </View>
@@ -281,14 +307,15 @@ export default function PromotionPage({
               </ScrollView>
             </View>
           )}
-          {loading && 
-            <View style={{
+          {loading && (
+            <View
+              style={{
                 marginTop: "40%",
               }}
             >
               <ActivityIndicator size="large" color="#0000ff" />
             </View>
-          }
+          )}
           {erro && (
             <View
               style={{
@@ -305,7 +332,11 @@ export default function PromotionPage({
                 size={52}
                 color="#878787"
               ></MaterialIcons>
-              <Text style={{ fontSize: 20, textAlign: "center", color: "#878787" }}>{erro}</Text>
+              <Text
+                style={{ fontSize: 20, textAlign: "center", color: "#878787" }}
+              >
+                {erro}
+              </Text>
             </View>
           )}
         </BotomSheet>

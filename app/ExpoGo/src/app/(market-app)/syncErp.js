@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import ButtonCard from "../../components/ButtonCard";
-import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome, Entypo } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { ApiClient } from "../../api/ApiClient";
@@ -24,6 +24,7 @@ export default function SyncERP() {
   const [loading, setLoading] = useState(true);
   const [sincronizando, setSincronizando] = useState(false);
   const [sucesso, setSucesso] = useState(false);
+  const [verTerminal, setVerTerminal] = useState(false);
 
   useEffect(() => {
     const fetchConexao = async () => {
@@ -52,7 +53,7 @@ export default function SyncERP() {
     } catch (e) {
       setSincronizando(false);
       setErro(
-        "Ocorreu um erro durante a sincronização. Tente novamente mais tarde.",
+        "Ocorreu um erro durante a sincronização. Tente novamente mais tarde."
       );
     }
   };
@@ -63,6 +64,10 @@ export default function SyncERP() {
 
   const handleReturn = () => {
     router.replace("/erp");
+  };
+
+  const handleShow = () => {
+    setVerTerminal(!verTerminal)
   };
 
   return (
@@ -88,8 +93,33 @@ export default function SyncERP() {
                       {conexao.url_base}:{conexao.porta}
                     </Text>
                     <Text style={{ fontSize: 16 }}>
-                      <Text style={{ fontWeight: "bold" }}>Terminal:</Text>{" "}
-                      {conexao.terminal}
+                      <Text
+                        style={{ fontWeight: "bold", alignItems: "center" }}
+                      >
+                        Terminal:
+                      </Text>
+                      {verTerminal && (
+                        <Text>
+                          {" "}
+                          {conexao.terminal}{" "}
+                          <Entypo
+                            name="eye-with-line"
+                            size={18}
+                            color={"#303030"}
+                            style={{ paddingHorizontal: 15 }}
+                            onPress={handleShow}
+                          />
+                        </Text>
+                      )}
+                      {!verTerminal && (
+                        <Entypo
+                          name="eye"
+                          size={18}
+                          color={"#303030"}
+                          style={{ paddingHorizontal: 15 }}
+                          onPress={handleShow}
+                        />
+                      )}
                     </Text>
                     <Text style={{ fontSize: 16 }}>
                       <Text style={{ fontWeight: "bold" }}>ID da Empresa:</Text>{" "}

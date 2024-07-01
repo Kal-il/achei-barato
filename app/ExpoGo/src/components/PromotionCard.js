@@ -16,7 +16,7 @@ const { height, width } = Dimensions.get("window");
 
 const PromotionCard = ({
   imagem,
-  MarketImageProfile,
+  marketImagem,
   MarketName,
   marketId,
   PromotionName,
@@ -35,6 +35,7 @@ const PromotionCard = ({
     }
     return price.replace(".", ",");
   };
+  console.log(marketImagem);
   return (
     <View style={styles.Card}>
       <View style={styles.UpperCard}>
@@ -46,20 +47,24 @@ const PromotionCard = ({
           asChild
         >
           <TouchableOpacity>
-            {imagem ? 
-              <Image 
-                source={{uri: `data:image/jpg;base64,${imagem}`}} 
-                style={styles.promotionImage} />
-             : <Image 
-              source={require("../assets/apple.png")} 
-              style={styles.promotionImage} />}
+            {imagem ? (
+              <Image
+                source={{ uri: `data:image/jpg;base64,${imagem}` }}
+                style={styles.promotionImage}
+              />
+            ) : (
+              <Image
+                source={require("../assets/apple.png")}
+                style={styles.promotionImage}
+              />
+            )}
           </TouchableOpacity>
         </Link>
         <View style={styles.PromotionInfos}>
           <View style={styles.MarketInfos}>
             <Link
-              href={{ 
-                pathname: "market/[id]", 
+              href={{
+                pathname: "market/[id]",
                 params: { id: marketId },
               }}
               asChild
@@ -69,7 +74,7 @@ const PromotionCard = ({
               >
                 <Text>{MarketName}</Text>
                 <Image
-                  source={MarketImageProfile}
+                  source={{ uri: `data:image/jpg;base64,${marketImagem}` }}
                   style={styles.marketProfile}
                 />
               </TouchableOpacity>
@@ -121,7 +126,7 @@ const PromotionCard = ({
           </Link>
         </View>
         <View style={styles.LikeButton}>
-          <FavoriteButton postId={promotionId}/>
+          <FavoriteButton postId={promotionId} />
           <Text style={{ color: "#FF5F5F" }}>{LikesNumber}</Text>
         </View>
       </View>

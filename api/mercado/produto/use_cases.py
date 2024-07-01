@@ -167,7 +167,7 @@ class ProdutoUseCases:
         try:
             produto_manager = ProdutoManager(db=db)
             objetos = await produto_manager.get_produtos_or_mercado(nome)
-            if not objetos: 
+            if not objetos:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Produto não encontrado",
@@ -181,9 +181,10 @@ class ProdutoUseCases:
 
             objetos["produtos"] = [
                 ProdutoOutput(
-                    **produto.__dict__, 
+                    **produto.__dict__,
                     nome_mercado=produto.mercado.nome_fantasia,
-                    foto=await FileManager.get_foto(produto.url_foto)
+                    foto=await FileManager.get_foto(produto.url_foto),
+                    foto_mercado=await FileManager.get_foto(produto.mercado.url_foto)
                 )
                 for produto in objetos["produtos"]
             ]
@@ -199,16 +200,16 @@ class ProdutoUseCases:
 
         produtos = await produto_manager.get_todos_produtos()
         for produto in produtos:
-            produto.nome_mercado = await mercado_manager.get_mercado_nome(
-                produto.mercado_id
-            )
+            mercado = await mercado_manager.get_mercado_by_id(produto.mercado_id)
+            produto.nome_mercado = mercado.nome_fantasia
+            produto.foto_mercado = await FileManager.get_foto(mercado.url_foto)
             produto.foto = await FileManager.get_foto(produto.url_foto)
 
         produtos_erp = await erp_manager.get_todos_produtos_erp()
         for produto in produtos_erp:
-            produto.nome_mercado = await mercado_manager.get_mercado_nome(
-                produto.mercado_id
-            )
+            mercado = await mercado_manager.get_mercado_by_id(produto.mercado_id)
+            produto.nome_mercado = mercado.nome_fantasia
+            produto.foto_mercado = await FileManager.get_foto(mercado.url_foto)
             produto.promocao_id = produto.id
 
         return {

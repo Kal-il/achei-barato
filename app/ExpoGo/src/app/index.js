@@ -29,39 +29,49 @@ const { height, width } = Dimensions.get("window");
 const Height = "100%";
 
 export default function Dashboard() {
-  console.log('09')
+  console.log("09");
+  const [repeat, setRepeat] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRepeat(!repeat);
+    }, 2000);
+  });
   // const {erro, setErro} = useState("");
 
   // Se o usuário não estiver autenticado, redirecione-o para a página de login
   const { isMercado, user } = useAuth();
-
+  console.log("oi");
   useEffect(() => {
+    console.log("oi 2");
     if (user === undefined) {
-        if (isMercado == "mercado") {
-          console.log("é mercado");
-          router.push("/market-index");
-        }
+      if (isMercado == "mercado") {
+        console.log("é mercado");
+        router.push("/market-index");
+      }
 
-        if (isMercado == "deslogado") {
-          console.log("deslogado");
+      if (isMercado == "deslogado") {
+        console.log("deslogado");
+        router.push("/sign-in");
+      }
+
+      if (isMercado == "consumidor") {
+        console.log("consumidor");
+        router.push("/home");
+      }
+
+      if (isMercado == "") {
+        try {
+          console.log("oi 3");
+          console.log("valor de ismercado: " + isMercado);
           router.push("/sign-in");
+        } catch (e) {
+          console.log(e);
         }
-
-        if (isMercado == "consumidor") {
-          console.log("consumidor")
-          router.push("/home")
-        }
-
-        if (isMercado == "") {
-          try {
-            router.push("/sign-in");
-          } catch (e) {
-            console.log(e)
-          }
-        }
-    }
-  })
+      }
+    } 
+  }, [repeat]);
 
   return (
     <LinearGradient

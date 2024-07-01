@@ -24,7 +24,7 @@ const { width, height } = Dimensions.get("window");
 export default function Dashboard() {
   // imagens e nomes para fins de teste do design, podem ser apagados se preciso
   MarketBackgroundImage = require("../../../assets/apple.png");
-  MarketProfileImage = require("../../../assets/supermercado.png");
+  const MarketProfileImage = require("../../../assets/supermercado.png");
 
   const [isFolowing, setIsFolowing] = useState(false);
   const [mercado, setMercado] = useState(null);
@@ -71,54 +71,65 @@ export default function Dashboard() {
     <View style={styles.container}>
       <StatusBar translucent={true} barStyle="light-content" />
       <ScrollView>
-      <View style={styles.header}>
-        <ImageBackground
-          style={styles.backgroundImage}
-          source={require("../../../assets/apple.png")}
-        ></ImageBackground>
-        <View style={styles.ProfileImage}>
-          <ImagesPicker
-            imageSize={0.16}
-            ImageHolder={MarketProfileImage}
-            ImageBorderRadius={100}
-          />
-        </View>
-      </View>
-
-      {mercado && (
-        <View style={styles.main}>
-          <Text style={styles.title}>{mercado.nome_fantasia}</Text>
-          <TouchableOpacity
-            onPress={() => setIsFolowing(!isFolowing)}
-            style={{ marginTop: "2%" }}
-          >
-            <Button
-              title={isFolowing ? "Seguindo" : "Seguir"}
-              ButtonColor={isFolowing ? "#7D49CB" : ""}
-            />
-          </TouchableOpacity>
-          <View style={styles.line} />
-          <Text style={styles.subtitle}>Promoções</Text>
-          <View style={styles.inputContainer}>
-            <Ionicons name="search-outline" size={28} color={"grey"} />
-            <TextInput
-              style={styles.inputText}
-              placeholder="Pesquisar"
-              placeholderTextColor="grey"
-            />
-          </View>
-          <ScrollView>
-            <View style={{ alignSelf: "center" }}>
-              <FlatList
-                data={promocoes}
-                renderItem={renderPromocao}
-                keyExtractor={(item) => item.id}
+        <View style={styles.header}>
+          <ImageBackground
+            style={styles.backgroundImage}
+            source={require("../../../assets/apple.png")}
+          ></ImageBackground>
+          {!mercado && (
+            <View style={styles.ProfileImage}>
+              <ImagesPicker
+                imageSize={0.16}
+                ImageHolder={MarketProfileImage}
+                ImageBorderRadius={100}
               />
             </View>
-          </ScrollView>
-          <View style={styles.line} />
+          )}
+          {mercado && (
+            <View style={styles.ProfileImage}>
+              <ImagesPicker
+                imageSize={0.16}
+                ImageHolder={{ uri: `data:image/jpg;base64,${mercado.foto}` }}
+                ImageBorderRadius={100}
+              />
+            </View>
+          )}
         </View>
-      )}
+
+        {mercado && (
+          <View style={styles.main}>
+            <Text style={styles.title}>{mercado.nome_fantasia}</Text>
+            <TouchableOpacity
+              onPress={() => setIsFolowing(!isFolowing)}
+              style={{ marginTop: "2%" }}
+            >
+              <Button
+                title={isFolowing ? "Seguindo" : "Seguir"}
+                ButtonColor={isFolowing ? "#7D49CB" : ""}
+              />
+            </TouchableOpacity>
+            <View style={styles.line} />
+            <Text style={styles.subtitle}>Promoções</Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="search-outline" size={28} color={"grey"} />
+              <TextInput
+                style={styles.inputText}
+                placeholder="Pesquisar"
+                placeholderTextColor="grey"
+              />
+            </View>
+            <ScrollView>
+              <View style={{ alignSelf: "center" }}>
+                <FlatList
+                  data={promocoes}
+                  renderItem={renderPromocao}
+                  keyExtractor={(item) => item.id}
+                />
+              </View>
+            </ScrollView>
+            <View style={styles.line} />
+          </View>
+        )}
       </ScrollView>
     </View>
   );

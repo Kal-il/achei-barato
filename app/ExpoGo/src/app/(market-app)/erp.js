@@ -94,13 +94,13 @@ export default function ErpManager() {
         </View>
       )}
 
-      <ButtonCard
+      {!naoCadastrado && <ButtonCard
         text="Sincronizar promoções"
         link="/syncErp"
         IconComponent={MaterialCommunityIcons}
         iconSize={32}
         iconName={"database-sync"}
-      />
+      />}
       {loading && (
         <View
           style={{
@@ -119,7 +119,6 @@ export default function ErpManager() {
           IconComponent={MaterialCommunityIcons}
           iconSize={32}
           iconName={"api"}
-          onPress={handleSync}
         />
       )}
       {!loading && !naoCadastrado && (
