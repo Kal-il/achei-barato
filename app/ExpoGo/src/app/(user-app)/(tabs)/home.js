@@ -117,6 +117,7 @@ export default function Home() {
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
           imagem={item.foto}
+          marketImagem={item.foto_mercado}
           MarketName={item.nome_mercado}
           OldPrice={item.preco}
           Price={item.preco_promocional}
@@ -135,6 +136,7 @@ export default function Home() {
         <PromotionCard
           MarketImageProfile={require("../../../assets/supermercado.png")}
           imagem={item.foto}
+          marketImagem={item.foto_mercado}
           MarketName={item.nome_mercado}
           OldPrice={item.preco}
           Price={item.preco_promocional}

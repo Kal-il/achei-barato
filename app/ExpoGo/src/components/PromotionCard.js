@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   marketProfile: {
+    borderRadius: 100,
     width: width * 0.12,
     height: height * 0.06,
     aspectRatio: 1,

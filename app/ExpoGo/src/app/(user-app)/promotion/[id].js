@@ -151,7 +151,7 @@ export default function PromotionPage({
             style={styles.PromotionImage}
           />
         )}
-        {!loading && (
+        {!loading && produto && (
           <ImageBackground
             source={
               produto.foto
@@ -278,7 +278,7 @@ export default function PromotionPage({
                     >
                       <TouchableOpacity>
                         <Image
-                          source={{uri: `data:image/jpg;base64,${mercado.foto}`}}
+                          source={{ uri: `oi` }}
                           style={styles.perfilMercado}
                         />
                       </TouchableOpacity>

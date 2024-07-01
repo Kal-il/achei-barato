@@ -57,7 +57,8 @@ class ProdutoUseCases:
         _produto = ProdutoOutput(
             **_produto.__dict__,
             nome_mercado=_mercado.nome_fantasia,
-            foto=await FileManager.get_foto(_produto.url_foto)
+            foto=await FileManager.get_foto(_produto.url_foto),
+            foto_mercado=await FileManager.get_foto(_mercado.url_foto)
         )
         return _produto
 
