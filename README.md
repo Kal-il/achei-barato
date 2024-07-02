@@ -2,7 +2,7 @@
 <img loading="lazy" src="https://uploaddeimagens.com.br/images/004/768/426/full/logo.png?1712800464"/>
 </p>
 <p align="center">
-<img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
+<img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=INTERROMPIDO&color=GREEN&style=for-the-badge"/>
 </p>
 
 ## Índice 
@@ -16,7 +16,7 @@
 
 **Curso:** Bacharelado em Ciência da Computação \
 **Professor:** Edeilson Milhomem da Silva\
-**Time**: Ana Flavia Moreira Pires, Cássio Coutinho Lima, Kalil Garcia Canuto, Maria Clara Nazareno Aires, Matheus Henrique Dreher dos Santos, Romeu Miranda Borges
+**Time**: Ana Flavia Moreira Pires, Cássio Coutinho Lima, Jeová Sousa Barbosa, Kalil Garcia Canuto, Matheus Henrique Dreher dos Santos e Romeu Miranda Borges
 
 ## Sobre Achei Barato:
 O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas locais na ponta dos seus dedos. Com informações atualizadas sobre os menores preços, tornamos a economia acessível e parte da sua rotina. Nosso foco é conectar você com ofertas relevantes, economizando tempo e dinheiro. Achei Barato, o aplicativo que entrega oferta na palma da sua mão.
