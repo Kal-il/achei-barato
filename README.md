@@ -21,6 +21,11 @@
 ## Sobre Achei Barato:
 O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas locais na ponta dos seus dedos. Com informações atualizadas sobre os menores preços, tornamos a economia acessível e parte da sua rotina. Nosso foco é conectar você com ofertas relevantes, economizando tempo e dinheiro. Achei Barato, o aplicativo que entrega oferta na palma da sua mão.
 
+
+## Link de Download:
+Dada a finalização do projeto, disponibilizamos a última versão estável para download como APK:\
+---> [Baixar APK](https://www.mediafire.com/file/vhfywpprvf5pkrz/app-release.apk/file)
+
 ## Escopo:
 - **Épico 1 - Ações e Gerenciamento do Consumidor:** RF01, RF02, RF03, RF04, RF05, RF06;
 - **Épico 2 - Ações e Gerenciamento do Mercado:**
