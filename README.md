@@ -26,6 +26,7 @@ O Achei Barato é seu companheiro de compras, oferecendo as melhores ofertas loc
 Dada a finalização do projeto, disponibilizamos a última versão estável para download como APK:\
 ---> [Baixar APK](https://www.mediafire.com/file/vhfywpprvf5pkrz/app-release.apk/file)
 
+
 ## Escopo:
 - **Épico 1 - Ações e Gerenciamento do Consumidor:** RF01, RF02, RF03, RF04, RF05, RF06;
 - **Épico 2 - Ações e Gerenciamento do Mercado:**
