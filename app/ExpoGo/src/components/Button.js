@@ -7,9 +7,6 @@ const Button = ({title, ButtonColor}) => {
     return (
         <View
             style={[styles.button, {backgroundColor: ButtonColor ? ButtonColor : '#659BFF'}]}
-            onPress={() => {
-                // Lógica para salvar aqui
-            }}
         >
             <Text style={styles.text}>{title}</Text>
         </View>

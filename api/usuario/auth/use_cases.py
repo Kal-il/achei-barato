@@ -31,9 +31,10 @@ class AuthUseCase:
 
         # Verifica se a senha confere
         if not verify_password(password, _usuario.hashed_password):
+            print('senha errada')
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect username or password",
+                detail="E-mail ou senha estão incorretos",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         access_token = create_access_token(subject=_usuario.email)

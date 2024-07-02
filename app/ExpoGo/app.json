@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "ExpoGo",
-    "slug": "ExpoGo",
-    "scheme": "ExpoGo",
+    "name": "Achei Barato",
+    "slug": "achei-barato",
+    "scheme": ["Achei Barato"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/acheibarato.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/splash.png",
+      "image": "./src/assets/acheibarato.png",
       "resizeMode": "center",
       "backgroundColor": "#F67235"
     },
@@ -16,7 +16,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +27,8 @@
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.anonymous.acheibarato"
+      "package": "com.anonymous.acheibarato",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./src/assets/favicon.png",
@@ -37,6 +41,17 @@
       "expo-secure-store",
       "expo-router",
       "@react-native-google-signin/google-signin"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "39a1ce2c-448f-4d11-a80a-106c935b2f87"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/39a1ce2c-448f-4d11-a80a-106c935b2f87"
+    }
   }
 }

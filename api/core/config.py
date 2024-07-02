@@ -1,3 +1,4 @@
+from re import M
 from pydantic_settings import BaseSettings
 from pydantic import ConfigDict
 
@@ -36,8 +37,15 @@ class Settings(BaseSettings):
 
     url_erp: str
     terminal: str
-    emp_id: int
+    emp_id: str
 
+    # Configurações do email
+
+    email_from: str
+    email_password: str
+    email_to: str
+    
+    media_path: str
 
 
     model_config = ConfigDict(env_file=".env")

@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 9.0.3"
+    "version": ">= 10.0.3"
   },
   "build": {
     "development": {
@@ -8,7 +8,13 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_CLIENT_ID": "765762436702-f7bkfd387j9iqb5bqv6ci2cs0gk8k97j.apps.googleusercontent.com",
+        "EXPO_PUBLIC_IP_HOST":"https://achei-barato-1.onrender.com"
+      }
     },
     "production": {}
   },

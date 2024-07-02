@@ -11,7 +11,7 @@ export default function  ProfileScreenButton ({ ButtonText, ButtonIcon, ButtonLi
                 <TouchableNativeFeedback style={{borderRadius: 24}}>
                     <View style={styles.Button}>
                         <MaterialIcons name= {ButtonIcon} size={32} style = {styles.icons} color = {ButtonIconColor}/>
-                        <Text style={{color : ButtonIconColor}}>{ButtonText}</Text>
+                        <Text style={{color : ButtonIconColor, fontSize: 16, fontWeight: "bold"}}>{ButtonText}</Text>
                         <AntDesign name= "arrowright" size={24} style = {styles.icons} color = {ButtonIconColor}/>
                     </View>
                 </TouchableNativeFeedback>
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: 'white',
         padding: 10,
         marginBottom: '5%',
         paddingHorizontal: '5%',

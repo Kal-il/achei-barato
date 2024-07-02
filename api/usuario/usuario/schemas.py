@@ -23,9 +23,9 @@ class UsuarioAuth(BaseModel):
     password: str = Field(
         ..., min_length=5, max_length=255, description="Senha do usuário"
     )
+    dono_mercado: bool = Field(default=False, description="Dono de mercado")
 
 
 class UsuarioLogin(BaseModel):
     username: str
     password: str
-

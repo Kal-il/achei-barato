@@ -6,7 +6,7 @@ import FavoriteButton from './favoriteButton';
 
 const CardPromotion = ({ imageSource, storeProfile, promotionName, promotionPrice, tag }) => {
   return (
-    <Link href={"../app/promotion.js"} asChild>
+    <Link href={"promotion"} asChild>
       <View style={styles.cardPromotion}>
 
         <ImageBackground source={imageSource} style={styles.imagePromotion}>
@@ -15,7 +15,7 @@ const CardPromotion = ({ imageSource, storeProfile, promotionName, promotionPric
             alignItems: 'center',
             justifyContent: 'space-between', flexDirection: 'row', marginEnd: 10
           }}>
-            <Link href={"/store-profile"} asChild>
+            <Link href={"store-profile"} asChild>
               <TouchableOpacity>
                 <Image source={storeProfile} style={styles.storeProfile} />
               </TouchableOpacity>

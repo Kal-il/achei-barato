@@ -24,12 +24,13 @@ models = [
     "usuario.consumidor.models.Consumidor",
     "mercado.mercado.models.Mercado",
     "usuario.auth.models.UsuarioAuthGoogle",
-    "mercado.mercado.models.Produto",
-    "mercado.mercado.models.Promocao",
-    "mercado.mercado.models.ProdutosPromocaoErp",
-    "mercado.mercado.models.ApiMercados",
-    "mercado.mercado.models.Curtidas", 
-    "mercado.mercado.models.MercadoSeguir",
+    "mercado.produto.models.Produto",
+    "mercado.promocao.models.Promocao",
+    "mercado.promocao.models.ProdutosPromocaoErp",
+    "mercado.api_mercados.models.ApiMercados",
+    "mercado.curtidas.models.Curtidas", 
+    "mercado.mercado_seguir.models.MercadoSeguir",
+    "usuario.postagem_promocao.models.PostagemPromocao",
 ]
 
 for model in models:

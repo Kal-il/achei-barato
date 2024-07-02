@@ -22,25 +22,25 @@ const ImagesPicker = ({imageSize, ImageHolder, ImageBorderRadius, Condition}) =>
       quality: 1,
     });
 
-	const data = new FormData();
-	data.append('foto', {
-		uri: result.assets[0].uri,
-		name: 'teste.jpg',
-		type: 'image/jpeg',
-	})
+    const data = new FormData();
+    data.append('foto', {
+      uri: result.assets[0].uri,
+      name: 'teste.jpg',
+      type: 'image/jpeg',
+    })
 
-	const api = new ApiClient();
+    const api = new ApiClient();
 
-    let erros;
-    try{
-      await api.updateConsumidorData(data, null, true);
-    } catch (e) {
-      console.error(e);
-    }
+      let erros;
+      try{
+        await api.updateConsumidorData(data, null, true);
+      } catch (e) {
+        console.error(e);
+      }
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
   };
 
 if (Condition) {
